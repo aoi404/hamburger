@@ -1,24 +1,22 @@
--- Services
 local rs = game:GetService("ReplicatedStorage")
 local events = rs:WaitForChild("GameEvents")
 local player = game.Players.LocalPlayer
-local char = player.Character or player.CharacterAdded:Wait()
+local backpack = player:WaitForChild("Backpack")
 
--- [1] Teleport to sell zone (estimated position)
-local SELL_POS = Vector3.new(-324, 5, 1012)  -- Replace with actual coordinates
+-- Try multiple formats to sell the Pear
+for _, item in pairs(backpack:GetChildren()) do
+	if item.Name == "Pear" then
+		warn("Found Pear:", item)
 
-pcall(function()
-    char:MoveTo(SELL_POS)
-end)
-
--- [2] Loop through backpack to sell pears
-task.wait(1.5) -- Give time for teleport before selling
-
-for _, item in pairs(player.Backpack:GetChildren()) do
-    if item.Name == "Pear" then
-        print("[Sell Attempt] Found Pear:", item)
-        pcall(function()
-            events.SellFruit:FireServer(item)
-        end)
-    end
+		-- Try different call formats
+		pcall(function() events.SellFruit:FireServer(item) end)
+		pcall(function() events.SellFruit:FireServer("Pear") end)
+		pcall(function()
+			events.SellFruit:FireServer({
+				Name = "Pear",
+				Weight = item:FindFirstChild("Weight") and item.Weight.Value or 5,
+				ID = item:GetAttribute("ID") or tostring(item)
+			})
+		end)
+	end
 end
