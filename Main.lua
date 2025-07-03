@@ -2,35 +2,43 @@ local player = game.Players.LocalPlayer
 local rs = game:GetService("ReplicatedStorage")
 local events = rs:WaitForChild("GameEvents")
 local char = player.Character or player.CharacterAdded:Wait()
+local hrp = char:WaitForChild("HumanoidRootPart")
 
--- GUI Setup
+-- GUI setup
 local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-gui.Name = "SellPearGUI"
+gui.Name = "SellPearHelper"
 
-local btn = Instance.new("TextButton", gui)
-btn.Size = UDim2.new(0, 200, 0, 50)
-btn.Position = UDim2.new(0.5, -100, 0.5, -25)
-btn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
-btn.TextColor3 = Color3.new(1,1,1)
-btn.Font = Enum.Font.SourceSansBold
-btn.TextSize = 22
-btn.Text = "🍐 Sell Pears"
+-- Sell button
+local sellBtn = Instance.new("TextButton", gui)
+sellBtn.Size = UDim2.new(0, 200, 0, 50)
+sellBtn.Position = UDim2.new(0.5, -100, 0.5, -60)
+sellBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+sellBtn.TextColor3 = Color3.new(1, 1, 1)
+sellBtn.Font = Enum.Font.SourceSansBold
+sellBtn.TextSize = 22
+sellBtn.Text = "🍐 Sell Pears"
 
--- Teleport position (replace if needed!)
-local SELL_POS = Vector3.new(-324, 5, 1012)
+-- Location display label
+local positionLabel = Instance.new("TextLabel", gui)
+positionLabel.Size = UDim2.new(0, 300, 0, 25)
+positionLabel.Position = UDim2.new(0.5, -150, 0.5, 0)
+positionLabel.BackgroundTransparency = 1
+positionLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+positionLabel.Font = Enum.Font.Code
+positionLabel.TextSize = 20
+positionLabel.Text = "📍 Position: ..."
 
-btn.MouseButton1Click:Connect(function()
-	print("🌀 [Sell GUI] Button clicked.")
+-- Update position live
+task.spawn(function()
+	while true do
+		task.wait(1)
+		local pos = hrp.Position
+		positionLabel.Text = string.format("📍 Position: (%.1f, %.1f, %.1f)", pos.X, pos.Y, pos.Z)
+	end
+end)
 
-	-- Teleport to sell area
-	pcall(function()
-		char:MoveTo(SELL_POS)
-		print("🚶‍♂️ Moved to sell zone at:", SELL_POS)
-	end)
-
-	task.wait(1.5) -- let teleport settle
-
-	-- Search backpack and try to sell Pears
+-- Sell logic
+sellBtn.MouseButton1Click:Connect(function()
 	local backpack = player:WaitForChild("Backpack")
 	local found = false
 
@@ -39,27 +47,19 @@ btn.MouseButton1Click:Connect(function()
 			found = true
 			print("🍐 Found Pear:", item)
 
-			-- Try direct instance
-			local s1 = pcall(function() events.SellFruit:FireServer(item) end)
-			print("🔁 Try 1 [Instance]:", s1 and "✅" or "❌")
-
-			-- Try name string
-			local s2 = pcall(function() events.SellFruit:FireServer("Pear") end)
-			print("🔁 Try 2 [String]:", s2 and "✅" or "❌")
-
-			-- Try structured table
-			local s3 = pcall(function()
+			pcall(function() events.SellFruit:FireServer(item) end)
+			pcall(function() events.SellFruit:FireServer("Pear") end)
+			pcall(function()
 				events.SellFruit:FireServer({
 					Name = "Pear",
-					Weight = item:FindFirstChild("Weight") and item.Weight.Value or 1,
+					Weight = item:FindFirstChild("Weight") and item.Weight.Value or 5,
 					ID = item:GetAttribute("ID") or tostring(item)
 				})
 			end)
-			print("🔁 Try 3 [Table]:", s3 and "✅" or "❌")
 		end
 	end
 
 	if not found then
-		print("❌ No Pears found in Backpack to sell.")
+		print("❌ No Pears found in Backpack.")
 	end
 end)
