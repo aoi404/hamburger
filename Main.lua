@@ -1,39 +1,32 @@
+local rs = game:GetService("ReplicatedStorage")
+local events = rs:WaitForChild("GameEvents")
 local player = game.Players.LocalPlayer
+local backpack = player:WaitForChild("Backpack")
 local char = player.Character or player.CharacterAdded:Wait()
-local hrp = char:WaitForChild("HumanoidRootPart")
 
--- GUI setup
-local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-gui.Name = "LocationButtonGUI"
-gui.ResetOnSpawn = false
+-- Your custom sell zone coordinate
+local SELL_POS = Vector3.new(86.6, 3.0, 0.4)
 
--- Button config
-local btn = Instance.new("TextButton")
-btn.Size = UDim2.new(0, 180, 0, 35)
-btn.Position = UDim2.new(1, -190, 0, 10) -- Top-right corner
-btn.AnchorPoint = Vector2.new(0, 0)
-btn.BackgroundColor3 = Color3.fromRGB(0, 160, 255)
-btn.TextColor3 = Color3.new(1, 1, 1)
-btn.Font = Enum.Font.Gotham
-btn.TextSize = 18
-btn.Text = "📍 Copy Location"
-btn.Parent = gui
-
--- Click logic
-btn.MouseButton1Click:Connect(function()
-	local pos = hrp.Position
-	local coordStr = string.format("Vector3.new(%.1f, %.1f, %.1f)", pos.X, pos.Y, pos.Z)
-
-	-- Say the position in chat
-	pcall(function()
-		player:Chat("🧭 My position is: " .. coordStr)
-	end)
-
-	-- Copy to clipboard (executor must support this)
-	if setclipboard then
-		setclipboard(coordStr)
-		print("📋 Copied to clipboard:", coordStr)
-	else
-		warn("⚠️ setclipboard is not supported in this executor.")
-	end
+-- Teleport to sell zone
+pcall(function()
+    char:MoveTo(SELL_POS)
+    print("🚀 Teleported to sell zone at", SELL_POS)
 end)
+
+task.wait(1.5)
+
+-- Try selling Pears
+for _, item in pairs(backpack:GetChildren()) do
+    if item.Name == "Pear" then
+        print("🍐 Found Pear:", item)
+        pcall(function() events.SellFruit:FireServer(item) end)
+        pcall(function() events.SellFruit:FireServer("Pear") end)
+        pcall(function()
+            events.SellFruit:FireServer({
+                Name = "Pear",
+                Weight = item:FindFirstChild("Weight") and item.Weight.Value or 5,
+                ID = item:GetAttribute("ID") or tostring(item)
+            })
+        end)
+    end
+end
