@@ -1,76 +1,48 @@
 local player = game.Players.LocalPlayer
+local char = player.Character or player.CharacterAdded:Wait()
 local rs = game:GetService("ReplicatedStorage")
 local events = rs:WaitForChild("GameEvents")
-local char = player.Character or player.CharacterAdded:Wait()
+
+-- Replace with your actual dialogue RemoteEvent name if different
+local dialogueRemote = events:FindFirstChild("DialogueChoice") or events:FindFirstChild("Dialogue")
+
+-- Sell zone position (your saved coordinate)
+local SELL_POS = Vector3.new(86.6, 3.0, 0.4)
 
 -- GUI setup
 local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-gui.Name = "SellAllButtonGUI"
+gui.Name = "SellInventoryGUI"
 gui.ResetOnSpawn = false
 
--- Your saved sell zone position
-local SELL_POS = Vector3.new(86.6, 3.0, 0.4)
-
--- Create button
 local btn = Instance.new("TextButton")
 btn.Size = UDim2.new(0, 180, 0, 45)
 btn.Position = UDim2.new(1, -200, 1, -60)
-btn.BackgroundColor3 = Color3.fromRGB(255, 112, 67)
+btn.BackgroundColor3 = Color3.fromRGB(255, 153, 51)
 btn.TextColor3 = Color3.new(1, 1, 1)
 btn.Font = Enum.Font.GothamBold
 btn.TextSize = 18
-btn.Text = "🛒 Sell All Fruits"
+btn.Text = "💰 Sell Inventory"
 btn.Parent = gui
 
--- Action logic
 btn.MouseButton1Click:Connect(function()
-	print("🛒 Sell All activated!")
+	print("💬 Sell Inventory button clicked!")
 
-	-- Teleport to sell zone
+	-- Step 1: Teleport to seller
 	local hrp = char:FindFirstChild("HumanoidRootPart")
 	if hrp then
 		hrp.CFrame = CFrame.new(SELL_POS)
-		print("🚀 Teleported to:", SELL_POS)
+		print("🚶 Teleported to seller at", SELL_POS)
 	end
 
 	task.wait(1.5) -- Let teleport settle
 
-	-- Iterate and sell everything in Backpack
-	local backpack = player:FindFirstChild("Backpack")
-	if not backpack then
-		warn("⚠️ No Backpack found.")
-		return
-	end
-
-	local count = 0
-	for _, item in pairs(backpack:GetChildren()) do
-		if item:IsA("Tool") or item:IsA("Folder") then
-			count += 1
-			print("🍎 Found item:", item.Name)
-
-			-- Format 1: Instance
-			local a = pcall(function() events.SellFruit:FireServer(item) end)
-			print("🔁 Format 1 [Instance]:", a and "✅" or "❌")
-
-			-- Format 2: String
-			local b = pcall(function() events.SellFruit:FireServer(item.Name) end)
-			print("🔁 Format 2 [String]:", b and "✅" or "❌")
-
-			-- Format 3: Table
-			local c = pcall(function()
-				events.SellFruit:FireServer({
-					Name = item.Name,
-					Weight = item:FindFirstChild("Weight") and item.Weight.Value or 1,
-					ID = item:GetAttribute("ID") or tostring(item)
-				})
-			end)
-			print("🔁 Format 3 [Table]:", c and "✅" or "❌")
-		end
-	end
-
-	if count == 0 then
-		print("❌ No fruits found to sell.")
+	-- Step 2: Trigger dialogue option 1
+	if dialogueRemote then
+		pcall(function()
+			dialogueRemote:FireServer(1)
+			print("🗨️ Sent dialogue choice: 1 (Sell All Inventory)")
+		end)
 	else
-		print("✅ Attempted to sell", count, "items.")
+		warn("⚠️ Dialogue RemoteEvent not found.")
 	end
 end)
