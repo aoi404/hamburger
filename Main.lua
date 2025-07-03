@@ -3,68 +3,74 @@ local rs = game:GetService("ReplicatedStorage")
 local events = rs:WaitForChild("GameEvents")
 local char = player.Character or player.CharacterAdded:Wait()
 
--- UI Setup
+-- GUI setup
 local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-gui.Name = "SellPearButtonTeleport"
+gui.Name = "SellAllButtonGUI"
 gui.ResetOnSpawn = false
 
--- Sell Zone Coordinates (Your real location)
+-- Your saved sell zone position
 local SELL_POS = Vector3.new(86.6, 3.0, 0.4)
 
 -- Create button
 local btn = Instance.new("TextButton")
-btn.Size = UDim2.new(0, 160, 0, 45)
-btn.Position = UDim2.new(1, -180, 1, -60)
-btn.AnchorPoint = Vector2.new(0, 0)
-btn.BackgroundColor3 = Color3.fromRGB(241, 196, 15)
-btn.TextColor3 = Color3.new(0, 0, 0)
+btn.Size = UDim2.new(0, 180, 0, 45)
+btn.Position = UDim2.new(1, -200, 1, -60)
+btn.BackgroundColor3 = Color3.fromRGB(255, 112, 67)
+btn.TextColor3 = Color3.new(1, 1, 1)
 btn.Font = Enum.Font.GothamBold
 btn.TextSize = 18
-btn.Text = "📦 Teleport + Sell Pears"
+btn.Text = "🛒 Sell All Fruits"
 btn.Parent = gui
 
--- Button logic
+-- Action logic
 btn.MouseButton1Click:Connect(function()
-	print("📦 Sell + Teleport clicked!")
+	print("🛒 Sell All activated!")
 
-	-- Step 1: Teleport
+	-- Teleport to sell zone
 	local hrp = char:FindFirstChild("HumanoidRootPart")
 	if hrp then
 		hrp.CFrame = CFrame.new(SELL_POS)
-		print("🚀 Teleported to sell zone at", SELL_POS)
-	else
-		warn("⚠️ HumanoidRootPart not found.")
+		print("🚀 Teleported to:", SELL_POS)
 	end
 
 	task.wait(1.5) -- Let teleport settle
 
-	-- Step 2: Sell all Pears
+	-- Iterate and sell everything in Backpack
 	local backpack = player:FindFirstChild("Backpack")
-	local found = false
+	if not backpack then
+		warn("⚠️ No Backpack found.")
+		return
+	end
 
+	local count = 0
 	for _, item in pairs(backpack:GetChildren()) do
-		if item.Name == "Pear" then
-			found = true
-			print("🍐 Attempting to sell:", item)
+		if item:IsA("Tool") or item:IsA("Folder") then
+			count += 1
+			print("🍎 Found item:", item.Name)
 
-			local s1 = pcall(function() events.SellFruit:FireServer(item) end)
-			print("🔁 Format 1 [Instance]:", s1 and "✅" or "❌")
+			-- Format 1: Instance
+			local a = pcall(function() events.SellFruit:FireServer(item) end)
+			print("🔁 Format 1 [Instance]:", a and "✅" or "❌")
 
-			local s2 = pcall(function() events.SellFruit:FireServer("Pear") end)
-			print("🔁 Format 2 [String]:", s2 and "✅" or "❌")
+			-- Format 2: String
+			local b = pcall(function() events.SellFruit:FireServer(item.Name) end)
+			print("🔁 Format 2 [String]:", b and "✅" or "❌")
 
-			local s3 = pcall(function()
+			-- Format 3: Table
+			local c = pcall(function()
 				events.SellFruit:FireServer({
-					Name = "Pear",
+					Name = item.Name,
 					Weight = item:FindFirstChild("Weight") and item.Weight.Value or 1,
 					ID = item:GetAttribute("ID") or tostring(item)
 				})
 			end)
-			print("🔁 Format 3 [Table]:", s3 and "✅" or "❌")
+			print("🔁 Format 3 [Table]:", c and "✅" or "❌")
 		end
 	end
 
-	if not found then
-		print("❌ No Pears found in Backpack.")
+	if count == 0 then
+		print("❌ No fruits found to sell.")
+	else
+		print("✅ Attempted to sell", count, "items.")
 	end
 end)
