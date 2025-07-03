@@ -1,46 +1,56 @@
+-- Get necessary services
 local Players = game:GetService("Players")
-local StarterGui = game:GetService("StarterGui")
 local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
 
--- Create screen GUI
-local gui = Instance.new("ScreenGui")
-gui.Name = "HelloGUI"
-gui.ResetOnSpawn = false
-gui.Parent = player:WaitForChild("PlayerGui")
+-- Create the GUI container
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "HamburgerGUI"
+screenGui.ResetOnSpawn = false
+screenGui.Parent = playerGui
 
--- Create the Hello Button
+-- Create Hello Button
 local helloBtn = Instance.new("TextButton")
-helloBtn.Parent = gui
 helloBtn.Size = UDim2.new(0, 200, 0, 50)
 helloBtn.Position = UDim2.new(0.5, -100, 0.5, -25)
 helloBtn.Text = "Say Hello"
+helloBtn.Font = Enum.Font.SourceSansBold
+helloBtn.TextSize = 24
 helloBtn.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
 helloBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-helloBtn.Font = Enum.Font.SourceSans
-helloBtn.TextSize = 24
+helloBtn.Parent = screenGui
 
--- When Hello is clicked, show a system message in chat
+-- Create Close (X) Button
+local closeBtn = Instance.new("TextButton")
+closeBtn.Size = UDim2.new(0, 40, 0, 40)
+closeBtn.Position = UDim2.new(1, -50, 0, 10)
+closeBtn.Text = "X"
+closeBtn.Font = Enum.Font.SourceSansBold
+closeBtn.TextSize = 22
+closeBtn.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+closeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
+closeBtn.Parent = screenGui
+
+-- Custom fake chat label (acts like system message)
+local chatMsg = Instance.new("TextLabel")
+chatMsg.Visible = false
+chatMsg.Size = UDim2.new(0, 300, 0, 30)
+chatMsg.Position = UDim2.new(0.5, -150, 0.5, 40)
+chatMsg.BackgroundTransparency = 1
+chatMsg.TextColor3 = Color3.new(1, 1, 1)
+chatMsg.TextScaled = true
+chatMsg.Font = Enum.Font.SourceSansItalic
+chatMsg.Text = "[HelloGUI] Hello, world!"
+chatMsg.Parent = screenGui
+
+-- Click behavior for Hello Button
 helloBtn.MouseButton1Click:Connect(function()
-    StarterGui:SetCore("ChatMakeSystemMessage", {
-        Text = "[HelloGUI] Hello, world!";
-        Color = Color3.new(0, 1, 1);
-        Font = Enum.Font.SourceSansBold;
-        FontSize = Enum.FontSize.Size24;
-    })
+    chatMsg.Visible = true
+    wait(3)
+    chatMsg.Visible = false
 end)
 
--- Create the X (Close) Button
-local xBtn = Instance.new("TextButton")
-xBtn.Parent = gui
-xBtn.Size = UDim2.new(0, 40, 0, 40)
-xBtn.Position = UDim2.new(1, -50, 0, 10)
-xBtn.Text = "X"
-xBtn.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
-xBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-xBtn.Font = Enum.Font.SourceSansBold
-xBtn.TextSize = 22
-
--- When X is clicked, remove the GUI
-xBtn.MouseButton1Click:Connect(function()
-    gui:Destroy()
+-- Click behavior for X Button
+closeBtn.MouseButton1Click:Connect(function()
+    screenGui:Destroy()
 end)
