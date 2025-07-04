@@ -1,4 +1,3 @@
-
 --[[
 GAG SCRIPT BY:BREAD
 Modern Sidebar GUI (Restarted)
@@ -710,3 +709,18 @@ UserInputService.InputBegan:Connect(function(input, processed)
 end)
 -- Initial tab selection
 selectTab("EVENT")
+
+-- Utility: Recursively search for a remote by name and print its path
+local function findRemoteByName(parent, remoteName, path)
+    path = path or parent.Name
+    for _, child in ipairs(parent:GetChildren()) do
+        if child.Name == remoteName and child:IsA("RemoteEvent") then
+            print("[GAG REMOTE FINDER] Found RemoteEvent:", path .. "." .. child.Name)
+        end
+        -- Search deeper
+        findRemoteByName(child, remoteName, path .. "." .. child.Name)
+    end
+end
+
+-- Run this once at script start to help user find the remote
+findRemoteByName(ReplicatedStorage, "BuyPetEgg")
