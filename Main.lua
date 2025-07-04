@@ -219,7 +219,10 @@ autoBuyEggToggle.MouseButton1Click:Connect(function()
                 for _, egg in ipairs(selectedEggs) do
                     if isEggInStock(egg) then
                         if buyEggRemote then
+                            print("[GAG] Buying egg:", egg)
                             buyEggRemote:FireServer(egg)
+                        else
+                            warn("[GAG] BuyPetEgg remote not found!")
                         end
                     end
                 end
@@ -277,7 +280,10 @@ autoBuySeedToggle.MouseButton1Click:Connect(function()
                 for _, seed in ipairs(selectedSeeds) do
                     if isSeedInStock(seed) then
                         if buySeedRemote then
+                            print("[GAG] Buying seed:", seed)
                             buySeedRemote:FireServer(seed)
+                        else
+                            warn("[GAG] BuySeedStock remote not found!")
                         end
                     end
                 end
