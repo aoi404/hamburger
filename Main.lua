@@ -217,9 +217,10 @@ autoBuyEggToggle.MouseButton1Click:Connect(function()
         task.spawn(function()
             while autoBuyEggState do
                 for _, egg in ipairs(selectedEggs) do
+                    print("[GAG] Attempting to buy egg:", egg, "type:", typeof(egg))
                     if isEggInStock(egg) then
                         if buyEggRemote then
-                            print("[GAG] Buying egg:", egg)
+                            print("[GAG] Firing BuyPetEgg with:", egg)
                             buyEggRemote:FireServer(egg)
                         else
                             warn("[GAG] BuyPetEgg remote not found!")
@@ -278,9 +279,10 @@ autoBuySeedToggle.MouseButton1Click:Connect(function()
         task.spawn(function()
             while autoBuySeedState do
                 for _, seed in ipairs(selectedSeeds) do
+                    print("[GAG] Attempting to buy seed:", seed, "type:", typeof(seed))
                     if isSeedInStock(seed) then
                         if buySeedRemote then
-                            print("[GAG] Buying seed:", seed)
+                            print("[GAG] Firing BuySeedStock with:", seed)
                             buySeedRemote:FireServer(seed)
                         else
                             warn("[GAG] BuySeedStock remote not found!")
@@ -586,8 +588,11 @@ UserInputService.InputBegan:Connect(function(input, processed)
 end)
 
 -- Automation Remotes
-local buyEggRemote = ReplicatedStorage:FindFirstChild("GameEvents"):FindFirstChild("BuyPetEgg")
-local buySeedRemote = ReplicatedStorage:FindFirstChild("GameEvents"):FindFirstChild("BuySeedStock")
+local buyEggRemote = ReplicatedStorage:FindFirstChild("GameEvents") and ReplicatedStorage.GameEvents:FindFirstChild("BuyPetEgg")
+local buySeedRemote = ReplicatedStorage:FindFirstChild("GameEvents") and ReplicatedStorage.GameEvents:FindFirstChild("BuySeedStock")
+
+print("[GAG] buyEggRemote:", buyEggRemote)
+print("[GAG] buySeedRemote:", buySeedRemote)
 
 -- Helper: Check if an egg/seed is in stock (stub, should be replaced with real stock check if available)
 local function isEggInStock(eggName)
