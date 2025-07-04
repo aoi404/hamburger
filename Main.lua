@@ -269,7 +269,45 @@ eggDropdownList.ClipsDescendants = true
 eggDropdownList.CanvasSize = UDim2.new(0, 0, 0, 0)
 eggDropdownList.ScrollBarThickness = 10 -- Thicker scrollbar
 
-local eggOptions = {"Egg A", "Egg B", "Egg C", "Egg D", "Egg E", "Egg F", "Egg G", "Egg H", "Egg I", "Egg J"} -- Example: more eggs
+-- Full Egg List (Name, Price, Details)
+local eggOptions = {
+    "Common Egg",
+    "Uncommon Egg",
+    "Rare Egg",
+    "Legendary Egg",
+    "Mythical Egg",
+    "Bug Egg",
+    "Exotic Bug Egg",
+    "Night Egg",
+    "Premium Night Egg",
+    "Bee Egg",
+    "Anti Bee Egg",
+    "Premium Anti Bee Egg",
+    "Common Summer Egg",
+    "Rare Summer Egg",
+    "Paradise Egg",
+    "Oasis Egg",
+    "Premium Oasis Egg"
+}
+local eggDetails = {
+    ["Common Egg"] = "50,000 | Golden Lab, Dog, Bunny (33.33% each)",
+    ["Uncommon Egg"] = "150,000 | Black Bunny, Chicken, Cat, Deer (25% each)",
+    ["Rare Egg"] = "600,000 | Orange Tabby, Spotted Deer, Pig, Rooster, Monkey",
+    ["Legendary Egg"] = "3,000,000 | Cow, Silver Monkey, Sea Otter, Turtle, Polar Bear",
+    ["Mythical Egg"] = "8,000,000 | Grey Mouse, Brown Mouse, Squirrel, Red Giant Ant, Red Fox",
+    ["Bug Egg"] = "50,000,000 | Snail, Giant Ant, Caterpillar, Praying Mantis, Dragonfly",
+    ["Exotic Bug Egg"] = "Limited Time Shop",
+    ["Night Egg"] = "25M/50M | Hedgehog, Mole, Frog, Echo Frog, Night Owl, Raccoon",
+    ["Premium Night Egg"] = "199 | Hedgehog, Mole, Frog, Echo Frog, Night Owl, Raccoon",
+    ["Bee Egg"] = "18 | Bee, Honey Bee, Bear Bee, Petal Bee, Queen Bee",
+    ["Anti Bee Egg"] = "Crafting | Wasp, Tarantula Hawk, Moth, Butterfly, Disco Bee",
+    ["Premium Anti Bee Egg"] = "199 | Limited Time Shop",
+    ["Common Summer Egg"] = "1,000,000 | Starfish, Seagull, Crab",
+    ["Rare Summer Egg"] = "25,000,000 | Flamingo, Toucan, Sea Turtle, Orangutan, Seal",
+    ["Paradise Egg"] = "50,000,000 | Ostrich, Peacock, Capybara, Scarlet Macaw, Mimic Octopus",
+    ["Oasis Egg"] = "10 | Meerkat, Sand Snake, Axolotl, Hyacinth Macaw, Fennec Fox",
+    ["Premium Oasis Egg"] = "199 | Limited Time Shop"
+}
 local selectedEggs = {}
 local function updateEggDropdownText()
     if #selectedEggs == 0 then
@@ -280,7 +318,7 @@ local function updateEggDropdownText()
 end
 for i, name in ipairs(eggOptions) do
     local opt = Instance.new("TextButton")
-    opt.Size = UDim2.new(1, 0, 0, 38) -- Larger
+    opt.Size = UDim2.new(1, 0, 0, 38)
     opt.Position = UDim2.new(0, 0, 0, (i-1)*38)
     opt.BackgroundColor3 = Color3.fromRGB(100, 170, 220)
     opt.Text = name
@@ -290,6 +328,15 @@ for i, name in ipairs(eggOptions) do
     opt.BorderSizePixel = 0
     opt.Parent = eggDropdownList
     opt.ZIndex = 4
+    -- Tooltip for details
+    opt.MouseEnter:Connect(function()
+        opt.Text = name .. "\n" .. (eggDetails[name] or "")
+        opt.TextWrapped = true
+    end)
+    opt.MouseLeave:Connect(function()
+        opt.Text = name
+        opt.TextWrapped = false
+    end)
     opt.MouseButton1Click:Connect(function()
         local found = false
         for j, v in ipairs(selectedEggs) do
@@ -332,7 +379,47 @@ seedDropdownList.ClipsDescendants = true
 seedDropdownList.CanvasSize = UDim2.new(0, 0, 0, 0)
 seedDropdownList.ScrollBarThickness = 10
 
-local seedOptions = {"Seed X", "Seed Y", "Seed Z", "Seed AA", "Seed BB", "Seed CC", "Seed DD", "Seed EE", "Seed FF", "Seed GG"} -- Example: more seeds
+-- Full Seed List (Name, Price, etc)
+local seedOptions = {
+    "Carrot",
+    "Strawberry",
+    "Blueberry",
+    "Tomato",
+    "Cauliflower",
+    "Watermelon",
+    "Rafflesia",
+    "Green Apple",
+    "Avocado",
+    "Banana",
+    "Pineapple",
+    "Kiwi",
+    "Bell Pepper",
+    "Prickly Pear",
+    "Loquat",
+    "Feijoa",
+    "Pitcher Plant",
+    "Sugar Apple"
+}
+local seedDetails = {
+    ["Carrot"] = "10 | Common | 5-25 | ✗/✓",
+    ["Strawberry"] = "50 | Common | 1-6 | ✓/✓",
+    ["Blueberry"] = "400 | Uncommon | 1-5 | ✓/✓",
+    ["Tomato"] = "800 | Rare | 1-3 | ✓/✓",
+    ["Cauliflower"] = "1,300 | Rare | 1-4 | ✓/✓",
+    ["Watermelon"] = "2,500 | Rare | 1-7 | ✗/✓",
+    ["Rafflesia"] = "3,200 | Legendary | 1-? | ✗/✓",
+    ["Green Apple"] = "3,500 | Legendary | 1 | ✓/✓",
+    ["Avocado"] = "5,000 | Legendary | 1 | ✓/✓",
+    ["Banana"] = "7,000 | Legendary | 1 | ✓/✓",
+    ["Pineapple"] = "7,500 | Mythical | 1 | ✓/✓",
+    ["Kiwi"] = "10,000 | Mythical | 1 | ✓/✓",
+    ["Bell Pepper"] = "55,000 | Mythical | 1 | ✓/✓",
+    ["Prickly Pear"] = "555,000 | Mythical | 1 | ✓/✓",
+    ["Loquat"] = "900,000 | Divine | 1 | ✓/✓",
+    ["Feijoa"] = "2,750,000 | Divine | 1 | ✓/✓",
+    ["Pitcher Plant"] = "7,500,000 | Divine | 1 | ✓/✓",
+    ["Sugar Apple"] = "25,000,000 | Prismatic | 1"
+}
 local selectedSeeds = {}
 local function updateSeedDropdownText()
     if #selectedSeeds == 0 then
@@ -353,6 +440,15 @@ for i, name in ipairs(seedOptions) do
     opt.BorderSizePixel = 0
     opt.Parent = seedDropdownList
     opt.ZIndex = 4
+    -- Tooltip for details
+    opt.MouseEnter:Connect(function()
+        opt.Text = name .. "\n" .. (seedDetails[name] or "")
+        opt.TextWrapped = true
+    end)
+    opt.MouseLeave:Connect(function()
+        opt.Text = name
+        opt.TextWrapped = false
+    end)
     opt.MouseButton1Click:Connect(function()
         local found = false
         for j, v in ipairs(selectedSeeds) do
