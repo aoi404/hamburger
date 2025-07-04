@@ -196,6 +196,7 @@ eggCheck.Text = ""
 eggCheck.Parent = autoBuyEggToggle
 
 local autoBuyEggState = false
+local autoBuyEggLoopRunning = false
 local function updateAutoBuyEggToggle()
     if autoBuyEggState then
         autoBuyEggToggle.BackgroundColor3 = Color3.fromRGB(40, 90, 180)
@@ -206,6 +207,8 @@ local function updateAutoBuyEggToggle()
     end
 end
 updateAutoBuyEggToggle()
+
+-- Only one connection for auto-buy egg toggle, fully automatic
 autoBuyEggToggle.MouseButton1Click:Connect(function()
     autoBuyEggState = not autoBuyEggState
     updateAutoBuyEggToggle()
@@ -251,6 +254,7 @@ seedCheck.Text = ""
 seedCheck.Parent = autoBuySeedToggle
 
 local autoBuySeedState = false
+local autoBuySeedLoopRunning = false
 local function updateAutoBuySeedToggle()
     if autoBuySeedState then
         autoBuySeedToggle.BackgroundColor3 = Color3.fromRGB(40, 90, 180)
@@ -261,6 +265,8 @@ local function updateAutoBuySeedToggle()
     end
 end
 updateAutoBuySeedToggle()
+
+-- Only one connection for auto-buy seed toggle, fully automatic
 autoBuySeedToggle.MouseButton1Click:Connect(function()
     autoBuySeedState = not autoBuySeedState
     updateAutoBuySeedToggle()
@@ -591,13 +597,12 @@ end
 local autoBuyEggLoopRunning = false
 local autoBuySeedLoopRunning = false
 
-autoBuyEggToggle.MouseButton1Click:Connect(function()
-    autoBuyEggState = not autoBuyEggState
-    updateAutoBuyEggToggle()
-    if autoBuyEggState and not autoBuyEggLoopRunning then
-        autoBuyEggLoopRunning = true
-        task.spawn(function()
-            while autoBuyEggState do
+-- Start auto-buy egg loop on script load
+if not autoBuyEggLoopRunning then
+    autoBuyEggLoopRunning = true
+    task.spawn(function()
+        while true do
+            if autoBuyEggState then
                 for _, egg in ipairs(selectedEggs) do
                     if isEggInStock(egg) then
                         if buyEggRemote then
@@ -605,20 +610,18 @@ autoBuyEggToggle.MouseButton1Click:Connect(function()
                         end
                     end
                 end
-                task.wait(0.1)
             end
-            autoBuyEggLoopRunning = false
-        end)
-    end
-end)
+            task.wait(0.1)
+        end
+    end)
+end
 
-autoBuySeedToggle.MouseButton1Click:Connect(function()
-    autoBuySeedState = not autoBuySeedState
-    updateAutoBuySeedToggle()
-    if autoBuySeedState and not autoBuySeedLoopRunning then
-        autoBuySeedLoopRunning = true
-        task.spawn(function()
-            while autoBuySeedState do
+-- Start auto-buy seed loop on script load
+if not autoBuySeedLoopRunning then
+    autoBuySeedLoopRunning = true
+    task.spawn(function()
+        while true do
+            if autoBuySeedState then
                 for _, seed in ipairs(selectedSeeds) do
                     if isSeedInStock(seed) then
                         if buySeedRemote then
@@ -626,12 +629,11 @@ autoBuySeedToggle.MouseButton1Click:Connect(function()
                         end
                     end
                 end
-                task.wait(0.1)
             end
-            autoBuySeedLoopRunning = false
-        end)
-    end
-end)
+            task.wait(0.1)
+        end
+    end)
+end
 
 -- Tab Switching Logic
 local function selectTab(tabName)
