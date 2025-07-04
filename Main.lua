@@ -219,7 +219,7 @@ autoBuyEggToggle.MouseButton1Click:Connect(function()
                 for _, egg in ipairs(selectedEggs) do
                     if isEggInStock(egg) then
                         if buyEggRemote then
-                            buyEggRemote:FireServer(egg)
+                            BuyEggRemote:FireServer(egg)
                         end
                     end
                 end
@@ -291,7 +291,7 @@ end)
 -- Egg Dropdown Button
 local eggDropdownBtn = Instance.new("TextButton")
 eggDropdownBtn.Name = "EggDropdownBtn"
-eggDropdownBtn.Size = UDim2.new(1, -40, 0, 44) -- Larger
+eggDropdownBtn.Size = UDim2.new(1, -40, 0, 44)
 eggDropdownBtn.Position = UDim2.new(0, 20, 0, 20)
 eggDropdownBtn.BackgroundColor3 = Color3.fromRGB(40, 90, 180)
 eggDropdownBtn.Text = "BUY EGG:"
@@ -514,6 +514,7 @@ seedDropdownList.CanvasSize = UDim2.new(0, 0, 0, #seedOptions * 38)
 local gearDropdownBtn = Instance.new("TextButton")
 gearDropdownBtn.Name = "GearDropdownBtn"
 gearDropdownBtn.Size = UDim2.new(1, -40, 0, 44)
+gearDropdownBtn.Position = UDim2.new(0, 20, 0, 0) -- Will be updated by updateShopTogglePositions
 gearDropdownBtn.BackgroundColor3 = Color3.fromRGB(40, 90, 180)
 gearDropdownBtn.Text = "BUY GEAR:"
 gearDropdownBtn.Font = Enum.Font.SourceSansBold
@@ -528,6 +529,7 @@ gearDropdownBtn.ZIndex = 2
 local gearDropdownList = Instance.new("ScrollingFrame")
 gearDropdownList.Name = "GearDropdownList"
 gearDropdownList.Size = UDim2.new(1, -40, 0, 0)
+gearDropdownList.Position = UDim2.new(0, 20, 0, 0)
 gearDropdownList.BackgroundColor3 = Color3.fromRGB(60, 120, 180)
 gearDropdownList.BorderSizePixel = 0
 gearDropdownList.Visible = false
