@@ -337,6 +337,40 @@ HarvestNotif.Visible = false
 HarvestNotif.ZIndex = 10
 HarvestNotif.Parent = Frame
 
+-- UI: Add a notification label for egg-buy troubleshooting
+local EggBuyNotif = Instance.new("TextLabel")
+EggBuyNotif.Size = UDim2.new(0, 320, 0, 32)
+EggBuyNotif.Position = UDim2.new(0.5, -160, 0, 175)
+EggBuyNotif.BackgroundTransparency = 0.3
+EggBuyNotif.BackgroundColor3 = Color3.fromRGB(80, 80, 120)
+EggBuyNotif.TextColor3 = Color3.fromRGB(255,255,200)
+EggBuyNotif.Font = Enum.Font.GothamBold
+EggBuyNotif.TextSize = 18
+EggBuyNotif.Text = ""
+EggBuyNotif.Visible = false
+EggBuyNotif.ZIndex = 10
+EggBuyNotif.Parent = Frame
+
+-- Listen for manual harvests (server-to-client) for troubleshooting
+local harvestRemote = GameEvents:FindFirstChild("HarvestRemote")
+if harvestRemote and harvestRemote.OnClientEvent then
+    harvestRemote.OnClientEvent:Connect(function(...)
+        local args = {...}
+        print("[DEV LOG] Manual Harvest: OnClientEvent received! Args:", unpack(args))
+        local objName = "?"
+        if #args > 0 and typeof(args[1]) == "Instance" then
+            objName = args[1]:GetFullName()
+        elseif #args > 0 then
+            objName = tostring(args[1])
+        end
+        HarvestNotif.Text = "Manual Harvested: "..objName
+        HarvestNotif.TextColor3 = Color3.fromRGB(255,220,120)
+        HarvestNotif.Visible = true
+        wait(1.2)
+        HarvestNotif.Visible = false
+    end)
+end
+
 -- Helper: Harvest all fruits in your garden (robust, with dev log and UI feedback)
 local function harvestAllFruits()
     print("[DEV LOG] Harvest: Triggered auto-harvest at "..os.date("!%X"))
@@ -374,7 +408,7 @@ local function sellAllInventory()
     end
 end
 
--- Helper: Auto buy egg (with dev log, argument variations)
+-- Helper: Auto buy egg (with dev log, argument variations, and UI feedback)
 local function autoBuyEggFunc()
     if autoBuyEgg and selectedEgg then
         local remote = GameEvents:FindFirstChild("BuyPetEgg")
@@ -383,21 +417,52 @@ local function autoBuyEggFunc()
             -- Try original
             local ok, err = pcall(function() remote:FireServer(selectedEgg) end)
             print("[DEV LOG] BuyEgg: FireServer(selectedEgg) result:", ok, err)
+            if ok then
+                EggBuyNotif.Text = "[Egg] Bought (direct): "..selectedEgg
+                EggBuyNotif.TextColor3 = Color3.fromRGB(180,255,180)
+                EggBuyNotif.Visible = true
+                wait(1.2)
+                EggBuyNotif.Visible = false
+                return
+            end
             -- Try removing spaces
-            if not ok then
-                local noSpace = string.gsub(selectedEgg, " ", "")
-                print("[DEV LOG] BuyEgg: Retrying with no spaces:", noSpace)
-                local ok2, err2 = pcall(function() remote:FireServer(noSpace) end)
-                print("[DEV LOG] BuyEgg: FireServer(noSpace) result:", ok2, err2)
+            local noSpace = string.gsub(selectedEgg, " ", "")
+            print("[DEV LOG] BuyEgg: Retrying with no spaces:", noSpace)
+            local ok2, err2 = pcall(function() remote:FireServer(noSpace) end)
+            print("[DEV LOG] BuyEgg: FireServer(noSpace) result:", ok2, err2)
+            if ok2 then
+                EggBuyNotif.Text = "[Egg] Bought (no space): "..noSpace
+                EggBuyNotif.TextColor3 = Color3.fromRGB(180,255,180)
+                EggBuyNotif.Visible = true
+                wait(1.2)
+                EggBuyNotif.Visible = false
+                return
             end
             -- Try as table
-            if not ok then
-                print("[DEV LOG] BuyEgg: Retrying with table arg:", selectedEgg)
-                local ok3, err3 = pcall(function() remote:FireServer({selectedEgg}) end)
-                print("[DEV LOG] BuyEgg: FireServer({selectedEgg}) result:", ok3, err3)
+            print("[DEV LOG] BuyEgg: Retrying with table arg:", selectedEgg)
+            local ok3, err3 = pcall(function() remote:FireServer({selectedEgg}) end)
+            print("[DEV LOG] BuyEgg: FireServer({selectedEgg}) result:", ok3, err3)
+            if ok3 then
+                EggBuyNotif.Text = "[Egg] Bought (table): {"..selectedEgg.."}"
+                EggBuyNotif.TextColor3 = Color3.fromRGB(180,255,180)
+                EggBuyNotif.Visible = true
+                wait(1.2)
+                EggBuyNotif.Visible = false
+                return
             end
+            -- If all fail, show error
+            EggBuyNotif.Text = "[Egg] FAILED: "..tostring(err or err2 or err3)
+            EggBuyNotif.TextColor3 = Color3.fromRGB(255,180,180)
+            EggBuyNotif.Visible = true
+            wait(2)
+            EggBuyNotif.Visible = false
         else
             print("[DEV LOG] BuyEgg: 'BuyPetEgg' remote not found!")
+            EggBuyNotif.Text = "[Egg] Remote not found!"
+            EggBuyNotif.TextColor3 = Color3.fromRGB(255,180,180)
+            EggBuyNotif.Visible = true
+            wait(2)
+            EggBuyNotif.Visible = false
         end
     end
 end
