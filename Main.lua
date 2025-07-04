@@ -279,6 +279,169 @@ FarmBtn.MouseButton1Click:Connect(function() showTab("farm") end)
 -- Default to event tab
 showTab("event")
 
+-- Hide/Show UI logic
+local isHidden = false
+local ShowUIButton = nil
+
+local function setUIVisible(visible)
+    ScreenGui.Enabled = visible
+    isHidden = not visible
+    if ShowUIButton then ShowUIButton.Visible = not visible end
+end
+
+-- Hide UI when close or minimize is clicked
+CloseBtn.MouseButton1Click:Connect(function()
+    setUIVisible(false)
+end)
+MinBtn.MouseButton1Click:Connect(function()
+    setUIVisible(false)
+end)
+
+-- Show UI button (appears when UI is hidden)
+ShowUIButton = Instance.new("TextButton")
+ShowUIButton.Size = UDim2.new(0, 120, 0, 36)
+ShowUIButton.Position = UDim2.new(0, 20, 0, 80)
+ShowUIButton.Text = "Show GAG UI"
+ShowUIButton.BackgroundColor3 = Color3.fromRGB(30, 60, 110)
+ShowUIButton.TextColor3 = Color3.fromRGB(255,255,255)
+ShowUIButton.Font = Enum.Font.GothamBold
+ShowUIButton.TextSize = 18
+ShowUIButton.Visible = false
+ShowUIButton.Parent = Player.PlayerGui
+ShowUIButton.MouseButton1Click:Connect(function()
+    setUIVisible(true)
+end)
+
+-- Keyboard shortcut (RightShift) to toggle UI
+local UIS = game:GetService("UserInputService")
+UIS.InputBegan:Connect(function(input, processed)
+    if not processed and input.KeyCode == Enum.KeyCode.RightShift then
+        setUIVisible(isHidden)
+    end
+end)
+
+-- SHOP TAB: Egg and Seed Dropdowns (multi-select for eggs)
+local eggList = {
+    "Common Egg", "Uncommon Egg", "Rare Egg", "Legendary Egg", "Mythical Egg", "Bug Egg", "Exotic Bug Egg", "Night Egg", "Premium Night Egg", "Bee Egg", "Anti Bee Egg", "Premium Anti Bee Egg", "Common Summer Egg", "Rare Summer Egg", "Paradise Egg", "Oasis Egg", "Premium Oasis Egg", "Raphael Egg 1", "Raphael Egg 2", "Raphael Egg 3"
+}
+local selectedEggs = {}
+
+local EggDropdown = Instance.new("TextButton")
+EggDropdown.Size = EggBox.Size
+EggDropdown.Position = EggBox.Position
+EggDropdown.BackgroundColor3 = EggBox.BackgroundColor3
+EggDropdown.TextColor3 = EggBox.TextColor3
+EggDropdown.Font = EggBox.Font
+EggDropdown.TextSize = EggBox.TextSize
+EggDropdown.Text = "Select Eggs to Auto Buy"
+EggDropdown.Parent = ShopPanel
+EggBox.Visible = false
+
+local EggListFrame = Instance.new("Frame")
+EggListFrame.Size = UDim2.new(1, 0, 0, #eggList*28)
+EggListFrame.Position = UDim2.new(0, EggDropdown.Position.X.Offset, 0, EggDropdown.Position.Y.Offset+EggDropdown.Size.Y.Offset)
+EggListFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 90)
+EggListFrame.Visible = false
+EggListFrame.Parent = ShopPanel
+
+for i,egg in ipairs(eggList) do
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(1, 0, 0, 28)
+    btn.Position = UDim2.new(0, 0, 0, (i-1)*28)
+    btn.BackgroundColor3 = Color3.fromRGB(100, 100, 140)
+    btn.TextColor3 = Color3.fromRGB(255,255,255)
+    btn.Font = Enum.Font.Gotham
+    btn.TextSize = 16
+    btn.Text = egg
+    btn.Parent = EggListFrame
+    local check = Instance.new("ImageLabel")
+    check.Size = UDim2.new(0, 24, 0, 24)
+    check.Position = UDim2.new(1, -28, 0, 2)
+    check.BackgroundTransparency = 1
+    check.Image = "rbxassetid://6031094678"
+    check.Visible = false
+    check.Parent = btn
+    btn.MouseButton1Click:Connect(function()
+        if selectedEggs[egg] then
+            selectedEggs[egg] = nil
+            check.Visible = false
+        else
+            selectedEggs[egg] = true
+            check.Visible = true
+        end
+        -- Update dropdown text
+        local sel = {}
+        for k in pairs(selectedEggs) do table.insert(sel, k) end
+        EggDropdown.Text = (#sel > 0) and table.concat(sel, ", ") or "Select Eggs to Auto Buy"
+    end)
+end
+EggDropdown.MouseButton1Click:Connect(function()
+    EggListFrame.Visible = not EggListFrame.Visible
+end)
+
+-- Seeds (single select)
+local seedList = {
+    "Carrot", "Strawberry", "Blueberry", "Tomato", "Cauliflower", "Watermelon", "Rafflesia", "Green Apple", "Avocado", "Banana", "Pineapple", "Kiwi", "Bell Pepper", "Prickly Pear", "Loquat", "Feijoa", "Pitcher Plant", "Sugar Apple"
+}
+local selectedSeed = nil
+
+local SeedDropdown = Instance.new("TextButton")
+SeedDropdown.Size = SeedBox.Size
+SeedDropdown.Position = SeedBox.Position
+SeedDropdown.BackgroundColor3 = SeedBox.BackgroundColor3
+SeedDropdown.TextColor3 = SeedBox.TextColor3
+SeedDropdown.Font = SeedBox.Font
+SeedDropdown.TextSize = SeedBox.TextSize
+SeedDropdown.Text = "Select Seed to Auto Buy"
+SeedDropdown.Parent = ShopPanel
+SeedBox.Visible = false
+
+local SeedListFrame = Instance.new("Frame")
+SeedListFrame.Size = UDim2.new(1, 0, 0, #seedList*28)
+SeedListFrame.Position = UDim2.new(0, SeedDropdown.Position.X.Offset, 0, SeedDropdown.Position.Y.Offset+SeedDropdown.Size.Y.Offset)
+SeedListFrame.BackgroundColor3 = Color3.fromRGB(60, 90, 60)
+SeedListFrame.Visible = false
+SeedListFrame.Parent = ShopPanel
+
+for i,seed in ipairs(seedList) do
+    local btn = Instance.new("TextButton")
+    btn.Size = UDim2.new(1, 0, 0, 28)
+    btn.Position = UDim2.new(0, 0, 0, (i-1)*28)
+    btn.BackgroundColor3 = Color3.fromRGB(100, 140, 100)
+    btn.TextColor3 = Color3.fromRGB(255,255,255)
+    btn.Font = Enum.Font.Gotham
+    btn.TextSize = 16
+    btn.Text = seed
+    btn.Parent = SeedListFrame
+    btn.MouseButton1Click:Connect(function()
+        selectedSeed = seed
+        SeedDropdown.Text = seed
+        SeedListFrame.Visible = false
+    end)
+end
+SeedDropdown.MouseButton1Click:Connect(function()
+    SeedListFrame.Visible = not SeedListFrame.Visible
+end)
+
+-- Update auto-buy logic to buy all selected eggs
+local function autoBuyEggFunc()
+    for egg,_ in pairs(selectedEggs) do
+        local remote = GameEvents:FindFirstChild("BuyPetEgg")
+        if remote then
+            pcall(function() remote:FireServer(egg) end)
+        end
+    end
+end
+
+local function autoBuySeedFunc()
+    if selectedSeed then
+        local remote = GameEvents:FindFirstChild("BuySeedStock")
+        if remote then
+            pcall(function() remote:FireServer(selectedSeed) end)
+        end
+    end
+end
+
 -- Automation Loop
 spawn(function()
     while true do
