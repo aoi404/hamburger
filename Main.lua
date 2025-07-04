@@ -1,4 +1,3 @@
-
 --[[
 GAG SCRIPT BY:BREAD
 Modern Sidebar GUI Foundation (Step 1)
@@ -34,7 +33,7 @@ local topBar = Instance.new("Frame")
 topBar.Name = "TopBar"
 topBar.Size = UDim2.new(1, 0, 0, 44)
 topBar.Position = UDim2.new(0, 0, 0, 0)
-topBar.BackgroundColor3 = Color3.fromRGB(60, 70, 90)
+topBar.BackgroundColor3 = Color3.fromRGB(80, 90, 110)
 topBar.BorderSizePixel = 0
 topBar.Parent = sidebar
 
@@ -42,7 +41,7 @@ topBar.Parent = sidebar
 local topBarBorder = Instance.new("Frame")
 topBarBorder.Size = UDim2.new(1, 0, 0, 2)
 topBarBorder.Position = UDim2.new(0, 0, 1, -2)
-topBarBorder.BackgroundColor3 = Color3.fromRGB(40, 45, 60)
+topBarBorder.BackgroundColor3 = Color3.fromRGB(60, 70, 90)
 topBarBorder.BorderSizePixel = 0
 topBarBorder.Parent = topBar
 
@@ -50,38 +49,28 @@ topBarBorder.Parent = topBar
 local topBarTitle = Instance.new("TextLabel")
 topBarTitle.Name = "TopBarTitle"
 topBarTitle.Size = UDim2.new(1, -80, 1, 0)
-topBarTitle.Position = UDim2.new(0, 16, 0, 0)
+topBarTitle.Position = UDim2.new(0, 12, 0, 0)
 topBarTitle.BackgroundTransparency = 1
 topBarTitle.Text = "GAG SCRIPT BY:BREAD"
 topBarTitle.Font = Enum.Font.SourceSansBold
 topBarTitle.TextSize = 24
-topBarTitle.TextColor3 = Color3.fromRGB(220, 220, 220)
+topBarTitle.TextColor3 = Color3.fromRGB(40, 40, 40)
 topBarTitle.TextXAlignment = Enum.TextXAlignment.Left
 topBarTitle.Parent = topBar
 
--- Close Button
-local closeBtn = Instance.new("TextButton")
-closeBtn.Name = "CloseBtn"
-closeBtn.Size = UDim2.new(0, 32, 1, 0)
-closeBtn.Position = UDim2.new(1, -32, 0, 0)
-closeBtn.BackgroundColor3 = Color3.fromRGB(120, 40, 40)
-closeBtn.Text = "✕"
-closeBtn.Font = Enum.Font.SourceSansBold
-closeBtn.TextSize = 22
-closeBtn.TextColor3 = Color3.fromRGB(255,255,255)
-closeBtn.Parent = topBar
-
--- Minimize Button
-local minimizeBtn = Instance.new("TextButton")
-minimizeBtn.Name = "MinimizeBtn"
-minimizeBtn.Size = UDim2.new(0, 32, 1, 0)
-minimizeBtn.Position = UDim2.new(1, -64, 0, 0)
-minimizeBtn.BackgroundColor3 = Color3.fromRGB(60, 70, 90)
-minimizeBtn.Text = "_"
-minimizeBtn.Font = Enum.Font.SourceSansBold
-minimizeBtn.TextSize = 22
-minimizeBtn.TextColor3 = Color3.fromRGB(255,255,255)
+-- Move Minimize and Close Buttons to Top Bar
 minimizeBtn.Parent = topBar
+minimizeBtn.Position = UDim2.new(1, -64, 0, 0)
+minimizeBtn.Size = UDim2.new(0, 32, 1, 0)
+minimizeBtn.BackgroundColor3 = Color3.fromRGB(80, 90, 110)
+
+closeBtn.Parent = topBar
+closeBtn.Position = UDim2.new(1, -32, 0, 0)
+closeBtn.Size = UDim2.new(0, 32, 1, 0)
+closeBtn.BackgroundColor3 = Color3.fromRGB(120, 40, 40)
+
+-- Remove old TitleBar frame if it exists
+if titleBar then titleBar:Destroy() end
 
 -- Sidebar Tabs
 local tabNames = {"EVENT", "SHOP", "FARM"}
@@ -90,21 +79,29 @@ for i, name in ipairs(tabNames) do
     local tabBtn = Instance.new("TextButton")
     tabBtn.Name = name .. "TabBtn"
     tabBtn.Size = UDim2.new(1, 0, 0, 36)
-    tabBtn.Position = UDim2.new(0, 0, 0, 44 + (i-1)*36)
-    tabBtn.BackgroundColor3 = i == 1 and Color3.fromRGB(220, 160, 80) or Color3.fromRGB(60, 70, 90)
+    tabBtn.Position = UDim2.new(0, 0, 0, 44 + (i-1)*48)
+    tabBtn.BackgroundColor3 = i == 1 and Color3.fromRGB(220, 160, 80) or Color3.fromRGB(80, 90, 110)
     tabBtn.Text = name
     tabBtn.Font = Enum.Font.SourceSansBold
-    tabBtn.TextSize = 18
-    tabBtn.TextColor3 = Color3.fromRGB(20, 20, 20)
+    tabBtn.TextSize = 22
+    tabBtn.TextColor3 = Color3.fromRGB(40, 40, 40)
     tabBtn.Parent = sidebar
     tabButtons[name] = tabBtn
 end
 
+-- Add vertical black line between sidebar and content
+local navLine = Instance.new("Frame")
+navLine.Size = UDim2.new(0, 4, 1, -44)
+navLine.Position = UDim2.new(1, -4, 0, 44)
+navLine.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+navLine.BorderSizePixel = 0
+navLine.Parent = sidebar
+
 -- Main Content Frame
 local contentFrame = Instance.new("Frame")
 contentFrame.Name = "ContentFrame"
-contentFrame.Size = UDim2.new(1, -40, 1, -160)
-contentFrame.Position = UDim2.new(0, 20, 0, 140)
+contentFrame.Size = UDim2.new(1, -120, 1, -44)
+contentFrame.Position = UDim2.new(0, 120, 0, 44)
 contentFrame.BackgroundColor3 = Color3.fromRGB(120, 130, 150)
 contentFrame.BorderSizePixel = 0
 contentFrame.Parent = sidebar
@@ -481,5 +478,70 @@ UserInputService.InputBegan:Connect(function(input, processed)
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
         hideDropdowns(input)
     end
+end)
+
+-- Toggle restyling helper
+local function styleToggle(toggleBtn, state)
+    toggleBtn.BackgroundColor3 = state and Color3.fromRGB(40, 90, 180) or Color3.fromRGB(60, 90, 130)
+    toggleBtn.TextColor3 = Color3.fromRGB(255,255,255)
+    toggleBtn.TextXAlignment = Enum.TextXAlignment.Left
+    if not toggleBtn:FindFirstChild("Checkmark") then
+        local check = Instance.new("TextLabel")
+        check.Name = "Checkmark"
+        check.Size = UDim2.new(0, 32, 1, 0)
+        check.Position = UDim2.new(1, -36, 0, 0)
+        check.BackgroundTransparency = 1
+        check.Font = Enum.Font.SourceSansBold
+        check.TextSize = 28
+        check.TextColor3 = Color3.fromRGB(220, 220, 220)
+        check.Text = "✔"
+        check.Visible = state
+        check.Parent = toggleBtn
+    else
+        toggleBtn.Checkmark.Visible = state
+    end
+end
+
+-- Apply to all toggles
+styleToggle(autoSubmitToggle, autoSubmitState)
+autoSubmitToggle.MouseButton1Click:Connect(function()
+    autoSubmitState = not autoSubmitState
+    autoSubmitToggle.Text = "AUTO SUBMIT:"
+    styleToggle(autoSubmitToggle, autoSubmitState)
+end)
+
+styleToggle(autoBuyEggToggle, autoBuyEggState)
+autoBuyEggToggle.MouseButton1Click:Connect(function()
+    autoBuyEggState = not autoBuyEggState
+    autoBuyEggToggle.Text = "AUTO BUY EGG"
+    styleToggle(autoBuyEggToggle, autoBuyEggState)
+end)
+
+styleToggle(autoBuySeedToggle, autoBuySeedState)
+autoBuySeedToggle.MouseButton1Click:Connect(function()
+    autoBuySeedState = not autoBuySeedState
+    autoBuySeedToggle.Text = "AUTO BUY SEED"
+    styleToggle(autoBuySeedToggle, autoBuySeedState)
+end)
+
+styleToggle(autoFarmToggle, autoFarmState)
+autoFarmToggle.MouseButton1Click:Connect(function()
+    autoFarmState = not autoFarmState
+    autoFarmToggle.Text = "AUTO FARM"
+    styleToggle(autoFarmToggle, autoFarmState)
+end)
+
+styleToggle(autoHarvestToggle, autoHarvestState)
+autoHarvestToggle.MouseButton1Click:Connect(function()
+    autoHarvestState = not autoHarvestState
+    autoHarvestToggle.Text = "AUTO HARVEST"
+    styleToggle(autoHarvestToggle, autoHarvestState)
+end)
+
+styleToggle(autoSellToggle, autoSellState)
+autoSellToggle.MouseButton1Click:Connect(function()
+    autoSellState = not autoSellState
+    autoSellToggle.Text = "AUTO SELL"
+    styleToggle(autoSellToggle, autoSellState)
 end)
 
