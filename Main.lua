@@ -104,6 +104,17 @@ ShopBtn.Font = Enum.Font.GothamBold
 ShopBtn.TextSize = 16
 ShopBtn.Parent = Sidebar
 
+-- Add MISC tab button
+local MiscBtn = Instance.new("TextButton")
+MiscBtn.Size = UDim2.new(1, -10, 0, 36)
+MiscBtn.Position = UDim2.new(0, 5, 0, 102)
+MiscBtn.Text = "MISC"
+MiscBtn.BackgroundColor3 = Color3.fromRGB(120, 135, 150)
+MiscBtn.TextColor3 = Color3.fromRGB(0,0,0)
+MiscBtn.Font = Enum.Font.GothamBold
+MiscBtn.TextSize = 16
+MiscBtn.Parent = Sidebar
+
 -- Main Content Area
 local MainPanel = Instance.new("Frame")
 MainPanel.Size = UDim2.new(1, -80, 1, -48)
@@ -566,6 +577,74 @@ local function addSectionLine(y)
 end
 addSectionLine(240)
 addSectionLine(380)
+
+-- Create tab content frames
+local EventPanel = Instance.new("Frame")
+EventPanel.Size = UDim2.new(1, 0, 1, 0)
+EventPanel.BackgroundTransparency = 1
+EventPanel.Visible = true
+EventPanel.Parent = MainPanel
+
+local ShopPanel = Instance.new("Frame")
+ShopPanel.Size = UDim2.new(1, 0, 1, 0)
+ShopPanel.BackgroundTransparency = 1
+ShopPanel.Visible = false
+ShopPanel.Parent = MainPanel
+
+local MiscPanel = Instance.new("Frame")
+MiscPanel.Size = UDim2.new(1, 0, 1, 0)
+MiscPanel.BackgroundTransparency = 1
+MiscPanel.Visible = false
+MiscPanel.Parent = MainPanel
+
+-- Move shop controls to ShopPanel
+ShopLabel.Parent = ShopPanel
+ShopLabel.Position = UDim2.new(0.05, 0, 0, 10)
+ShopLabel.Size = UDim2.new(0.9, 0, 0, 28)
+EggDropdown.Parent = ShopPanel
+EggDropdown.Position = UDim2.new(0.05, 0, 0, 48)
+EggDropdown.Size = UDim2.new(0.425, -5, 0, 32)
+SeedDropdown.Parent = ShopPanel
+SeedDropdown.Position = UDim2.new(0.525, 5, 0, 48)
+SeedDropdown.Size = UDim2.new(0.425, -5, 0, 32)
+EggListFrame.Parent = ShopPanel
+EggListFrame.Position = UDim2.new(0.05, 0, 0, 80)
+SeedListFrame.Parent = ShopPanel
+SeedListFrame.Position = UDim2.new(0.525, 5, 0, 80)
+
+-- Move auto toggles and crop box to MiscPanel
+plantToggle.Parent = MiscPanel
+plantToggle.Position = UDim2.new(0.05, 0, 0, 10)
+waterToggle.Parent = MiscPanel
+waterToggle.Position = UDim2.new(0.05, 0, 0, 60)
+harvestToggle.Parent = MiscPanel
+harvestToggle.Position = UDim2.new(0.05, 0, 0, 110)
+sellToggle.Parent = MiscPanel
+sellToggle.Position = UDim2.new(0.05, 0, 0, 160)
+cropBox.Parent = MiscPanel
+cropBox.Position = UDim2.new(0.05, 0, 0, 210)
+cropBox.Size = UDim2.new(0.9, 0, 0, 38)
+
+-- Misc label (optional, can be left empty)
+MiscLabel.Parent = MiscPanel
+MiscLabel.Position = UDim2.new(0.05, 0, 0, 260)
+MiscLabel.Size = UDim2.new(0.9, 0, 0, 28)
+
+-- Tab switching logic
+local function showTab(tab)
+    EventPanel.Visible = (tab == "event")
+    ShopPanel.Visible = (tab == "shop")
+    MiscPanel.Visible = (tab == "misc")
+    EventBtn.BackgroundColor3 = (tab == "event") and Color3.fromRGB(200, 160, 120) or Color3.fromRGB(120, 135, 150)
+    ShopBtn.BackgroundColor3 = (tab == "shop") and Color3.fromRGB(200, 160, 120) or Color3.fromRGB(120, 135, 150)
+    MiscBtn.BackgroundColor3 = (tab == "misc") and Color3.fromRGB(200, 160, 120) or Color3.fromRGB(120, 135, 150)
+end
+EventBtn.MouseButton1Click:Connect(function() showTab("event") end)
+ShopBtn.MouseButton1Click:Connect(function() showTab("shop") end)
+MiscBtn.MouseButton1Click:Connect(function() showTab("misc") end)
+
+-- Default to shop tab
+showTab("shop")
 
 -- Automation Loop
 spawn(function()
