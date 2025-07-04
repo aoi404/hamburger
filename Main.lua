@@ -29,25 +29,35 @@ sidebar.BorderSizePixel = 0
 sidebar.Parent = screenGui
 sidebar.Visible = true
 
--- Title Bar
-local titleBar = Instance.new("Frame")
-titleBar.Name = "TitleBar"
-titleBar.Size = UDim2.new(1, 0, 0, 36)
-titleBar.BackgroundColor3 = Color3.fromRGB(60, 70, 90)
-titleBar.BorderSizePixel = 0
-titleBar.Parent = sidebar
+-- Top Bar (Header) for Sidebar
+local topBar = Instance.new("Frame")
+topBar.Name = "TopBar"
+topBar.Size = UDim2.new(1, 0, 0, 44)
+topBar.Position = UDim2.new(0, 0, 0, 0)
+topBar.BackgroundColor3 = Color3.fromRGB(60, 70, 90)
+topBar.BorderSizePixel = 0
+topBar.Parent = sidebar
 
-local titleLabel = Instance.new("TextLabel")
-titleLabel.Name = "TitleLabel"
-titleLabel.Size = UDim2.new(1, -60, 1, 0)
-titleLabel.Position = UDim2.new(0, 10, 0, 0)
-titleLabel.BackgroundTransparency = 1
-titleLabel.Text = "GAG SCRIPT BY:BREAD"
-titleLabel.Font = Enum.Font.SourceSansBold
-titleLabel.TextSize = 22
-titleLabel.TextColor3 = Color3.fromRGB(20, 20, 20)
-titleLabel.TextXAlignment = Enum.TextXAlignment.Left
-titleLabel.Parent = titleBar
+-- Subtle bottom border for top bar
+local topBarBorder = Instance.new("Frame")
+topBarBorder.Size = UDim2.new(1, 0, 0, 2)
+topBarBorder.Position = UDim2.new(0, 0, 1, -2)
+topBarBorder.BackgroundColor3 = Color3.fromRGB(40, 45, 60)
+topBarBorder.BorderSizePixel = 0
+topBarBorder.Parent = topBar
+
+-- Title Label in Top Bar
+local topBarTitle = Instance.new("TextLabel")
+topBarTitle.Name = "TopBarTitle"
+topBarTitle.Size = UDim2.new(1, -80, 1, 0)
+topBarTitle.Position = UDim2.new(0, 16, 0, 0)
+topBarTitle.BackgroundTransparency = 1
+topBarTitle.Text = "GAG SCRIPT BY:BREAD"
+topBarTitle.Font = Enum.Font.SourceSansBold
+topBarTitle.TextSize = 24
+topBarTitle.TextColor3 = Color3.fromRGB(220, 220, 220)
+topBarTitle.TextXAlignment = Enum.TextXAlignment.Left
+topBarTitle.Parent = topBar
 
 -- Close Button
 local closeBtn = Instance.new("TextButton")
@@ -59,7 +69,7 @@ closeBtn.Text = "✕"
 closeBtn.Font = Enum.Font.SourceSansBold
 closeBtn.TextSize = 22
 closeBtn.TextColor3 = Color3.fromRGB(255,255,255)
-closeBtn.Parent = titleBar
+closeBtn.Parent = topBar
 
 -- Minimize Button
 local minimizeBtn = Instance.new("TextButton")
@@ -71,7 +81,7 @@ minimizeBtn.Text = "_"
 minimizeBtn.Font = Enum.Font.SourceSansBold
 minimizeBtn.TextSize = 22
 minimizeBtn.TextColor3 = Color3.fromRGB(255,255,255)
-minimizeBtn.Parent = titleBar
+minimizeBtn.Parent = topBar
 
 -- Sidebar Tabs
 local tabNames = {"EVENT", "SHOP", "FARM"}
@@ -80,7 +90,7 @@ for i, name in ipairs(tabNames) do
     local tabBtn = Instance.new("TextButton")
     tabBtn.Name = name .. "TabBtn"
     tabBtn.Size = UDim2.new(1, 0, 0, 36)
-    tabBtn.Position = UDim2.new(0, 0, 0, 36 + (i-1)*36)
+    tabBtn.Position = UDim2.new(0, 0, 0, 44 + (i-1)*36)
     tabBtn.BackgroundColor3 = i == 1 and Color3.fromRGB(220, 160, 80) or Color3.fromRGB(60, 70, 90)
     tabBtn.Text = name
     tabBtn.Font = Enum.Font.SourceSansBold
@@ -472,5 +482,4 @@ UserInputService.InputBegan:Connect(function(input, processed)
         hideDropdowns(input)
     end
 end)
-
 
