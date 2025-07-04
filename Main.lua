@@ -170,6 +170,71 @@ autoSubmitToggle.MouseButton1Click:Connect(function()
     autoSubmitToggle.BackgroundColor3 = autoSubmitState and Color3.fromRGB(60, 200, 120) or Color3.fromRGB(40, 110, 180)
 end)
 
+-- SHOP TAB CONTENT (restore)
+local shopFrame = Instance.new("Frame")
+shopFrame.Name = "ShopTabContent"
+shopFrame.Size = UDim2.new(1, 0, 1, 0)
+shopFrame.BackgroundTransparency = 1
+shopFrame.Visible = false
+shopFrame.Parent = contentFrame
+tabContent["SHOP"] = shopFrame
+
+local shopHeader = Instance.new("TextLabel")
+shopHeader.Size = UDim2.new(1, -64, 0, 56)
+shopHeader.Position = UDim2.new(0, 32, 0, 32)
+shopHeader.BackgroundColor3 = Color3.fromRGB(20, 60, 120)
+shopHeader.Text = "SHOP"
+shopHeader.Font = Enum.Font.SourceSansBold
+shopHeader.TextSize = 32
+shopHeader.TextColor3 = Color3.fromRGB(255,255,255)
+shopHeader.BorderSizePixel = 0
+shopHeader.Parent = shopFrame
+shopHeader.TextXAlignment = Enum.TextXAlignment.Center
+shopHeader.TextYAlignment = Enum.TextYAlignment.Center
+
+-- Placeholder for toggles/dropdowns (add your automation toggles/dropdowns here)
+local shopPlaceholder = Instance.new("TextLabel")
+shopPlaceholder.Size = UDim2.new(1, -64, 0, 40)
+shopPlaceholder.Position = UDim2.new(0, 32, 0, 104)
+shopPlaceholder.BackgroundTransparency = 1
+shopPlaceholder.Text = "[SHOP CONTENT HERE]"
+shopPlaceholder.Font = Enum.Font.SourceSans
+shopPlaceholder.TextSize = 22
+shopPlaceholder.TextColor3 = Color3.fromRGB(200,200,200)
+shopPlaceholder.Parent = shopFrame
+
+-- FARM TAB CONTENT (restore)
+local farmFrame = Instance.new("Frame")
+farmFrame.Name = "FarmTabContent"
+farmFrame.Size = UDim2.new(1, 0, 1, 0)
+farmFrame.BackgroundTransparency = 1
+farmFrame.Visible = false
+farmFrame.Parent = contentFrame
+tabContent["FARM"] = farmFrame
+
+local farmHeader = Instance.new("TextLabel")
+farmHeader.Size = UDim2.new(1, -64, 0, 56)
+farmHeader.Position = UDim2.new(0, 32, 0, 32)
+farmHeader.BackgroundColor3 = Color3.fromRGB(20, 60, 120)
+farmHeader.Text = "FARM"
+farmHeader.Font = Enum.Font.SourceSansBold
+farmHeader.TextSize = 32
+farmHeader.TextColor3 = Color3.fromRGB(255,255,255)
+farmHeader.BorderSizePixel = 0
+farmHeader.Parent = farmFrame
+farmHeader.TextXAlignment = Enum.TextXAlignment.Center
+farmHeader.TextYAlignment = Enum.TextYAlignment.Center
+
+local farmPlaceholder = Instance.new("TextLabel")
+farmPlaceholder.Size = UDim2.new(1, -64, 0, 40)
+farmPlaceholder.Position = UDim2.new(0, 32, 0, 104)
+farmPlaceholder.BackgroundTransparency = 1
+farmPlaceholder.Text = "[FARM CONTENT HERE]"
+farmPlaceholder.Font = Enum.Font.SourceSans
+farmPlaceholder.TextSize = 22
+farmPlaceholder.TextColor3 = Color3.fromRGB(200,200,200)
+farmPlaceholder.Parent = farmFrame
+
 -- Tab Switching Logic (update to show/hide content)
 local function selectTab(tabName)
     for name, btn in pairs(tabButtons) do
