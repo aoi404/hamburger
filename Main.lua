@@ -216,29 +216,27 @@ autoBuyEggToggle.MouseButton1Click:Connect(function()
         autoBuyEggLoopRunning = true
         task.spawn(function()
             while autoBuyEggState do
-                if not buyEggRemote then
-                    warn("[GAG DEBUG] BuyPetEgg remote not found!")
-                    break
-                end
-                if #selectedEggs == 0 then
-                    warn("[GAG DEBUG] No eggs selected for auto-buy!")
-                end
                 for _, egg in ipairs(selectedEggs) do
-                    print("[GAG DEBUG] Attempting to buy egg (string):", egg, "type:", typeof(egg))
+                    print("[GAG DEBUG] Attempting to buy egg:", egg, "Type:", typeof(egg))
+                    print("[GAG DEBUG] buyEggRemote exists:", buyEggRemote ~= nil)
+                    print("[GAG DEBUG] Player money:", player.leaderstats and player.leaderstats.Cash and player.leaderstats.Cash.Value or "N/A")
+                    -- Try as string
                     local successStr, errStr = pcall(function()
-                        buyEggRemote:FireServer(egg)
+                        if buyEggRemote then
+                            buyEggRemote:FireServer(egg)
+                        end
                     end)
                     if not successStr then
                         warn("[GAG DEBUG] Error firing BuyPetEgg (string):", errStr)
                     else
                         print("[GAG DEBUG] Fired BuyPetEgg with (string):", egg)
                     end
-
-                    -- Try as table argument as well
+                    -- Try as table
                     local tblArg = {EggName = egg}
-                    print("[GAG DEBUG] Attempting to buy egg (table):", tblArg)
                     local successTbl, errTbl = pcall(function()
-                        buyEggRemote:FireServer(tblArg)
+                        if buyEggRemote then
+                            buyEggRemote:FireServer(tblArg)
+                        end
                     end)
                     if not successTbl then
                         warn("[GAG DEBUG] Error firing BuyPetEgg (table):", errTbl)
@@ -297,22 +295,11 @@ autoBuySeedToggle.MouseButton1Click:Connect(function()
         autoBuySeedLoopRunning = true
         task.spawn(function()
             while autoBuySeedState do
-                if not buySeedRemote then
-                    warn("[GAG DEBUG] BuySeedStock remote not found!")
-                    break
-                end
-                if #selectedSeeds == 0 then
-                    warn("[GAG DEBUG] No seeds selected for auto-buy!")
-                end
                 for _, seed in ipairs(selectedSeeds) do
-                    print("[GAG DEBUG] Attempting to buy seed:", seed, "type:", typeof(seed))
-                    local success, err = pcall(function()
-                        buySeedRemote:FireServer(seed)
-                    end)
-                    if not success then
-                        warn("[GAG DEBUG] Error firing BuySeedStock:", err)
-                    else
-                        print("[GAG DEBUG] Fired BuySeedStock with:", seed)
+                    if isSeedInStock(seed) then
+                        if buySeedRemote then
+                            buySeedRemote:FireServer(seed)
+                        end
                     end
                 end
                 task.wait(0.1)
@@ -599,51 +586,74 @@ end)
 
 -- Hide dropdowns if clicking elsewhere
 UserInputService.InputBegan:Connect(function(input, processed)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 and not processed then
-        if eggDropdownList.Visible then
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        local changed = false
+        if eggDropdownList.Visible and not eggDropdownBtn:IsAncestorOf(input.Target) then
             eggDropdownList.Visible = false
+            changed = true
         end
-        if seedDropdownList.Visible then
+        if seedDropdownList.Visible and not seedDropdownBtn:IsAncestorOf(input.Target) then
             seedDropdownList.Visible = false
+            changed = true
         end
-        updateShopTogglePositions()
+        if changed then updateShopTogglePositions() end
     end
 end)
 
 -- Automation Remotes
-local gameEvents = ReplicatedStorage:FindFirstChild("GameEvents")
-if not gameEvents then
-    print("[GAG DEBUG] Waiting for GameEvents in ReplicatedStorage...")
-    gameEvents = ReplicatedStorage:WaitForChild("GameEvents", 10)
+local buyEggRemote = ReplicatedStorage:FindFirstChild("GameEvents"):FindFirstChild("BuyPetEgg")
+local buySeedRemote = ReplicatedStorage:FindFirstChild("GameEvents"):FindFirstChild("BuySeedStock")
+
+-- Helper: Check if an egg/seed is in stock (stub, should be replaced with real stock check if available)
+local function isEggInStock(eggName)
+    -- TODO: Replace with real stock check if possible
+    return true -- Assume always in stock for now
 end
-if not gameEvents then
-    warn("[GAG DEBUG] GameEvents folder not found in ReplicatedStorage after waiting!")
+local function isSeedInStock(seedName)
+    -- TODO: Replace with real stock check if possible
+    return true -- Assume always in stock for now
 end
 
-local buyEggRemote = gameEvents and gameEvents:FindFirstChild("BuyPetEgg")
-if not buyEggRemote then
-    print("[GAG DEBUG] Waiting for BuyPetEgg in GameEvents...")
-    if gameEvents then
-        buyEggRemote = gameEvents:WaitForChild("BuyPetEgg", 10)
-    end
-end
-if not buyEggRemote then
-    warn("[GAG DEBUG] BuyPetEgg remote not found in GameEvents after waiting!")
-else
-    print("[GAG DEBUG] BuyPetEgg remote found:", buyEggRemote:GetFullName())
+-- Auto-buy logic
+local autoBuyEggLoopRunning = false
+local autoBuySeedLoopRunning = false
+
+-- Start auto-buy egg loop on script load
+if not autoBuyEggLoopRunning then
+    autoBuyEggLoopRunning = true
+    task.spawn(function()
+        while true do
+            if autoBuyEggState then
+                for _, egg in ipairs(selectedEggs) do
+                    if isEggInStock(egg) then
+                        if buyEggRemote then
+                            buyEggRemote:FireServer(egg)
+                        end
+                    end
+                end
+            end
+            task.wait(0.1)
+        end
+    end)
 end
 
-local buySeedRemote = gameEvents and gameEvents:FindFirstChild("BuySeedStock")
-if not buySeedRemote then
-    print("[GAG DEBUG] Waiting for BuySeedStock in GameEvents...")
-    if gameEvents then
-        buySeedRemote = gameEvents:WaitForChild("BuySeedStock", 10)
-    end
-end
-if not buySeedRemote then
-    warn("[GAG DEBUG] BuySeedStock remote not found in GameEvents after waiting!")
-else
-    print("[GAG DEBUG] BuySeedStock remote found:", buySeedRemote:GetFullName())
+-- Start auto-buy seed loop on script load
+if not autoBuySeedLoopRunning then
+    autoBuySeedLoopRunning = true
+    task.spawn(function()
+        while true do
+            if autoBuySeedState then
+                for _, seed in ipairs(selectedSeeds) do
+                    if isSeedInStock(seed) then
+                        if buySeedRemote then
+                            buySeedRemote:FireServer(seed)
+                        end
+                    end
+                end
+            end
+            task.wait(0.1)
+        end
+    end)
 end
 
 -- Tab Switching Logic
@@ -697,38 +707,3 @@ UserInputService.InputBegan:Connect(function(input, processed)
         end
     end
 end)
--- Initial tab selection
-selectTab("EVENT")
-
--- Utility: Recursively search for a remote by name and print its path
---[ [
-local function findRemoteByName(parent, remoteName, path)
-    path = path or parent.Name
-    for _, child in ipairs(parent:GetChildren()) do
-        if child.Name == remoteName and child:IsA("RemoteEvent") then
-            print("[GAG REMOTE FINDER] Found RemoteEvent:", path .. "." .. child.Name)
-        end
-        -- Search deeper
-        findRemoteByName(child, remoteName, path .. "." .. child.Name)
-    end
-end
-
--- Run this once at script start to help user find the remote
-findRemoteByName(ReplicatedStorage, "BuyPetEgg")
--- ]]
-
--- Utility: Recursively print all RemoteEvents and RemoteFunctions in ReplicatedStorage
---[ [
-local function printAllRemotes(parent, path)
-    path = path or parent.Name
-    for _, child in ipairs(parent:GetChildren()) do
-        if child:IsA("RemoteEvent") or child:IsA("RemoteFunction") then
-            print("[GAG REMOTE SCAN]", child.ClassName, ":", path .. "." .. child.Name)
-        end
-        printAllRemotes(child, path .. "." .. child.Name)
-    end
-end
-
--- Run this once at script start to help user find all remotes
-printAllRemotes(ReplicatedStorage)
--- ]]
