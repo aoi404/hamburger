@@ -137,30 +137,14 @@ EggLabel.TextSize = 18
 EggLabel.Text = "EGGS HERE"
 EggLabel.Parent = EggBox
 
--- Button logic for sidebar
-EventBtn.MouseButton1Click:Connect(function()
-    EventBtn.BackgroundColor3 = Color3.fromRGB(200, 160, 120)
-    ShopBtn.BackgroundColor3 = Color3.fromRGB(120, 135, 150)
-    -- TODO: Show event content
-end)
-ShopBtn.MouseButton1Click:Connect(function()
-    ShopBtn.BackgroundColor3 = Color3.fromRGB(200, 160, 120)
-    EventBtn.BackgroundColor3 = Color3.fromRGB(120, 135, 150)
-    -- TODO: Show shop content
-end)
+-- Clear EggBox/MainPanel and move all controls inside it for better layout
+for _, child in ipairs(EggBox:GetChildren()) do child:Destroy() end
 
-MinBtn.MouseButton1Click:Connect(function()
-    Frame.Visible = false
-    -- Add a way to restore if needed
-end)
-CloseBtn.MouseButton1Click:Connect(function()
-    ScreenGui:Destroy()
-end)
-
-local function makeToggle(name, y)
+-- Add toggles inside EggBox
+local function makePanelToggle(name, y)
     local Toggle = Instance.new("TextButton")
-    Toggle.Size = UDim2.new(0, 340, 0, 40)
-    Toggle.Position = UDim2.new(0, 40, 0, y)
+    Toggle.Size = UDim2.new(0.9, 0, 0, 40)
+    Toggle.Position = UDim2.new(0.05, 0, 0, y)
     Toggle.BackgroundColor3 = Color3.fromRGB(45, 48, 55)
     Toggle.TextColor3 = Color3.fromRGB(255, 255, 255)
     Toggle.Font = Enum.Font.Gotham
@@ -169,7 +153,7 @@ local function makeToggle(name, y)
     local corner = Instance.new("UICorner")
     corner.CornerRadius = UDim.new(0, 8)
     corner.Parent = Toggle
-    Toggle.Parent = Frame
+    Toggle.Parent = EggBox
     return Toggle
 end
 
@@ -178,10 +162,10 @@ local autoWater = false
 local autoHarvest = false
 local autoSell = false
 
-local plantToggle = makeToggle("Auto Plant", 60)
-local waterToggle = makeToggle("Auto Water", 105)
-local harvestToggle = makeToggle("Auto Harvest", 150)
-local sellToggle = makeToggle("Auto Sell", 195)
+local plantToggle = makePanelToggle("Auto Plant", 10)
+local waterToggle = makePanelToggle("Auto Water", 60)
+local harvestToggle = makePanelToggle("Auto Harvest", 110)
+local sellToggle = makePanelToggle("Auto Sell", 160)
 
 plantToggle.MouseButton1Click:Connect(function()
     autoPlant = not autoPlant
@@ -204,10 +188,10 @@ sellToggle.MouseButton1Click:Connect(function()
     sellToggle.BackgroundColor3 = autoSell and Color3.fromRGB(180, 60, 60) or Color3.fromRGB(45, 48, 55)
 end)
 
--- Crop selection
+-- Crop selection inside EggBox
 local cropBox = Instance.new("TextBox")
 cropBox.Size = UDim2.new(0, 340, 0, 38)
-cropBox.Position = UDim2.new(0, 40, 0, 245)
+cropBox.Position = UDim2.new(0.05, 0, 0, 210)
 cropBox.BackgroundColor3 = Color3.fromRGB(45, 48, 55)
 cropBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 cropBox.Font = Enum.Font.Gotham
@@ -217,18 +201,18 @@ cropBox.PlaceholderText = "Enter Crop Name"
 local cropCorner = Instance.new("UICorner")
 cropCorner.CornerRadius = UDim.new(0, 8)
 cropCorner.Parent = cropBox
-cropBox.Parent = Frame
+cropBox.Parent = EggBox
 
 -- SHOP CATEGORY UI
 local ShopLabel = Instance.new("TextLabel")
 ShopLabel.Text = "Shop"
 ShopLabel.Size = UDim2.new(0, 340, 0, 28)
-ShopLabel.Position = UDim2.new(0, 40, 0, 290)
+ShopLabel.Position = UDim2.new(0.05, 0, 0, 260)
 ShopLabel.BackgroundTransparency = 1
-ShopLabel.TextColor3 = Color3.fromRGB(255, 255, 127)
+ShopLabel.TextColor3 = Color3.fromRGB(255, 220, 60)
 ShopLabel.Font = Enum.Font.GothamBold
 ShopLabel.TextSize = 22
-ShopLabel.Parent = Frame
+ShopLabel.Parent = EggBox
 
 -- Updated egg list with categories (Shop and Raphael's Shop)
 local eggList = {
@@ -261,7 +245,7 @@ local autoBuyEgg = false
 
 local EggDropdown = Instance.new("TextButton")
 EggDropdown.Size = UDim2.new(0, 160, 0, 32)
-EggDropdown.Position = UDim2.new(0, 50, 0, 325)
+EggDropdown.Position = UDim2.new(0.05, 0, 0, 295)
 EggDropdown.BackgroundColor3 = Color3.fromRGB(80, 80, 120)
 EggDropdown.TextColor3 = Color3.fromRGB(255,255,255)
 EggDropdown.Font = Enum.Font.Gotham
@@ -270,19 +254,19 @@ EggDropdown.Text = "Select Egg to Auto Buy"
 local eggCorner = Instance.new("UICorner")
 eggCorner.CornerRadius = UDim.new(0, 8)
 eggCorner.Parent = EggDropdown
-EggDropdown.Parent = Frame
+EggDropdown.Parent = EggBox
 
 local totalEggs = 0
 for _,v in ipairs(eggList) do totalEggs = totalEggs + 1 end
 local EggListFrame = Instance.new("Frame")
 EggListFrame.Size = UDim2.new(0, 160, 0, totalEggs*28)
-EggListFrame.Position = UDim2.new(0, 50, 0, 357)
+EggListFrame.Position = UDim2.new(0.05, 0, 0, 327)
 EggListFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 90)
 EggListFrame.Visible = false
 local eggListCorner = Instance.new("UICorner")
 eggListCorner.CornerRadius = UDim.new(0, 8)
 eggListCorner.Parent = EggListFrame
-EggListFrame.Parent = Frame
+EggListFrame.Parent = EggBox
 
 local y = 0
 for _,egg in ipairs(eggList) do
@@ -346,7 +330,7 @@ local autoBuySeed = false
 
 local SeedDropdown = Instance.new("TextButton")
 SeedDropdown.Size = UDim2.new(0, 160, 0, 32)
-SeedDropdown.Position = UDim2.new(0, 230, 0, 325)
+SeedDropdown.Position = UDim2.new(0.525, 5, 0, 295)
 SeedDropdown.BackgroundColor3 = Color3.fromRGB(80, 120, 80)
 SeedDropdown.TextColor3 = Color3.fromRGB(255,255,255)
 SeedDropdown.Font = Enum.Font.Gotham
@@ -355,17 +339,17 @@ SeedDropdown.Text = "Select Seed to Auto Buy"
 local seedCorner = Instance.new("UICorner")
 seedCorner.CornerRadius = UDim.new(0, 8)
 seedCorner.Parent = SeedDropdown
-SeedDropdown.Parent = Frame
+SeedDropdown.Parent = EggBox
 
 local SeedListFrame = Instance.new("Frame")
 SeedListFrame.Size = UDim2.new(0, 160, 0, #seedList*28)
-SeedListFrame.Position = UDim2.new(0, 230, 0, 357)
+SeedListFrame.Position = UDim2.new(0.525, 5, 0, 327)
 SeedListFrame.BackgroundColor3 = Color3.fromRGB(60, 90, 60)
 SeedListFrame.Visible = false
 local seedListCorner = Instance.new("UICorner")
 seedListCorner.CornerRadius = UDim.new(0, 8)
 seedListCorner.Parent = SeedListFrame
-SeedListFrame.Parent = Frame
+SeedListFrame.Parent = EggBox
 
 for i,seed in ipairs(seedList) do
     local btn = Instance.new("TextButton")
@@ -392,12 +376,12 @@ end)
 local MiscLabel = Instance.new("TextLabel")
 MiscLabel.Text = "Misc"
 MiscLabel.Size = UDim2.new(0, 340, 0, 28)
-MiscLabel.Position = UDim2.new(0, 40, 0, 390)
+MiscLabel.Position = UDim2.new(0.05, 0, 0, 335)
 MiscLabel.BackgroundTransparency = 1
 MiscLabel.TextColor3 = Color3.fromRGB(200, 200, 255)
 MiscLabel.Font = Enum.Font.GothamBold
 MiscLabel.TextSize = 22
-MiscLabel.Parent = Frame
+MiscLabel.Parent = EggBox
 
 -- UI: Add a notification label for harvest feedback
 local HarvestNotif = Instance.new("TextLabel")
