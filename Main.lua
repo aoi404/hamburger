@@ -197,13 +197,34 @@ eggCheck.Parent = autoBuyEggToggle
 
 local autoBuyEggState = false
 local function updateAutoBuyEggToggle()
-    autoBuyEggToggle.BackgroundColor3 = autoBuyEggState and Color3.fromRGB(40, 90, 180) or Color3.fromRGB(60, 90, 130)
-    eggCheck.Text = autoBuyEggState and "✔" or ""
+    if autoBuyEggState then
+        autoBuyEggToggle.BackgroundColor3 = Color3.fromRGB(40, 90, 180)
+        eggCheck.Text = "✅"
+    else
+        autoBuyEggToggle.BackgroundColor3 = Color3.fromRGB(60, 90, 130)
+        eggCheck.Text = ""
+    end
 end
 updateAutoBuyEggToggle()
 autoBuyEggToggle.MouseButton1Click:Connect(function()
     autoBuyEggState = not autoBuyEggState
     updateAutoBuyEggToggle()
+    if autoBuyEggState and not autoBuyEggLoopRunning then
+        autoBuyEggLoopRunning = true
+        task.spawn(function()
+            while autoBuyEggState do
+                for _, egg in ipairs(selectedEggs) do
+                    if isEggInStock(egg) then
+                        if buyEggRemote then
+                            buyEggRemote:FireServer(egg)
+                        end
+                    end
+                end
+                task.wait(0.1)
+            end
+            autoBuyEggLoopRunning = false
+        end)
+    end
 end)
 
 local autoBuySeedToggle = Instance.new("TextButton")
@@ -231,13 +252,34 @@ seedCheck.Parent = autoBuySeedToggle
 
 local autoBuySeedState = false
 local function updateAutoBuySeedToggle()
-    autoBuySeedToggle.BackgroundColor3 = autoBuySeedState and Color3.fromRGB(40, 90, 180) or Color3.fromRGB(60, 90, 130)
-    seedCheck.Text = autoBuySeedState and "✔" or ""
+    if autoBuySeedState then
+        autoBuySeedToggle.BackgroundColor3 = Color3.fromRGB(40, 90, 180)
+        seedCheck.Text = "✅"
+    else
+        autoBuySeedToggle.BackgroundColor3 = Color3.fromRGB(60, 90, 130)
+        seedCheck.Text = ""
+    end
 end
 updateAutoBuySeedToggle()
 autoBuySeedToggle.MouseButton1Click:Connect(function()
     autoBuySeedState = not autoBuySeedState
     updateAutoBuySeedToggle()
+    if autoBuySeedState and not autoBuySeedLoopRunning then
+        autoBuySeedLoopRunning = true
+        task.spawn(function()
+            while autoBuySeedState do
+                for _, seed in ipairs(selectedSeeds) do
+                    if isSeedInStock(seed) then
+                        if buySeedRemote then
+                            buySeedRemote:FireServer(seed)
+                        end
+                    end
+                end
+                task.wait(0.1)
+            end
+            autoBuySeedLoopRunning = false
+        end)
+    end
 end)
 
 -- Egg Dropdown Button
@@ -563,7 +605,7 @@ autoBuyEggToggle.MouseButton1Click:Connect(function()
                         end
                     end
                 end
-                task.wait(2)
+                task.wait(0.1)
             end
             autoBuyEggLoopRunning = false
         end)
@@ -584,7 +626,7 @@ autoBuySeedToggle.MouseButton1Click:Connect(function()
                         end
                     end
                 end
-                task.wait(2)
+                task.wait(0.1)
             end
             autoBuySeedLoopRunning = false
         end)
