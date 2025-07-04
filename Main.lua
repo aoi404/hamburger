@@ -323,21 +323,27 @@ MiscLabel.Font = Enum.Font.GothamBold
 MiscLabel.TextSize = 22
 MiscLabel.Parent = Frame
 
--- Helper: Harvest all fruits in your garden (robust)
+-- Helper: Harvest all fruits in your garden (robust, with dev log)
 local function harvestAllFruits()
+    print("[DEV LOG] Harvest: Starting harvestAllFruits()...")
     local farm = Workspace:FindFirstChild("Farm")
-    if not farm then return end
+    if not farm then print("[DEV LOG] Harvest: No 'Farm' found in Workspace.") return end
     local myGarden = farm:FindFirstChild(Player.Name)
-    if not myGarden then return end
+    if not myGarden then print("[DEV LOG] Harvest: No garden found for player '"..Player.Name.."'.") return end
     local remote = GameEvents:FindFirstChild("HarvestRemote")
-    if not remote then return end
+    if not remote then print("[DEV LOG] Harvest: No 'HarvestRemote' found in GameEvents.") return end
+    local found = 0
     for _, obj in ipairs(myGarden:GetDescendants()) do
         if obj:IsA("BasePart") or obj:IsA("Model") then
-            -- Try both with and without argument for max compatibility
-            pcall(function() remote:FireServer(obj) end)
-            pcall(function() remote:FireServer() end)
+            found = found + 1
+            print("[DEV LOG] Harvest: Attempting to harvest object:", obj:GetFullName())
+            local ok1, err1 = pcall(function() remote:FireServer(obj) end)
+            print("[DEV LOG] Harvest: FireServer(obj) result:", ok1, err1)
+            local ok2, err2 = pcall(function() remote:FireServer() end)
+            print("[DEV LOG] Harvest: FireServer() result:", ok2, err2)
         end
     end
+    print("[DEV LOG] Harvest: Total objects attempted:", found)
 end
 
 -- Helper: Sell all inventory
@@ -350,14 +356,18 @@ local function sellAllInventory()
     end
 end
 
--- Helper: Auto buy egg
+-- Helper: Auto buy egg (with dev log and argument check)
 local function autoBuyEggFunc()
     if autoBuyEgg and selectedEgg then
         local remote = GameEvents:FindFirstChild("BuyPetEgg")
         if remote then
-            pcall(function()
+            print("[DEV LOG] BuyEgg: Attempting to buy egg:", selectedEgg)
+            local ok, err = pcall(function()
                 remote:FireServer(selectedEgg)
             end)
+            print("[DEV LOG] BuyEgg: FireServer(selectedEgg) result:", ok, err)
+        else
+            print("[DEV LOG] BuyEgg: 'BuyPetEgg' remote not found!")
         end
     end
 end
@@ -373,6 +383,34 @@ local function autoBuySeedFunc()
         end
     end
 end
+
+-- UI Improvements: Add drop shadow, better spacing, and section lines
+local UIScale = Instance.new("UIScale")
+UIScale.Scale = 1.1
+Frame.Parent = nil -- Remove to re-parent after adding shadow
+local Shadow = Instance.new("ImageLabel")
+Shadow.Size = UDim2.new(1, 24, 1, 24)
+Shadow.Position = UDim2.new(0, -12, 0, -12)
+Shadow.BackgroundTransparency = 1
+Shadow.Image = "rbxassetid://1316045217"
+Shadow.ImageTransparency = 0.4
+Shadow.ZIndex = 0
+Shadow.Parent = ScreenGui
+Frame.ZIndex = 1
+Frame.Parent = ScreenGui
+UIScale.Parent = Frame
+
+-- Add section lines
+local function addSectionLine(y)
+    local line = Instance.new("Frame")
+    line.Size = UDim2.new(0, 340, 0, 2)
+    line.Position = UDim2.new(0, 40, 0, y)
+    line.BackgroundColor3 = Color3.fromRGB(60, 60, 80)
+    line.BorderSizePixel = 0
+    line.Parent = Frame
+end
+addSectionLine(240)
+addSectionLine(380)
 
 -- Automation Loop
 spawn(function()
