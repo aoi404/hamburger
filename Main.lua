@@ -369,14 +369,16 @@ seedDropdownList.CanvasSize = UDim2.new(0, 0, 0, #seedOptions * 32)
 -- Helper to update toggle positions based on dropdowns
 function updateShopTogglePositions()
     local y = 16
+    local contentBottom = shopFrame.AbsolutePosition.Y + shopFrame.AbsoluteSize.Y
     -- Egg Dropdown Button
     eggDropdownBtn.Position = UDim2.new(0, 16, 0, y)
     y = y + 36
     -- Egg Dropdown List
     if eggDropdownList.Visible then
-        local maxHeight = 128 -- max height for dropdown before scrolling
+        local dropdownTop = shopFrame.AbsolutePosition.Y + y
+        local maxHeight = contentBottom - dropdownTop - 16 -- 16px padding from bottom
         local needed = #eggOptions * 32
-        local showHeight = math.min(needed, maxHeight)
+        local showHeight = math.max(0, math.min(needed, maxHeight))
         eggDropdownList.Position = UDim2.new(0, 16, 0, y)
         eggDropdownList.Size = UDim2.new(1, -32, 0, showHeight)
         eggDropdownList.CanvasSize = UDim2.new(0, 0, 0, needed)
@@ -390,9 +392,10 @@ function updateShopTogglePositions()
     y = y + 36
     -- Seed Dropdown List
     if seedDropdownList.Visible then
-        local maxHeight = 128
+        local dropdownTop = shopFrame.AbsolutePosition.Y + y
+        local maxHeight = contentBottom - dropdownTop - 16
         local needed = #seedOptions * 32
-        local showHeight = math.min(needed, maxHeight)
+        local showHeight = math.max(0, math.min(needed, maxHeight))
         seedDropdownList.Position = UDim2.new(0, 16, 0, y)
         seedDropdownList.Size = UDim2.new(1, -32, 0, showHeight)
         seedDropdownList.CanvasSize = UDim2.new(0, 0, 0, needed)
