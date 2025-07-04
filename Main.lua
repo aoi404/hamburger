@@ -1,3 +1,4 @@
+
 --[[
 GAG SCRIPT BY:BREAD
 Modern Sidebar GUI (Restarted)
@@ -253,6 +254,8 @@ eggDropdownBtn.BorderSizePixel = 0
 eggDropdownBtn.TextXAlignment = Enum.TextXAlignment.Center
 eggDropdownBtn.Parent = shopFrame
 
+eggDropdownBtn.ZIndex = 2
+
 local eggDropdownList = Instance.new("Frame")
 eggDropdownList.Name = "EggDropdownList"
 eggDropdownList.Size = UDim2.new(1, -32, 0, 0)
@@ -261,6 +264,10 @@ eggDropdownList.BackgroundColor3 = Color3.fromRGB(60, 120, 180)
 eggDropdownList.BorderSizePixel = 0
 eggDropdownList.Visible = false
 eggDropdownList.Parent = shopFrame
+
+eggDropdownList.ZIndex = 3
+
+eggDropdownList.ClipsDescendants = false
 
 local eggOptions = {"Egg A", "Egg B", "Egg C"}
 local selectedEggs = {}
@@ -282,6 +289,7 @@ for i, name in ipairs(eggOptions) do
     opt.TextColor3 = Color3.fromRGB(255,255,255)
     opt.BorderSizePixel = 0
     opt.Parent = eggDropdownList
+    opt.ZIndex = 4
     opt.MouseButton1Click:Connect(function()
         local found = false
         for j, v in ipairs(selectedEggs) do
@@ -293,10 +301,6 @@ for i, name in ipairs(eggOptions) do
     end)
 end
 updateEggDropdownText()
-eggDropdownBtn.MouseButton1Click:Connect(function()
-    eggDropdownList.Visible = not eggDropdownList.Visible
-    updateShopTogglePositions()
-end)
 
 -- Seed Dropdown Button
 local seedDropdownBtn = Instance.new("TextButton")
@@ -312,6 +316,8 @@ seedDropdownBtn.BorderSizePixel = 0
 seedDropdownBtn.TextXAlignment = Enum.TextXAlignment.Center
 seedDropdownBtn.Parent = shopFrame
 
+seedDropdownBtn.ZIndex = 2
+
 local seedDropdownList = Instance.new("Frame")
 seedDropdownList.Name = "SeedDropdownList"
 seedDropdownList.Size = UDim2.new(1, -32, 0, 0)
@@ -320,6 +326,13 @@ seedDropdownList.BackgroundColor3 = Color3.fromRGB(60, 120, 180)
 seedDropdownList.BorderSizePixel = 0
 seedDropdownList.Visible = false
 seedDropdownList.Parent = shopFrame
+
+seedDropdownList.ZIndex = 3
+
+seedDropdownList.ClipsDescendants = false
+for _, child in ipairs(seedDropdownList:GetChildren()) do
+    if child:IsA("TextButton") then child.ZIndex = 4 end
+end
 
 local seedOptions = {"Seed X", "Seed Y", "Seed Z"}
 local selectedSeeds = {}
