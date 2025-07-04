@@ -171,21 +171,6 @@ end)
 -- SHOP TAB CONTENT
 local shopFrame = tabContent["SHOP"]
 
--- Helper to update toggle positions based on dropdowns
-local function updateShopTogglePositions()
-    local y = 16 + 36 -- after egg dropdown button
-    if eggDropdownList.Visible then
-        y = y + #eggOptions * 32
-    end
-    seedDropdownBtn.Position = UDim2.new(0, 16, 0, y)
-    y = y + 36
-    if seedDropdownList.Visible then
-        y = y + #seedOptions * 32
-    end
-    autoBuyEggToggle.Position = UDim2.new(0, 16, 0, y + 12)
-    autoBuySeedToggle.Position = UDim2.new(0, 16, 0, y + 12 + 44)
-end
-
 -- Egg Dropdown Button
 local eggDropdownBtn = Instance.new("TextButton")
 eggDropdownBtn.Name = "EggDropdownBtn"
@@ -202,12 +187,12 @@ eggDropdownBtn.Parent = shopFrame
 
 local eggDropdownList = Instance.new("Frame")
 eggDropdownList.Name = "EggDropdownList"
-eggDropdownList.Size = UDim2.new(1, 0, 0, 0)
-eggDropdownList.Position = UDim2.new(0, 0, 1, 0)
+eggDropdownList.Size = UDim2.new(1, -32, 0, 0)
+eggDropdownList.Position = UDim2.new(0, 16, 0, 52)
 eggDropdownList.BackgroundColor3 = Color3.fromRGB(60, 120, 180)
 eggDropdownList.BorderSizePixel = 0
 eggDropdownList.Visible = false
-eggDropdownList.Parent = eggDropdownBtn
+eggDropdownList.Parent = shopFrame
 
 local eggOptions = {"Egg A", "Egg B", "Egg C"}
 local selectedEggs = {}
@@ -242,7 +227,7 @@ end
 updateEggDropdownText()
 eggDropdownBtn.MouseButton1Click:Connect(function()
     eggDropdownList.Visible = not eggDropdownList.Visible
-    eggDropdownList.Size = eggDropdownList.Visible and UDim2.new(1, 0, 0, #eggOptions*32) or UDim2.new(1, 0, 0, 0)
+    eggDropdownList.Size = eggDropdownList.Visible and UDim2.new(1, -32, 0, #eggOptions*32) or UDim2.new(1, -32, 0, 0)
     updateShopTogglePositions()
 end)
 
@@ -262,12 +247,12 @@ seedDropdownBtn.Parent = shopFrame
 
 local seedDropdownList = Instance.new("Frame")
 seedDropdownList.Name = "SeedDropdownList"
-seedDropdownList.Size = UDim2.new(1, 0, 0, 0)
-seedDropdownList.Position = UDim2.new(0, 0, 1, 0)
+seedDropdownList.Size = UDim2.new(1, -32, 0, 0)
+seedDropdownList.Position = UDim2.new(0, 16, 0, 96)
 seedDropdownList.BackgroundColor3 = Color3.fromRGB(60, 120, 180)
 seedDropdownList.BorderSizePixel = 0
 seedDropdownList.Visible = false
-seedDropdownList.Parent = seedDropdownBtn
+seedDropdownList.Parent = shopFrame
 
 local seedOptions = {"Seed X", "Seed Y", "Seed Z"}
 local selectedSeeds = {}
@@ -302,9 +287,25 @@ end
 updateSeedDropdownText()
 seedDropdownBtn.MouseButton1Click:Connect(function()
     seedDropdownList.Visible = not seedDropdownList.Visible
-    seedDropdownList.Size = seedDropdownList.Visible and UDim2.new(1, 0, 0, #seedOptions*32) or UDim2.new(1, 0, 0, 0)
+    seedDropdownList.Size = seedDropdownList.Visible and UDim2.new(1, -32, 0, #seedOptions*32) or UDim2.new(1, -32, 0, 0)
     updateShopTogglePositions()
 end)
+
+-- Helper to update toggle positions based on dropdowns
+function updateShopTogglePositions()
+    local y = 16 + 36 -- after egg dropdown button
+    if eggDropdownList.Visible then
+        y = y + #eggOptions * 32
+    end
+    seedDropdownBtn.Position = UDim2.new(0, 16, 0, y)
+    y = y + 36
+    if seedDropdownList.Visible then
+        y = y + #seedOptions * 32
+    end
+    seedDropdownList.Position = UDim2.new(0, 16, 0, seedDropdownBtn.Position.Y.Offset + 36)
+    autoBuyEggToggle.Position = UDim2.new(0, 16, 0, y + 12)
+    autoBuySeedToggle.Position = UDim2.new(0, 16, 0, y + 12 + 44)
+end
 
 -- Toggles
 local autoBuyEggToggle = Instance.new("TextButton")
