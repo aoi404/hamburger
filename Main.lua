@@ -1,10 +1,3 @@
---[[
-    Grow a Garden Modular Auto Script UI
-    Author: GitHub Copilot
-    Features: Four-panel UI, auto toggles, remote bindings, anti-AFK, cleanup
---]]
-
---// Services
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
