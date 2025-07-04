@@ -611,8 +611,40 @@ UserInputService.InputBegan:Connect(function(input, processed)
 end)
 
 -- Automation Remotes
-local buyEggRemote = ReplicatedStorage:FindFirstChild("GameEvents"):FindFirstChild("BuyPetEgg")
-local buySeedRemote = ReplicatedStorage:FindFirstChild("GameEvents"):FindFirstChild("BuySeedStock")
+local gameEvents = ReplicatedStorage:FindFirstChild("GameEvents")
+if not gameEvents then
+    print("[GAG DEBUG] Waiting for GameEvents in ReplicatedStorage...")
+    gameEvents = ReplicatedStorage:WaitForChild("GameEvents", 10)
+end
+if not gameEvents then
+    warn("[GAG DEBUG] GameEvents folder not found in ReplicatedStorage after waiting!")
+end
+
+local buyEggRemote = gameEvents and gameEvents:FindFirstChild("BuyPetEgg")
+if not buyEggRemote then
+    print("[GAG DEBUG] Waiting for BuyPetEgg in GameEvents...")
+    if gameEvents then
+        buyEggRemote = gameEvents:WaitForChild("BuyPetEgg", 10)
+    end
+end
+if not buyEggRemote then
+    warn("[GAG DEBUG] BuyPetEgg remote not found in GameEvents after waiting!")
+else
+    print("[GAG DEBUG] BuyPetEgg remote found:", buyEggRemote:GetFullName())
+end
+
+local buySeedRemote = gameEvents and gameEvents:FindFirstChild("BuySeedStock")
+if not buySeedRemote then
+    print("[GAG DEBUG] Waiting for BuySeedStock in GameEvents...")
+    if gameEvents then
+        buySeedRemote = gameEvents:WaitForChild("BuySeedStock", 10)
+    end
+end
+if not buySeedRemote then
+    warn("[GAG DEBUG] BuySeedStock remote not found in GameEvents after waiting!")
+else
+    print("[GAG DEBUG] BuySeedStock remote found:", buySeedRemote:GetFullName())
+end
 
 -- Tab Switching Logic
 local function selectTab(tabName)
