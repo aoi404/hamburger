@@ -1,140 +1,3 @@
-Remote: ReplicatedStorage.GameEvents.LikeGarden
-Remote: ReplicatedStorage.GameEvents.FriendPotLinkEnded_RE
-Remote: ReplicatedStorage.GameEvents.SunResonance
-Remote: ReplicatedStorage.GameEvents.SunStrike
-Remote: ReplicatedStorage.GameEvents.PromptStarterPack
-Remote: ReplicatedStorage.GameEvents.UpdateFriendState
-Remote: ReplicatedStorage.GameEvents.CraftingGlobalObjectService
-Remote: ReplicatedStorage.GameEvents.GetPetCooldown
-Remote: ReplicatedStorage.GameEvents.CraftingFailedRemoteEvent
-Remote: ReplicatedStorage.GameEvents.SprayService_RE
-Remote: ReplicatedStorage.GameEvents.SetTutorialFinished
-Remote: ReplicatedStorage.GameEvents.MeteorStrike
-Remote: ReplicatedStorage.GameEvents.DiscoSetColor_RE
-Remote: ReplicatedStorage.GameEvents.TanningMirrorService
-Remote: ReplicatedStorage.GameEvents.PromptRSVP
-Remote: ReplicatedStorage.GameEvents.SummerHarvestRewardRemoteEvent
-Remote: ReplicatedStorage.GameEvents.SummerHarvestSubmitRemoteEvent
-Remote: ReplicatedStorage.GameEvents.RefreshPetModel
-Remote: ReplicatedStorage.GameEvents.InventorySortingServiceEvents.MoveEntry
-Remote: ReplicatedStorage.GameEvents.BuyTravelingMerchantShopStock
-Remote: ReplicatedStorage.GameEvents.MagnifyingGlassService_RE
-Remote: ReplicatedStorage.GameEvents.FireworkVisual
-Remote: ReplicatedStorage.GameEvents.FireworkLaunch
-Remote: ReplicatedStorage.GameEvents.PhysicalFirework
-Remote: ReplicatedStorage.ByteNetReliable
-Remote: ReplicatedStorage.GameAnalyticsError
-Remote: ReplicatedStorage.GameAnalyticsRemoteConfigs
-Remote: ReplicatedStorage.PostieReceived
-Remote: ReplicatedStorage.PostieSent
-Remote: Workspace.aadawdada261h.InputGateway.Activation
-Remote: Workspace.amaracakes2.InputGateway.Activation
-Remote: Workspace.Leecapada.InputGateway.Activation
-Remote: ReplicatedStorage.GameEvents.StarCallerService
-Remote: ReplicatedStorage.GameEvents.CosmeticCrateSkipped
-Remote: ReplicatedStorage.GameEvents.CosmeticCrateService
-Remote: ReplicatedStorage.GameEvents.CrateReadyToOpen_RE
-Remote: ReplicatedStorage.GameEvents.RemoteEvent
-Remote: ReplicatedStorage.GameEvents.HarvestRemote
-Remote: ReplicatedStorage.GameEvents.FriendInvitePrompterService
-Remote: ReplicatedStorage.GameEvents.ExperienceNotificationServicePrompterController
-Remote: ReplicatedStorage.GameEvents.CutsceneHandler
-Remote: ReplicatedStorage.GameEvents.ReplicationChannel
-Remote: ReplicatedStorage.GameEvents.LightningBoltWithNoFlash
-Remote: ReplicatedStorage.GameEvents.JandelCharge
-Remote: ReplicatedStorage.GameEvents.CosmeticPhysicalityService
-Remote: ReplicatedStorage.GameEvents.RefreshActivePetsUI
-Remote: ReplicatedStorage.GameEvents.CosmeticService
-Remote: ReplicatedStorage.GameEvents.BuyCosmeticCrate
-Remote: ReplicatedStorage.GameEvents.BuyCosmeticItem
-Remote: ReplicatedStorage.GameEvents.BuyNightEventShopStock
-Remote: ReplicatedStorage.GameEvents.BeeBolt
-Remote: ReplicatedStorage.GameEvents.DeleteObject
-Remote: ReplicatedStorage.GameEvents.SwarmFly
-Remote: ReplicatedStorage.GameEvents.EggTutorial
-Remote: ReplicatedStorage.GameEvents.CosmeticUpgradeService
-Remote: ReplicatedStorage.GameEvents.CanSeeShopPack
-Remote: ReplicatedStorage.GameEvents.PollenRadarHighlight
-Remote: ReplicatedStorage.GameEvents.NectorStaffRemoteEvent
-Remote: ReplicatedStorage.GameEvents.StartPollenRadarScan
-Remote: ReplicatedStorage.GameEvents.FinishPollenRadarScan
-Remote: ReplicatedStorage.GameEvents.FriendshipPotService_RE
-Remote: ReplicatedStorage.GameEvents.FriendshipPotToolService_RE
-Remote: ReplicatedStorage.GameEvents.PollenRadarCollectSound
-Remote: ReplicatedStorage.GameEvents.HoneyCrafterRemoteEvent
-Remote: ReplicatedStorage.GameEvents.PollenRadarReset
-Remote: ReplicatedStorage.GameEvents.FriendPotLink_RE
-Remote: ReplicatedStorage.GameEvents.LoadScreenEvent
-Remote: ReplicatedStorage.GameEvents.SortBackpackEvent
-Remote: ReplicatedStorage.GameEvents.ActivePetService
-Remote: ReplicatedStorage.GameEvents.SpawnCollectableSeed
-Remote: ReplicatedStorage.GameEvents.UnlockEventShopRemote
-Remote: ReplicatedStorage.GameEvents.SeedPackGiverEvent
-Remote: ReplicatedStorage.GameEvents.SprinklerService
-Remote: ReplicatedStorage.GameEvents.PetsService
-Remote: ReplicatedStorage.GameEvents.WeatherEventStarted
-Remote: ReplicatedStorage.GameEvents.FireDrop
-Remote: ReplicatedStorage.GameEvents.TurnOffEasterUI
-Remote: ReplicatedStorage.GameEvents.BuyPetEgg
-Remote: ReplicatedStorage.GameEvents.PetEggService
-Remote: ReplicatedStorage.GameEvents.EggReadyToHatch_RE
-Remote: ReplicatedStorage.GameEvents.ShecklesClient
-Remote: ReplicatedStorage.GameEvents.SellPet_RE
-Remote: ReplicatedStorage.GameEvents.PetGiftingService
-Remote: ReplicatedStorage.GameEvents.PetZoneAbility
-Remote: ReplicatedStorage.GameEvents.GiftPet
-Remote: ReplicatedStorage.GameEvents.AcceptPetGift
-Remote: ReplicatedStorage.GameEvents.PetSkipped
-Remote: ReplicatedStorage.GameEvents.RecallWrenchTeleport
-Remote: ReplicatedStorage.GameEvents.UnlockSlotFromPet
-Remote: ReplicatedStorage.GameEvents.SpecialEventStarted
-Remote: ReplicatedStorage.GameEvents.NightQuestRemoteEvent
-Remote: ReplicatedStorage.GameEvents.FavoriteToolRemote
-Remote: ReplicatedStorage.GameEvents.SettingsService
-Remote: ReplicatedStorage.GameEvents.HighlightRemote
-Remote: ReplicatedStorage.GameEvents.NightStaffRemoteEvent
-Remote: ReplicatedStorage.GameEvents.ClaimableCodeService
-Remote: ReplicatedStorage.GameEvents.SendClientSpecialEvent
-Remote: ReplicatedStorage.GameEvents.ReclaimerService_RE
-Remote: ReplicatedStorage.GameEvents.SummerHarvestRemoteEvent
-Remote: ReplicatedStorage.GameEvents.MeteorShower
-Remote: ReplicatedStorage.GameEvents.UpdateStock
-Remote: ReplicatedStorage.GameEvents.BuyGearStock
-Remote: ReplicatedStorage.GameEvents.DisplayChatMessage
-Remote: ReplicatedStorage.GameEvents.UpdateGearStock
-Remote: ReplicatedStorage.GameEvents.BuySeedStock
-Remote: ReplicatedStorage.GameEvents.DevRestockGearShop
-Remote: ReplicatedStorage.GameEvents.Enable_Top_Frame
-Remote: ReplicatedStorage.GameEvents.Favorite_Item
-Remote: ReplicatedStorage.GameEvents.Finish_Loading
-Remote: ReplicatedStorage.GameEvents.Remove_Item
-Remote: ReplicatedStorage.GameEvents.LightningBolt
-Remote: ReplicatedStorage.GameEvents.Notification
-Remote: ReplicatedStorage.GameEvents.PlaySound
-Remote: ReplicatedStorage.GameEvents.Plant_RE
-Remote: ReplicatedStorage.GameEvents.Pop_Effect
-Remote: ReplicatedStorage.GameEvents.Prompt_Friend
-Remote: ReplicatedStorage.GameEvents.BuyEasterStock
-Remote: ReplicatedStorage.GameEvents.Sell_Inventory
-Remote: ReplicatedStorage.GameEvents.Sell_Item
-Remote: ReplicatedStorage.GameEvents.Purchase_Object
-Remote: ReplicatedStorage.GameEvents.SendClientWeatherEvents
-Remote: ReplicatedStorage.GameEvents.Send_Rating
-Remote: ReplicatedStorage.GameEvents.Spawn_Arrow
-Remote: ReplicatedStorage.GameEvents.Sprinkler_RE
-Remote: ReplicatedStorage.GameEvents.Start_Cutscene
-Remote: ReplicatedStorage.GameEvents.Water_RE
-Remote: ReplicatedStorage.GameEvents.BuyEventShopStock
-Remote: ReplicatedStorage.GameEvents.Close_Frames
-Remote: ReplicatedStorage.GameEvents.PickupSound
-Remote: ReplicatedStorage.GameEvents.TrowelRemote
-Remote: ReplicatedStorage.GameEvents.LightningRodService
-Remote: ReplicatedStorage.GameEvents.HoneyMachineService_RE
-Remote: ReplicatedStorage.GameEvents.FriendGiftEvent
-Remote: ReplicatedStorage.GameEvents.DeveloperPurchase
-Remote: ReplicatedStorage.CmdrClient.CmdrEvent
-Remote: ReplicatedStorage.CmdrClient.CmdrFunction
-Remote: ReplicatedStorage.GameEvents.DataStreames
 
 --[[
 GAG SCRIPT BY:BREAD
@@ -647,7 +510,173 @@ end
 updateSeedDropdownText()
 seedDropdownList.CanvasSize = UDim2.new(0, 0, 0, #seedOptions * 38)
 
--- Helper to update toggle positions based on dropdowns
+-- Gear Dropdown Button
+local gearDropdownBtn = Instance.new("TextButton")
+gearDropdownBtn.Name = "GearDropdownBtn"
+gearDropdownBtn.Size = UDim2.new(1, -40, 0, 44)
+gearDropdownBtn.BackgroundColor3 = Color3.fromRGB(40, 90, 180)
+gearDropdownBtn.Text = "BUY GEAR:"
+gearDropdownBtn.Font = Enum.Font.SourceSansBold
+gearDropdownBtn.TextSize = 22
+gearDropdownBtn.TextColor3 = Color3.fromRGB(255,255,255)
+gearDropdownBtn.BorderSizePixel = 0
+gearDropdownBtn.TextXAlignment = Enum.TextXAlignment.Center
+gearDropdownBtn.Parent = shopFrame
+gearDropdownBtn.ZIndex = 2
+
+-- Gear Dropdown ScrollingFrame
+local gearDropdownList = Instance.new("ScrollingFrame")
+gearDropdownList.Name = "GearDropdownList"
+gearDropdownList.Size = UDim2.new(1, -40, 0, 0)
+gearDropdownList.BackgroundColor3 = Color3.fromRGB(60, 120, 180)
+gearDropdownList.BorderSizePixel = 0
+gearDropdownList.Visible = false
+gearDropdownList.Parent = shopFrame
+gearDropdownList.ZIndex = 3
+gearDropdownList.ClipsDescendants = true
+gearDropdownList.CanvasSize = UDim2.new(0, 0, 0, 0)
+gearDropdownList.ScrollBarThickness = 10
+
+-- Full Gear List (Name, Price, Details)
+local gearOptions = {
+    "Watering Can",
+    "Trowel",
+    "Recall Wrench",
+    "Basic Sprinkler",
+    "Advanced Sprinkler",
+    "Godly Sprinkler",
+    "Magnifying Glass",
+    "Tanning Mirror",
+    "Master Sprinkler",
+    "Cleaning Spray",
+    "Favorite Tool",
+    "Harvest Tool",
+    "Friendship Pot"
+}
+local gearDetails = {
+    ["Watering Can"] = "Common | 10 Uses | Speeds Plant Growth | 50,000",
+    ["Trowel"] = "Uncommon | 5 Uses | Helps to move plants | 100,000",
+    ["Recall Wrench"] = "Uncommon | 5 Uses | Teleports to the Gear Shop | 150,000",
+    ["Basic Sprinkler"] = "Rare | 5 mins | Speeds plant growth and increases fruit size | 20,000",
+    ["Advanced Sprinkler"] = "Legendary | 5 mins | Increases plant growth, mutation chances, runs 5 min | 50,000",
+    ["Godly Sprinkler"] = "Mythical | 5 mins | Speeds growth, mutation, fruit size, runs 5 min | 100,000",
+    ["Magnifying Glass"] = "Mythical | 10 Uses | Inspect fruits to reveal price | 10,000,000",
+    ["Tanning Mirror"] = "Mythical | 10 Uses | Redirects Sun’s Beams to random plants | 1,000,000",
+    ["Master Sprinkler"] = "Divine | 10 mins | Speeds growth, mutation, fruit size, runs 10 min | 10,000,000",
+    ["Cleaning Spray"] = "Divine | 10 Uses | Removes all mutations from a fruit | 15,000,000",
+    ["Favorite Tool"] = "Divine | 20 Uses | Lock/unlock best fruits | 20,000,000",
+    ["Harvest Tool"] = "Divine | 5 Uses | Harvests all fruits from selected plant | 30,000,000",
+    ["Friendship Pot"] = "Divine | 1 Use | Links with other players for streak | 15,000,000"
+}
+local selectedGears = {}
+local function updateGearDropdownText()
+    if #selectedGears == 0 then
+        gearDropdownBtn.Text = "BUY GEAR:"
+    else
+        gearDropdownBtn.Text = "BUY GEAR: " .. table.concat(selectedGears, ", ")
+    end
+end
+for i, name in ipairs(gearOptions) do
+    local opt = Instance.new("TextButton")
+    opt.Size = UDim2.new(1, 0, 0, 38)
+    opt.Position = UDim2.new(0, 0, 0, (i-1)*38)
+    opt.BackgroundColor3 = Color3.fromRGB(100, 170, 220)
+    opt.Text = name
+    opt.Font = Enum.Font.SourceSans
+    opt.TextSize = 20
+    opt.TextColor3 = Color3.fromRGB(255,255,255)
+    opt.BorderSizePixel = 0
+    opt.Parent = gearDropdownList
+    opt.ZIndex = 4
+    -- Tooltip for details
+    opt.MouseEnter:Connect(function()
+        opt.Text = name .. "\n" .. (gearDetails[name] or "")
+        opt.TextWrapped = true
+    end)
+    opt.MouseLeave:Connect(function()
+        opt.Text = name
+        opt.TextWrapped = false
+    end)
+    opt.MouseButton1Click:Connect(function()
+        local found = false
+        for j, v in ipairs(selectedGears) do
+            if v == name then table.remove(selectedGears, j) found = true break end
+        end
+        if not found then table.insert(selectedGears, name) end
+        updateGearDropdownText()
+        opt.BackgroundColor3 = found and Color3.fromRGB(100, 170, 220) or Color3.fromRGB(60, 200, 120)
+    end)
+end
+updateGearDropdownText()
+gearDropdownList.CanvasSize = UDim2.new(0, 0, 0, #gearOptions * 38)
+
+-- Gear Toggle
+local autoBuyGearToggle = Instance.new("TextButton")
+autoBuyGearToggle.Name = "AutoBuyGearToggle"
+autoBuyGearToggle.Size = UDim2.new(1, -32, 0, 36)
+autoBuyGearToggle.BackgroundColor3 = Color3.fromRGB(60, 90, 130)
+autoBuyGearToggle.Text = "AUTO BUY GEAR"
+autoBuyGearToggle.Font = Enum.Font.SourceSansBold
+autoBuyGearToggle.TextSize = 20
+autoBuyGearToggle.TextColor3 = Color3.fromRGB(255,255,255)
+autoBuyGearToggle.BorderSizePixel = 0
+autoBuyGearToggle.TextXAlignment = Enum.TextXAlignment.Left
+autoBuyGearToggle.Parent = shopFrame
+
+local gearCheck = Instance.new("TextLabel")
+gearCheck.Name = "Checkmark"
+gearCheck.Size = UDim2.new(0, 32, 1, 0)
+gearCheck.Position = UDim2.new(1, -36, 0, 0)
+gearCheck.BackgroundTransparency = 1
+gearCheck.Font = Enum.Font.SourceSansBold
+gearCheck.TextSize = 24
+gearCheck.TextColor3 = Color3.fromRGB(220, 220, 220)
+gearCheck.Text = ""
+gearCheck.Parent = autoBuyGearToggle
+
+local autoBuyGearState = false
+local autoBuyGearLoopRunning = false
+local function updateAutoBuyGearToggle()
+    if autoBuyGearState then
+        autoBuyGearToggle.BackgroundColor3 = Color3.fromRGB(40, 90, 180)
+        gearCheck.Text = "✅"
+    else
+        autoBuyGearToggle.BackgroundColor3 = Color3.fromRGB(60, 90, 130)
+        gearCheck.Text = ""
+    end
+end
+updateAutoBuyGearToggle()
+
+autoBuyGearToggle.MouseButton1Click:Connect(function()
+    autoBuyGearState = not autoBuyGearState
+    updateAutoBuyGearToggle()
+    if autoBuyGearState and not autoBuyGearLoopRunning then
+        autoBuyGearLoopRunning = true
+        task.spawn(function()
+            while autoBuyGearState do
+                for _, gear in ipairs(selectedGears) do
+                    if isGearInStock(gear) then
+                        if buyGearRemote then
+                            buyGearRemote:FireServer(gear)
+                        end
+                    end
+                end
+                task.wait(0.1)
+            end
+            autoBuyGearLoopRunning = false
+        end)
+    end
+end)
+
+-- Gear Dropdown Button logic
+gearDropdownBtn.Position = UDim2.new(0, 20, 0, 0) -- Will be updated by updateShopTogglePositions
+gearDropdownBtn.MouseButton1Click:Connect(function()
+    gearDropdownList.Visible = not gearDropdownList.Visible
+    updateShopTogglePositions()
+end)
+
+-- Add to updateShopTogglePositions
+local oldUpdateShopTogglePositions = updateShopTogglePositions
 function updateShopTogglePositions()
     local y = 20
     local contentBottom = shopFrame.AbsolutePosition.Y + shopFrame.AbsoluteSize.Y
@@ -685,23 +714,33 @@ function updateShopTogglePositions()
         seedDropdownList.Position = UDim2.new(0, 20, 0, y)
         seedDropdownList.Size = UDim2.new(1, -40, 0, 0)
     end
+    -- Gear Dropdown Button
+    gearDropdownBtn.Position = UDim2.new(0, 20, 0, y)
+    y = y + 44
+    -- Gear Dropdown List
+    if gearDropdownList.Visible then
+        local dropdownTop = shopFrame.AbsolutePosition.Y + y
+        local maxHeight = contentBottom - dropdownTop - 20
+        local needed = #gearOptions * 38
+        local showHeight = math.max(0, math.min(needed, maxHeight))
+        gearDropdownList.Position = UDim2.new(0, 20, 0, y)
+        gearDropdownList.Size = UDim2.new(1, -40, 0, showHeight)
+        gearDropdownList.CanvasSize = UDim2.new(0, 0, 0, needed)
+        y = y + showHeight
+    else
+        gearDropdownList.Position = UDim2.new(0, 20, 0, y)
+        gearDropdownList.Size = UDim2.new(1, -40, 0, 0)
+    end
     -- Toggles
     autoBuyEggToggle.Position = UDim2.new(0, 20, 0, y + 18)
     autoBuySeedToggle.Position = UDim2.new(0, 20, 0, y + 18 + 54)
+    autoBuyGearToggle.Position = UDim2.new(0, 20, 0, y + 18 + 108)
 end
 
-eggDropdownBtn.MouseButton1Click:Connect(function()
-    eggDropdownList.Visible = not eggDropdownList.Visible
-    updateShopTogglePositions()
-end)
-
-seedDropdownBtn.MouseButton1Click:Connect(function()
-    seedDropdownList.Visible = not seedDropdownList.Visible
-    updateShopTogglePositions()
-end)
-
--- Hide dropdowns if clicking elsewhere
-UserInputService.InputBegan:Connect(function(input, processed)
+-- Hide dropdowns if clicking elsewhere (add gear)
+local oldInputBeganConn = nil
+if oldInputBeganConn then oldInputBeganConn:Disconnect() end
+oldInputBeganConn = UserInputService.InputBegan:Connect(function(input, processed)
     if input.UserInputType == Enum.UserInputType.MouseButton1 then
         local changed = false
         if eggDropdownList.Visible and not eggDropdownBtn:IsAncestorOf(input.Target) then
@@ -712,6 +751,10 @@ UserInputService.InputBegan:Connect(function(input, processed)
             seedDropdownList.Visible = false
             changed = true
         end
+        if gearDropdownList.Visible and not gearDropdownBtn:IsAncestorOf(input.Target) then
+            gearDropdownList.Visible = false
+            changed = true
+        end
         if changed then updateShopTogglePositions() end
     end
 end)
@@ -719,8 +762,9 @@ end)
 -- Automation Remotes
 local buyEggRemote = ReplicatedStorage:FindFirstChild("GameEvents"):FindFirstChild("BuyPetEgg")
 local buySeedRemote = ReplicatedStorage:FindFirstChild("GameEvents"):FindFirstChild("BuySeedStock")
+local buyGearRemote = ReplicatedStorage:FindFirstChild("GameEvents"):FindFirstChild("BuyGearStock")
 
--- Helper: Check if an egg/seed is in stock (stub, should be replaced with real stock check if available)
+-- Helper: Check if an egg/seed/gear is in stock (stub, should be replaced with real stock check if available)
 local function isEggInStock(eggName)
     -- TODO: Replace with real stock check if possible
     return true -- Assume always in stock for now
@@ -729,10 +773,15 @@ local function isSeedInStock(seedName)
     -- TODO: Replace with real stock check if possible
     return true -- Assume always in stock for now
 end
+local function isGearInStock(gearName)
+    -- TODO: Replace with real stock check if possible
+    return true -- Assume always in stock for now
+end
 
 -- Auto-buy logic
 local autoBuyEggLoopRunning = false
 local autoBuySeedLoopRunning = false
+local autoBuyGearLoopRunning = false
 
 -- Start auto-buy egg loop on script load
 if not autoBuyEggLoopRunning then
@@ -763,6 +812,25 @@ if not autoBuySeedLoopRunning then
                     if isSeedInStock(seed) then
                         if buySeedRemote then
                             buySeedRemote:FireServer(seed)
+                        end
+                    end
+                end
+            end
+            task.wait(0.1)
+        end
+    end)
+end
+
+-- Start auto-buy gear loop on script load
+if not autoBuyGearLoopRunning then
+    autoBuyGearLoopRunning = true
+    task.spawn(function()
+        while true do
+            if autoBuyGearState then
+                for _, gear in ipairs(selectedGears) do
+                    if isGearInStock(gear) then
+                        if buyGearRemote then
+                            buyGearRemote:FireServer(gear)
                         end
                     end
                 end
@@ -823,3 +891,5 @@ UserInputService.InputBegan:Connect(function(input, processed)
         end
     end
 end)
+-- Initial tab selection
+selectTab("EVENT")
