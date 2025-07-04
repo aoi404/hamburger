@@ -1,3 +1,4 @@
+
 --[[
 GAG SCRIPT BY:BREAD
 Modern Sidebar GUI Foundation (Step 1)
@@ -196,8 +197,8 @@ shopFrame.Parent = contentFrame
 tabContent["SHOP"] = shopFrame
 
 local buyEggHeader = Instance.new("TextLabel")
-buyEggHeader.Size = UDim2.new(1, -20, 0, 28)
-buyEggHeader.Position = UDim2.new(0, 10, 0, 10)
+buyEggHeader.Size = UDim2.new(1, -20, 0, 32)
+buyEggHeader.Position = UDim2.new(0, 10, 0, 16)
 buyEggHeader.BackgroundColor3 = Color3.fromRGB(30, 60, 120)
 buyEggHeader.Text = "BUY EGG:"
 buyEggHeader.Font = Enum.Font.SourceSansBold
@@ -206,9 +207,52 @@ buyEggHeader.TextColor3 = Color3.fromRGB(255,255,255)
 buyEggHeader.BorderSizePixel = 0
 buyEggHeader.Parent = shopFrame
 
+-- Egg Dropdown Button
+local eggDropdownBtn = Instance.new("TextButton")
+eggDropdownBtn.Name = "EggDropdownBtn"
+eggDropdownBtn.Size = UDim2.new(1, -20, 0, 28)
+eggDropdownBtn.Position = UDim2.new(0, 10, 0, 54)
+eggDropdownBtn.BackgroundColor3 = Color3.fromRGB(60, 120, 180)
+eggDropdownBtn.Text = "Select Eggs..."
+eggDropdownBtn.Font = Enum.Font.SourceSans
+eggDropdownBtn.TextSize = 16
+eggDropdownBtn.TextColor3 = Color3.fromRGB(255,255,255)
+eggDropdownBtn.BorderSizePixel = 0
+eggDropdownBtn.Parent = shopFrame
+
+local eggDropdownList = Instance.new("Frame")
+eggDropdownList.Name = "EggDropdownList"
+eggDropdownList.Size = UDim2.new(1, 0, 0, 0)
+eggDropdownList.Position = UDim2.new(0, 0, 1, 0)
+eggDropdownList.BackgroundColor3 = Color3.fromRGB(80, 140, 200)
+eggDropdownList.BorderSizePixel = 0
+eggDropdownList.Visible = false
+eggDropdownList.Parent = eggDropdownBtn
+
+-- Example egg options (replace with real data later)
+local eggOptions = {"Egg A", "Egg B", "Egg C"}
+for i, name in ipairs(eggOptions) do
+    local opt = Instance.new("TextButton")
+    opt.Size = UDim2.new(1, 0, 0, 24)
+    opt.Position = UDim2.new(0, 0, 0, (i-1)*24)
+    opt.BackgroundColor3 = Color3.fromRGB(100, 170, 220)
+    opt.Text = name
+    opt.Font = Enum.Font.SourceSans
+    opt.TextSize = 16
+    opt.TextColor3 = Color3.fromRGB(255,255,255)
+    opt.BorderSizePixel = 0
+    opt.Parent = eggDropdownList
+end
+
+eggDropdownBtn.MouseButton1Click:Connect(function()
+    eggDropdownList.Visible = not eggDropdownList.Visible
+    eggDropdownList.Size = eggDropdownList.Visible and UDim2.new(1, 0, 0, #eggOptions*24) or UDim2.new(1, 0, 0, 0)
+end)
+
+-- BUY SEEDS HEADER
 local buySeedsHeader = Instance.new("TextLabel")
-buySeedsHeader.Size = UDim2.new(1, -20, 0, 28)
-buySeedsHeader.Position = UDim2.new(0, 10, 0, 48)
+buySeedsHeader.Size = UDim2.new(1, -20, 0, 32)
+buySeedsHeader.Position = UDim2.new(0, 10, 0, 92)
 buySeedsHeader.BackgroundColor3 = Color3.fromRGB(30, 60, 120)
 buySeedsHeader.Text = "BUY SEEDS:"
 buySeedsHeader.Font = Enum.Font.SourceSansBold
@@ -217,33 +261,53 @@ buySeedsHeader.TextColor3 = Color3.fromRGB(255,255,255)
 buySeedsHeader.BorderSizePixel = 0
 buySeedsHeader.Parent = shopFrame
 
--- Placeholder for multi-select dropdowns (to be implemented)
-local eggDropdown = Instance.new("TextLabel")
-eggDropdown.Size = UDim2.new(1, -20, 0, 28)
-eggDropdown.Position = UDim2.new(0, 10, 0, 86)
-eggDropdown.BackgroundColor3 = Color3.fromRGB(60, 120, 180)
-eggDropdown.Text = "[Egg Multi-Select Dropdown]"
-eggDropdown.Font = Enum.Font.SourceSans
-eggDropdown.TextSize = 16
-eggDropdown.TextColor3 = Color3.fromRGB(255,255,255)
-eggDropdown.BorderSizePixel = 0
-eggDropdown.Parent = shopFrame
+-- Seed Dropdown Button
+local seedDropdownBtn = Instance.new("TextButton")
+seedDropdownBtn.Name = "SeedDropdownBtn"
+seedDropdownBtn.Size = UDim2.new(1, -20, 0, 28)
+seedDropdownBtn.Position = UDim2.new(0, 10, 0, 130)
+seedDropdownBtn.BackgroundColor3 = Color3.fromRGB(60, 120, 180)
+seedDropdownBtn.Text = "Select Seeds..."
+seedDropdownBtn.Font = Enum.Font.SourceSans
+seedDropdownBtn.TextSize = 16
+seedDropdownBtn.TextColor3 = Color3.fromRGB(255,255,255)
+seedDropdownBtn.BorderSizePixel = 0
+seedDropdownBtn.Parent = shopFrame
 
-local seedDropdown = Instance.new("TextLabel")
-seedDropdown.Size = UDim2.new(1, -20, 0, 28)
-seedDropdown.Position = UDim2.new(0, 10, 0, 124)
-seedDropdown.BackgroundColor3 = Color3.fromRGB(60, 120, 180)
-seedDropdown.Text = "[Seed Multi-Select Dropdown]"
-seedDropdown.Font = Enum.Font.SourceSans
-seedDropdown.TextSize = 16
-seedDropdown.TextColor3 = Color3.fromRGB(255,255,255)
-seedDropdown.BorderSizePixel = 0
-seedDropdown.Parent = shopFrame
+local seedDropdownList = Instance.new("Frame")
+seedDropdownList.Name = "SeedDropdownList"
+seedDropdownList.Size = UDim2.new(1, 0, 0, 0)
+seedDropdownList.Position = UDim2.new(0, 0, 1, 0)
+seedDropdownList.BackgroundColor3 = Color3.fromRGB(80, 140, 200)
+seedDropdownList.BorderSizePixel = 0
+seedDropdownList.Visible = false
+seedDropdownList.Parent = seedDropdownBtn
 
+-- Example seed options (replace with real data later)
+local seedOptions = {"Seed X", "Seed Y", "Seed Z"}
+for i, name in ipairs(seedOptions) do
+    local opt = Instance.new("TextButton")
+    opt.Size = UDim2.new(1, 0, 0, 24)
+    opt.Position = UDim2.new(0, 0, 0, (i-1)*24)
+    opt.BackgroundColor3 = Color3.fromRGB(100, 170, 220)
+    opt.Text = name
+    opt.Font = Enum.Font.SourceSans
+    opt.TextSize = 16
+    opt.TextColor3 = Color3.fromRGB(255,255,255)
+    opt.BorderSizePixel = 0
+    opt.Parent = seedDropdownList
+end
+
+seedDropdownBtn.MouseButton1Click:Connect(function()
+    seedDropdownList.Visible = not seedDropdownList.Visible
+    seedDropdownList.Size = seedDropdownList.Visible and UDim2.new(1, 0, 0, #seedOptions*24) or UDim2.new(1, 0, 0, 0)
+end)
+
+-- AUTO BUY EGG TOGGLE
 local autoBuyEggToggle = Instance.new("TextButton")
 autoBuyEggToggle.Name = "AutoBuyEggToggle"
 autoBuyEggToggle.Size = UDim2.new(1, -20, 0, 36)
-autoBuyEggToggle.Position = UDim2.new(0, 10, 0, 170)
+autoBuyEggToggle.Position = UDim2.new(0, 10, 0, 172)
 autoBuyEggToggle.BackgroundColor3 = Color3.fromRGB(60, 120, 240)
 autoBuyEggToggle.Text = "AUTO BUY EGG:  [OFF]"
 autoBuyEggToggle.Font = Enum.Font.SourceSansBold
@@ -252,10 +316,11 @@ autoBuyEggToggle.TextColor3 = Color3.fromRGB(255,255,255)
 autoBuyEggToggle.BorderSizePixel = 0
 autoBuyEggToggle.Parent = shopFrame
 
+-- AUTO BUY SEED TOGGLE
 local autoBuySeedToggle = Instance.new("TextButton")
 autoBuySeedToggle.Name = "AutoBuySeedToggle"
 autoBuySeedToggle.Size = UDim2.new(1, -20, 0, 36)
-autoBuySeedToggle.Position = UDim2.new(0, 10, 0, 210)
+autoBuySeedToggle.Position = UDim2.new(0, 10, 0, 214)
 autoBuySeedToggle.BackgroundColor3 = Color3.fromRGB(60, 120, 240)
 autoBuySeedToggle.Text = "AUTO BUY SEED:  [OFF]"
 autoBuySeedToggle.Font = Enum.Font.SourceSansBold
@@ -324,6 +389,23 @@ for name, btn in pairs(tabButtons) do
         selectTab(name)
     end)
 end
+
+-- Hide dropdowns if clicking elsewhere
+local function hideDropdowns(input)
+    if eggDropdownList.Visible and not eggDropdownBtn:IsAncestorOf(input.Target) then
+        eggDropdownList.Visible = false
+        eggDropdownList.Size = UDim2.new(1, 0, 0, 0)
+    end
+    if seedDropdownList.Visible and not seedDropdownBtn:IsAncestorOf(input.Target) then
+        seedDropdownList.Visible = false
+        seedDropdownList.Size = UDim2.new(1, 0, 0, 0)
+    end
+end
+UserInputService.InputBegan:Connect(function(input, processed)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        hideDropdowns(input)
+    end
+end)
 
 -- Ready for next steps: toggles, dropdowns, automation logic, etc.
 
