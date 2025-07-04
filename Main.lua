@@ -171,6 +171,21 @@ end)
 -- SHOP TAB CONTENT
 local shopFrame = tabContent["SHOP"]
 
+-- Helper to update toggle positions based on dropdowns
+local function updateShopTogglePositions()
+    local y = 16 + 36 -- after egg dropdown button
+    if eggDropdownList.Visible then
+        y = y + #eggOptions * 32
+    end
+    seedDropdownBtn.Position = UDim2.new(0, 16, 0, y)
+    y = y + 36
+    if seedDropdownList.Visible then
+        y = y + #seedOptions * 32
+    end
+    autoBuyEggToggle.Position = UDim2.new(0, 16, 0, y + 12)
+    autoBuySeedToggle.Position = UDim2.new(0, 16, 0, y + 12 + 44)
+end
+
 -- Egg Dropdown Button
 local eggDropdownBtn = Instance.new("TextButton")
 eggDropdownBtn.Name = "EggDropdownBtn"
@@ -228,6 +243,7 @@ updateEggDropdownText()
 eggDropdownBtn.MouseButton1Click:Connect(function()
     eggDropdownList.Visible = not eggDropdownList.Visible
     eggDropdownList.Size = eggDropdownList.Visible and UDim2.new(1, 0, 0, #eggOptions*32) or UDim2.new(1, 0, 0, 0)
+    updateShopTogglePositions()
 end)
 
 -- Seed Dropdown Button
@@ -287,6 +303,78 @@ updateSeedDropdownText()
 seedDropdownBtn.MouseButton1Click:Connect(function()
     seedDropdownList.Visible = not seedDropdownList.Visible
     seedDropdownList.Size = seedDropdownList.Visible and UDim2.new(1, 0, 0, #seedOptions*32) or UDim2.new(1, 0, 0, 0)
+    updateShopTogglePositions()
+end)
+
+-- Toggles
+local autoBuyEggToggle = Instance.new("TextButton")
+autoBuyEggToggle.Name = "AutoBuyEggToggle"
+autoBuyEggToggle.Size = UDim2.new(1, -32, 0, 36)
+autoBuyEggToggle.Position = UDim2.new(0, 16, 0, 112)
+autoBuyEggToggle.BackgroundColor3 = Color3.fromRGB(60, 90, 130)
+autoBuyEggToggle.Text = "AUTO BUY EGG"
+autoBuyEggToggle.Font = Enum.Font.SourceSansBold
+autoBuyEggToggle.TextSize = 20
+autoBuyEggToggle.TextColor3 = Color3.fromRGB(255,255,255)
+autoBuyEggToggle.BorderSizePixel = 0
+autoBuyEggToggle.TextXAlignment = Enum.TextXAlignment.Left
+autoBuyEggToggle.Parent = shopFrame
+
+local eggCheck = Instance.new("TextLabel")
+eggCheck.Name = "Checkmark"
+eggCheck.Size = UDim2.new(0, 32, 1, 0)
+eggCheck.Position = UDim2.new(1, -36, 0, 0)
+eggCheck.BackgroundTransparency = 1
+eggCheck.Font = Enum.Font.SourceSansBold
+eggCheck.TextSize = 24
+eggCheck.TextColor3 = Color3.fromRGB(220, 220, 220)
+eggCheck.Text = ""
+eggCheck.Parent = autoBuyEggToggle
+
+local autoBuyEggState = false
+local function updateAutoBuyEggToggle()
+    autoBuyEggToggle.BackgroundColor3 = autoBuyEggState and Color3.fromRGB(40, 90, 180) or Color3.fromRGB(60, 90, 130)
+    eggCheck.Text = autoBuyEggState and "✔" or ""
+end
+updateAutoBuyEggToggle()
+autoBuyEggToggle.MouseButton1Click:Connect(function()
+    autoBuyEggState = not autoBuyEggState
+    updateAutoBuyEggToggle()
+end)
+
+local autoBuySeedToggle = Instance.new("TextButton")
+autoBuySeedToggle.Name = "AutoBuySeedToggle"
+autoBuySeedToggle.Size = UDim2.new(1, -32, 0, 36)
+autoBuySeedToggle.Position = UDim2.new(0, 16, 0, 156)
+autoBuySeedToggle.BackgroundColor3 = Color3.fromRGB(60, 90, 130)
+autoBuySeedToggle.Text = "AUTO BUY SEED"
+autoBuySeedToggle.Font = Enum.Font.SourceSansBold
+autoBuySeedToggle.TextSize = 20
+autoBuySeedToggle.TextColor3 = Color3.fromRGB(255,255,255)
+autoBuySeedToggle.BorderSizePixel = 0
+autoBuySeedToggle.TextXAlignment = Enum.TextXAlignment.Left
+autoBuySeedToggle.Parent = shopFrame
+
+local seedCheck = Instance.new("TextLabel")
+seedCheck.Name = "Checkmark"
+seedCheck.Size = UDim2.new(0, 32, 1, 0)
+seedCheck.Position = UDim2.new(1, -36, 0, 0)
+seedCheck.BackgroundTransparency = 1
+seedCheck.Font = Enum.Font.SourceSansBold
+seedCheck.TextSize = 24
+seedCheck.TextColor3 = Color3.fromRGB(220, 220, 220)
+seedCheck.Text = ""
+seedCheck.Parent = autoBuySeedToggle
+
+local autoBuySeedState = false
+local function updateAutoBuySeedToggle()
+    autoBuySeedToggle.BackgroundColor3 = autoBuySeedState and Color3.fromRGB(40, 90, 180) or Color3.fromRGB(60, 90, 130)
+    seedCheck.Text = autoBuySeedState and "✔" or ""
+end
+updateAutoBuySeedToggle()
+autoBuySeedToggle.MouseButton1Click:Connect(function()
+    autoBuySeedState = not autoBuySeedState
+    updateAutoBuySeedToggle()
 end)
 
 -- Hide dropdowns if clicking elsewhere
@@ -295,10 +383,12 @@ UserInputService.InputBegan:Connect(function(input, processed)
         if eggDropdownList.Visible and not eggDropdownBtn:IsAncestorOf(input.Target) then
             eggDropdownList.Visible = false
             eggDropdownList.Size = UDim2.new(1, 0, 0, 0)
+            updateShopTogglePositions()
         end
         if seedDropdownList.Visible and not seedDropdownBtn:IsAncestorOf(input.Target) then
             seedDropdownList.Visible = false
             seedDropdownList.Size = UDim2.new(1, 0, 0, 0)
+            updateShopTogglePositions()
         end
     end
 end)
