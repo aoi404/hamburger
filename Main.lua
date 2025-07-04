@@ -531,6 +531,66 @@ UserInputService.InputBegan:Connect(function(input, processed)
     end
 end)
 
+-- Automation Remotes
+local buyEggRemote = ReplicatedStorage:FindFirstChild("GameEvents"):FindFirstChild("BuyPetEgg")
+local buySeedRemote = ReplicatedStorage:FindFirstChild("GameEvents"):FindFirstChild("BuySeedStock")
+
+-- Helper: Check if an egg/seed is in stock (stub, should be replaced with real stock check if available)
+local function isEggInStock(eggName)
+    -- TODO: Replace with real stock check if possible
+    return true -- Assume always in stock for now
+end
+local function isSeedInStock(seedName)
+    -- TODO: Replace with real stock check if possible
+    return true -- Assume always in stock for now
+end
+
+-- Auto-buy logic
+local autoBuyEggLoopRunning = false
+local autoBuySeedLoopRunning = false
+
+autoBuyEggToggle.MouseButton1Click:Connect(function()
+    autoBuyEggState = not autoBuyEggState
+    updateAutoBuyEggToggle()
+    if autoBuyEggState and not autoBuyEggLoopRunning then
+        autoBuyEggLoopRunning = true
+        task.spawn(function()
+            while autoBuyEggState do
+                for _, egg in ipairs(selectedEggs) do
+                    if isEggInStock(egg) then
+                        if buyEggRemote then
+                            buyEggRemote:FireServer(egg)
+                        end
+                    end
+                end
+                task.wait(2)
+            end
+            autoBuyEggLoopRunning = false
+        end)
+    end
+end)
+
+autoBuySeedToggle.MouseButton1Click:Connect(function()
+    autoBuySeedState = not autoBuySeedState
+    updateAutoBuySeedToggle()
+    if autoBuySeedState and not autoBuySeedLoopRunning then
+        autoBuySeedLoopRunning = true
+        task.spawn(function()
+            while autoBuySeedState do
+                for _, seed in ipairs(selectedSeeds) do
+                    if isSeedInStock(seed) then
+                        if buySeedRemote then
+                            buySeedRemote:FireServer(seed)
+                        end
+                    end
+                end
+                task.wait(2)
+            end
+            autoBuySeedLoopRunning = false
+        end)
+    end
+end)
+
 -- Tab Switching Logic
 local function selectTab(tabName)
     for name, btn in pairs(tabButtons) do
