@@ -210,7 +210,7 @@ closeBtn.TextColor3 = Color3.fromRGB(255,255,255)
 closeBtn.Parent = topBar
 
 -- Sidebar Tabs
-local tabNames = {"EVENT", "SHOP", "FARM", "GEAR"} -- Added GEAR tab
+local tabNames = {"EVENT", "SHOP", "FARM"}
 local tabButtons = {}
 for i, name in ipairs(tabNames) do
     local tabBtn = Instance.new("TextButton")
@@ -647,86 +647,6 @@ end
 updateSeedDropdownText()
 seedDropdownList.CanvasSize = UDim2.new(0, 0, 0, #seedOptions * 38)
 
--- GEAR TAB CONTENT
-local gearFrame = tabContent["GEAR"]
-local gearHeader = Instance.new("TextLabel")
-gearHeader.Size = UDim2.new(1, -32, 0, 40)
-gearHeader.Position = UDim2.new(0, 16, 0, 16)
-gearHeader.BackgroundColor3 = Color3.fromRGB(40, 90, 180)
-gearHeader.Text = "GEAR SHOP"
-gearHeader.Font = Enum.Font.SourceSansBold
-gearHeader.TextSize = 22
-gearHeader.TextColor3 = Color3.fromRGB(255,255,255)
-gearHeader.BorderSizePixel = 0
-gearHeader.TextXAlignment = Enum.TextXAlignment.Center
-gearHeader.Parent = gearFrame
-
-local gearListFrame = Instance.new("ScrollingFrame")
-gearListFrame.Name = "GearListFrame"
-gearListFrame.Size = UDim2.new(1, -32, 1, -64)
-gearListFrame.Position = UDim2.new(0, 16, 0, 56)
-gearListFrame.BackgroundColor3 = Color3.fromRGB(60, 120, 180)
-gearListFrame.BorderSizePixel = 0
-gearListFrame.ScrollBarThickness = 10
-gearListFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-gearListFrame.Parent = gearFrame
-gearListFrame.ClipsDescendants = true
-
-local gearOptions = {
-    {name = "Watering Can", display = "Watering Can", rarity = "Common", uses = "10 Uses", effect = "Speeds Plant Growth", price = "50,000"},
-    {name = "Trowel", display = "Trowel", rarity = "Uncommon", uses = "5 Uses", effect = "Helps to move plants", price = "100,000"},
-    {name = "Recall Wrench", display = "Recall Wrench", rarity = "Uncommon", uses = "5 Uses", effect = "Teleports to the Gear Shop", price = "150,000"},
-    {name = "Basic Sprinkler", display = "Basic Sprinkler", rarity = "Rare", uses = "5 mins", effect = "Speeds plant growth and increases fruit size", price = "20,000"},
-    {name = "Advanced Sprinkler", display = "Advanced Sprinkler", rarity = "Legendary", uses = "5 mins", effect = "Increases plant growth, increases mutation chances, and runs for 5 minutes after placing", price = "50,000"},
-    {name = "Godly Sprinkler", display = "Godly Sprinkler", rarity = "Mythical", uses = "5 mins", effect = "Speeds plant growth, increases mutation chances, increases fruit size, and runs for 5 minutes after placing", price = "100,000"},
-    {name = "Magnifying Glass", display = "Magnifying Glass", rarity = "Mythical", uses = "10 Uses", effect = "Inspect fruits to reveal their price, without collecting them", price = "10,000,000"},
-    {name = "Tanning Mirror", display = "Tanning Mirror", rarity = "Mythical", uses = "10 Uses", effect = "Redirects the Sun’s Beams towards random plants", price = "1,000,000"},
-    {name = "Master Sprinkler", display = "Master Sprinkler", rarity = "Divine", uses = "10 mins", effect = "Speeds up plant growth, increases mutation chances, increases fruit size, and runs for 10 minutes after placing", price = "10,000,000"},
-    {name = "Cleaning Spray", display = "Cleaning Spray", rarity = "Divine", uses = "10 Uses", effect = "Removes all mutations from a fruit.", price = "15,000,000"},
-    {name = "Favorite Tool", display = "Favorite Tool", rarity = "Divine", uses = "20 Uses", effect = "Lock and unlock the best fruits to avoid accidental harvest", price = "20,000,000"},
-    {name = "Harvest Tool", display = "Harvest Tool", rarity = "Divine", uses = "5 Uses", effect = "Harvests all fruits from the plant you select", price = "30,000,000"},
-    {name = "Friendship Pot", display = "Friendship Pot", rarity = "Divine", uses = "1 Use", effect = "Links with other players to maintain a streak of growing plants together", price = "15,000,000"},
-}
-
-local selectedGear = {}
-local function updateGearSelection()
-    for _, btn in ipairs(gearListFrame:GetChildren()) do
-        if btn:IsA("TextButton") then
-            local isSelected = false
-            for _, v in ipairs(selectedGear) do
-                if v == btn.Name then isSelected = true break end
-            end
-            btn.BackgroundColor3 = isSelected and Color3.fromRGB(60, 200, 120) or Color3.fromRGB(100, 170, 220)
-        end
-    end
-end
-
-for i, gear in ipairs(gearOptions) do
-    local btn = Instance.new("TextButton")
-    btn.Name = gear.name
-    btn.Size = UDim2.new(1, 0, 0, 54)
-    btn.Position = UDim2.new(0, 0, 0, (i-1)*56)
-    btn.BackgroundColor3 = Color3.fromRGB(100, 170, 220)
-    btn.Text = string.format("%s [%s]\n%s | %s | %s Coins", gear.display, gear.rarity, gear.uses, gear.effect, gear.price)
-    btn.Font = Enum.Font.SourceSans
-    btn.TextSize = 18
-    btn.TextColor3 = Color3.fromRGB(255,255,255)
-    btn.BorderSizePixel = 0
-    btn.TextWrapped = true
-    btn.ZIndex = 2
-    btn.Parent = gearListFrame
-    btn.MouseButton1Click:Connect(function()
-        local found = false
-        for j, v in ipairs(selectedGear) do
-            if v == gear.name then table.remove(selectedGear, j) found = true break end
-        end
-        if not found then table.insert(selectedGear, gear.name) end
-        updateGearSelection()
-    end)
-end
-gearListFrame.CanvasSize = UDim2.new(0, 0, 0, #gearOptions * 56)
-updateGearSelection()
-
 -- Helper to update toggle positions based on dropdowns
 function updateShopTogglePositions()
     local y = 20
@@ -903,6 +823,3 @@ UserInputService.InputBegan:Connect(function(input, processed)
         end
     end
 end)
-
--- Initial tab selection
-selectTab("EVENT")
