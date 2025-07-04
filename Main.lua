@@ -325,7 +325,7 @@ local gearOptions = {
 -- GEAR SHOP UI
 local gearShopLabel = Instance.new("TextLabel")
 gearShopLabel.Size = UDim2.new(1, -32, 0, 36)
-gearShopLabel.Position = UDim2.new(0, 16, 0, 74 + (#eggOptions > 0 and (#eggOptions * 38) or 0) + 44 + (#seedOptions > 0 and (#seedOptions * 38) or 0))
+gearShopLabel.Position = UDim2.new(0, 16, 0, autoBuySeedToggle.Position.Y.Offset + autoBuySeedToggle.Size.Y.Offset + 20)
 gearShopLabel.BackgroundColor3 = Color3.fromRGB(40, 90, 180)
 gearShopLabel.Text = "GEAR SHOP:"
 gearShopLabel.Font = Enum.Font.SourceSansBold
@@ -349,6 +349,8 @@ gearShopList.ClipsDescendants = true
 gearShopList.CanvasSize = UDim2.new(0, 0, 0, #gearOptions * 38)
 gearShopList.ScrollBarThickness = 10
 
+local buyGearRemote = ReplicatedStorage:FindFirstChild("GameEvents"):FindFirstChild("BuyGearStock")
+
 for i, gear in ipairs(gearOptions) do
     local opt = Instance.new("TextButton")
     opt.Size = UDim2.new(1, 0, 0, 38)
@@ -368,7 +370,11 @@ for i, gear in ipairs(gearOptions) do
     opt.MouseLeave:Connect(function()
         opt.BackgroundColor3 = Color3.fromRGB(100, 170, 220)
     end)
-    -- You can add purchase logic here if needed
+    opt.MouseButton1Click:Connect(function()
+        if buyGearRemote then
+            buyGearRemote:FireServer(gear.name)
+        end
+    end)
 end
 
 -- Toggles
