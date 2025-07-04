@@ -412,7 +412,7 @@ farmToggles[3].MouseButton1Click:Connect(function()
     farmToggles["sellCheck"].Visible = autoSell
 end)
 
--- Tab switching logic
+-- Tab switching logic (ensure this is after all UI elements are created)
 local function showTab(tab)
     EventPanel.Visible = (tab == "event")
     ShopPanel.Visible = (tab == "shop")
@@ -421,16 +421,21 @@ local function showTab(tab)
     ShopBtn.BackgroundColor3 = (tab == "shop") and Color3.fromRGB(200, 160, 120) or Color3.fromRGB(120, 135, 150)
     FarmBtn.BackgroundColor3 = (tab == "farm") and Color3.fromRGB(200, 160, 120) or Color3.fromRGB(120, 135, 150)
 end
-EventBtn.MouseButton1Click:Connect(function() showTab("event") end)
-ShopBtn.MouseButton1Click:Connect(function() showTab("shop") end)
-FarmBtn.MouseButton1Click:Connect(function() showTab("farm") end)
+
+-- Remove any previous connections by disconnecting and reconnecting
+if EventBtn._tabConn then EventBtn._tabConn:Disconnect() end
+if ShopBtn._tabConn then ShopBtn._tabConn:Disconnect() end
+if FarmBtn._tabConn then FarmBtn._tabConn:Disconnect() end
+EventBtn._tabConn = EventBtn.MouseButton1Click:Connect(function() showTab("event") end)
+ShopBtn._tabConn = ShopBtn.MouseButton1Click:Connect(function() showTab("shop") end)
+FarmBtn._tabConn = FarmBtn.MouseButton1Click:Connect(function() showTab("farm") end)
 showTab("event")
 
--- Hide/Show UI logic
+-- Hide/Show UI logic (fix: use Frame.Visible, not ScreenGui.Enabled)
 local isHidden = false
 local ShowUIButton = nil
 local function setUIVisible(visible)
-    ScreenGui.Enabled = visible
+    Frame.Visible = visible
     isHidden = not visible
     if ShowUIButton then ShowUIButton.Visible = not visible end
 end
