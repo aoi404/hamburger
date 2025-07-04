@@ -320,29 +320,33 @@ UIS.InputBegan:Connect(function(input, processed)
     end
 end)
 
--- SHOP TAB: Egg and Seed Dropdowns (multi-select for eggs)
+-- SHOP TAB: Egg and Seed Dropdowns (single-select, header is dropdown, auto-size)
 local eggList = {
     "Common Egg", "Uncommon Egg", "Rare Egg", "Legendary Egg", "Mythical Egg", "Bug Egg", "Exotic Bug Egg", "Night Egg", "Premium Night Egg", "Bee Egg", "Anti Bee Egg", "Premium Anti Bee Egg", "Common Summer Egg", "Rare Summer Egg", "Paradise Egg", "Oasis Egg", "Premium Oasis Egg", "Raphael Egg 1", "Raphael Egg 2", "Raphael Egg 3"
 }
-local selectedEggs = {}
+local selectedEgg = nil
 
-local EggDropdown = Instance.new("TextButton")
-EggDropdown.Size = EggBox.Size
-EggDropdown.Position = EggBox.Position
-EggDropdown.BackgroundColor3 = EggBox.BackgroundColor3
-EggDropdown.TextColor3 = EggBox.TextColor3
-EggDropdown.Font = EggBox.Font
-EggDropdown.TextSize = EggBox.TextSize
-EggDropdown.Text = "Select Eggs to Auto Buy"
-EggDropdown.Parent = ShopPanel
-EggBox.Visible = false
+BuyEggHeader.Text = "BUY EGG:"
+BuyEggHeader.TextXAlignment = Enum.TextXAlignment.Left
+BuyEggHeader.TextYAlignment = Enum.TextYAlignment.Center
+BuyEggHeader.ClipsDescendants = true
 
 local EggListFrame = Instance.new("Frame")
-EggListFrame.Size = UDim2.new(1, 0, 0, #eggList*28)
-EggListFrame.Position = UDim2.new(0, EggDropdown.Position.X.Offset, 0, EggDropdown.Position.Y.Offset+EggDropdown.Size.Y.Offset)
 EggListFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 90)
 EggListFrame.Visible = false
 EggListFrame.Parent = ShopPanel
+EggListFrame.ClipsDescendants = true
+
+local function updateEggDropdownSize()
+    local text = selectedEgg and ("BUY EGG: "..selectedEgg) or "BUY EGG:"
+    BuyEggHeader.Text = text
+    local textService = game:GetService("TextService")
+    local size = textService:GetTextSize(text, 18, Enum.Font.GothamBold, Vector2.new(1000, 36))
+    BuyEggHeader.Size = UDim2.new(0, math.max(180, size.X+30), 0, 36)
+    EggListFrame.Size = UDim2.new(0, BuyEggHeader.Size.X.Offset, 0, #eggList*28)
+    EggListFrame.Position = UDim2.new(0.05, 0, 0, BuyEggHeader.Position.Y.Offset+BuyEggHeader.Size.Y.Offset)
+end
+updateEggDropdownSize()
 
 for i,egg in ipairs(eggList) do
     local btn = Instance.new("TextButton")
@@ -354,54 +358,43 @@ for i,egg in ipairs(eggList) do
     btn.TextSize = 16
     btn.Text = egg
     btn.Parent = EggListFrame
-    local check = Instance.new("ImageLabel")
-    check.Size = UDim2.new(0, 24, 0, 24)
-    check.Position = UDim2.new(1, -28, 0, 2)
-    check.BackgroundTransparency = 1
-    check.Image = "rbxassetid://6031094678"
-    check.Visible = false
-    check.Parent = btn
     btn.MouseButton1Click:Connect(function()
-        if selectedEggs[egg] then
-            selectedEggs[egg] = nil
-            check.Visible = false
-        else
-            selectedEggs[egg] = true
-            check.Visible = true
-        end
-        -- Update dropdown text
-        local sel = {}
-        for k in pairs(selectedEggs) do table.insert(sel, k) end
-        EggDropdown.Text = (#sel > 0) and table.concat(sel, ", ") or "Select Eggs to Auto Buy"
+        selectedEgg = egg
+        updateEggDropdownSize()
+        EggListFrame.Visible = false
     end)
 end
-EggDropdown.MouseButton1Click:Connect(function()
+BuyEggHeader.MouseButton1Click:Connect(function()
     EggListFrame.Visible = not EggListFrame.Visible
 end)
 
--- Seeds (single select)
+-- Seeds (single select, header is dropdown, auto-size)
 local seedList = {
     "Carrot", "Strawberry", "Blueberry", "Tomato", "Cauliflower", "Watermelon", "Rafflesia", "Green Apple", "Avocado", "Banana", "Pineapple", "Kiwi", "Bell Pepper", "Prickly Pear", "Loquat", "Feijoa", "Pitcher Plant", "Sugar Apple"
 }
 local selectedSeed = nil
 
-local SeedDropdown = Instance.new("TextButton")
-SeedDropdown.Size = SeedBox.Size
-SeedDropdown.Position = SeedBox.Position
-SeedDropdown.BackgroundColor3 = SeedBox.BackgroundColor3
-SeedDropdown.TextColor3 = SeedBox.TextColor3
-SeedDropdown.Font = SeedBox.Font
-SeedDropdown.TextSize = SeedBox.TextSize
-SeedDropdown.Text = "Select Seed to Auto Buy"
-SeedDropdown.Parent = ShopPanel
-SeedBox.Visible = false
+BuySeedHeader.Text = "BUY SEEDS:"
+BuySeedHeader.TextXAlignment = Enum.TextXAlignment.Left
+BuySeedHeader.TextYAlignment = Enum.TextYAlignment.Center
+BuySeedHeader.ClipsDescendants = true
 
 local SeedListFrame = Instance.new("Frame")
-SeedListFrame.Size = UDim2.new(1, 0, 0, #seedList*28)
-SeedListFrame.Position = UDim2.new(0, SeedDropdown.Position.X.Offset, 0, SeedDropdown.Position.Y.Offset+SeedDropdown.Size.Y.Offset)
 SeedListFrame.BackgroundColor3 = Color3.fromRGB(60, 90, 60)
 SeedListFrame.Visible = false
 SeedListFrame.Parent = ShopPanel
+SeedListFrame.ClipsDescendants = true
+
+local function updateSeedDropdownSize()
+    local text = selectedSeed and ("BUY SEEDS: "..selectedSeed) or "BUY SEEDS:"
+    BuySeedHeader.Text = text
+    local textService = game:GetService("TextService")
+    local size = textService:GetTextSize(text, 18, Enum.Font.GothamBold, Vector2.new(1000, 36))
+    BuySeedHeader.Size = UDim2.new(0, math.max(180, size.X+30), 0, 36)
+    SeedListFrame.Size = UDim2.new(0, BuySeedHeader.Size.X.Offset, 0, #seedList*28)
+    SeedListFrame.Position = UDim2.new(0.05, 0, 0, BuySeedHeader.Position.Y.Offset+BuySeedHeader.Size.Y.Offset)
+end
+updateSeedDropdownSize()
 
 for i,seed in ipairs(seedList) do
     local btn = Instance.new("TextButton")
@@ -415,20 +408,20 @@ for i,seed in ipairs(seedList) do
     btn.Parent = SeedListFrame
     btn.MouseButton1Click:Connect(function()
         selectedSeed = seed
-        SeedDropdown.Text = seed
+        updateSeedDropdownSize()
         SeedListFrame.Visible = false
     end)
 end
-SeedDropdown.MouseButton1Click:Connect(function()
+BuySeedHeader.MouseButton1Click:Connect(function()
     SeedListFrame.Visible = not SeedListFrame.Visible
 end)
 
--- Update auto-buy logic to buy all selected eggs
+-- Update auto-buy logic to buy selected egg/seed
 local function autoBuyEggFunc()
-    for egg,_ in pairs(selectedEggs) do
+    if selectedEgg then
         local remote = GameEvents:FindFirstChild("BuyPetEgg")
         if remote then
-            pcall(function() remote:FireServer(egg) end)
+            pcall(function() remote:FireServer(selectedEgg) end)
         end
     end
 end
