@@ -323,15 +323,29 @@ MiscLabel.Font = Enum.Font.GothamBold
 MiscLabel.TextSize = 22
 MiscLabel.Parent = Frame
 
--- Helper: Harvest all fruits in your garden (robust, with dev log)
+-- UI: Add a notification label for harvest feedback
+local HarvestNotif = Instance.new("TextLabel")
+HarvestNotif.Size = UDim2.new(0, 320, 0, 32)
+HarvestNotif.Position = UDim2.new(0.5, -160, 0, 210)
+HarvestNotif.BackgroundTransparency = 0.3
+HarvestNotif.BackgroundColor3 = Color3.fromRGB(60, 80, 60)
+HarvestNotif.TextColor3 = Color3.fromRGB(255,255,180)
+HarvestNotif.Font = Enum.Font.GothamBold
+HarvestNotif.TextSize = 18
+HarvestNotif.Text = ""
+HarvestNotif.Visible = false
+HarvestNotif.ZIndex = 10
+HarvestNotif.Parent = Frame
+
+-- Helper: Harvest all fruits in your garden (robust, with dev log and UI feedback)
 local function harvestAllFruits()
-    print("[DEV LOG] Harvest: Starting harvestAllFruits()...")
+    print("[DEV LOG] Harvest: Triggered auto-harvest at "..os.date("!%X"))
     local farm = Workspace:FindFirstChild("Farm")
-    if not farm then print("[DEV LOG] Harvest: No 'Farm' found in Workspace.") return end
+    if not farm then print("[DEV LOG] Harvest: No 'Farm' found in Workspace.") HarvestNotif.Text = "No Farm found!" HarvestNotif.Visible = true wait(1) HarvestNotif.Visible = false return end
     local myGarden = farm:FindFirstChild(Player.Name)
-    if not myGarden then print("[DEV LOG] Harvest: No garden found for player '"..Player.Name.."'.") return end
+    if not myGarden then print("[DEV LOG] Harvest: No garden found for player '"..Player.Name.."'.") HarvestNotif.Text = "No Garden found!" HarvestNotif.Visible = true wait(1) HarvestNotif.Visible = false return end
     local remote = GameEvents:FindFirstChild("HarvestRemote")
-    if not remote then print("[DEV LOG] Harvest: No 'HarvestRemote' found in GameEvents.") return end
+    if not remote then print("[DEV LOG] Harvest: No 'HarvestRemote' found in GameEvents.") HarvestNotif.Text = "No HarvestRemote!" HarvestNotif.Visible = true wait(1) HarvestNotif.Visible = false return end
     local found = 0
     for _, obj in ipairs(myGarden:GetDescendants()) do
         if obj:IsA("BasePart") or obj:IsA("Model") then
@@ -344,6 +358,10 @@ local function harvestAllFruits()
         end
     end
     print("[DEV LOG] Harvest: Total objects attempted:", found)
+    HarvestNotif.Text = found > 0 and ("Auto-Harvested "..found.." objects!") or "Nothing to harvest."
+    HarvestNotif.Visible = true
+    wait(1.2)
+    HarvestNotif.Visible = false
 end
 
 -- Helper: Sell all inventory
@@ -356,16 +374,28 @@ local function sellAllInventory()
     end
 end
 
--- Helper: Auto buy egg (with dev log and argument check)
+-- Helper: Auto buy egg (with dev log, argument variations)
 local function autoBuyEggFunc()
     if autoBuyEgg and selectedEgg then
         local remote = GameEvents:FindFirstChild("BuyPetEgg")
         if remote then
             print("[DEV LOG] BuyEgg: Attempting to buy egg:", selectedEgg)
-            local ok, err = pcall(function()
-                remote:FireServer(selectedEgg)
-            end)
+            -- Try original
+            local ok, err = pcall(function() remote:FireServer(selectedEgg) end)
             print("[DEV LOG] BuyEgg: FireServer(selectedEgg) result:", ok, err)
+            -- Try removing spaces
+            if not ok then
+                local noSpace = string.gsub(selectedEgg, " ", "")
+                print("[DEV LOG] BuyEgg: Retrying with no spaces:", noSpace)
+                local ok2, err2 = pcall(function() remote:FireServer(noSpace) end)
+                print("[DEV LOG] BuyEgg: FireServer(noSpace) result:", ok2, err2)
+            end
+            -- Try as table
+            if not ok then
+                print("[DEV LOG] BuyEgg: Retrying with table arg:", selectedEgg)
+                local ok3, err3 = pcall(function() remote:FireServer({selectedEgg}) end)
+                print("[DEV LOG] BuyEgg: FireServer({selectedEgg}) result:", ok3, err3)
+            end
         else
             print("[DEV LOG] BuyEgg: 'BuyPetEgg' remote not found!")
         end
