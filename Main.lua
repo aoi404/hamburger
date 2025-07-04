@@ -22,8 +22,8 @@ screenGui.Parent = playerGui
 -- Sidebar Frame
 local sidebar = Instance.new("Frame")
 sidebar.Name = "Sidebar"
-sidebar.Size = UDim2.new(0, 400, 0, 270)
-sidebar.Position = UDim2.new(0.5, -200, 0.5, -135)
+sidebar.Size = UDim2.new(0, 520, 0, 480) -- Increased width and height
+sidebar.Position = UDim2.new(0.5, -260, 0.5, -240)
 sidebar.BackgroundColor3 = Color3.fromRGB(120, 130, 150)
 sidebar.BorderSizePixel = 0
 sidebar.Parent = screenGui
@@ -32,7 +32,7 @@ sidebar.Visible = true
 -- Top Bar
 local topBar = Instance.new("Frame")
 topBar.Name = "TopBar"
-topBar.Size = UDim2.new(1, 0, 0, 36)
+topBar.Size = UDim2.new(1, 0, 0, 44) -- Increased height
 topBar.Position = UDim2.new(0, 0, 0, 0)
 topBar.BackgroundColor3 = Color3.fromRGB(80, 90, 110)
 topBar.BorderSizePixel = 0
@@ -78,12 +78,12 @@ local tabButtons = {}
 for i, name in ipairs(tabNames) do
     local tabBtn = Instance.new("TextButton")
     tabBtn.Name = name .. "TabBtn"
-    tabBtn.Size = UDim2.new(0, 100, 0, 40)
-    tabBtn.Position = UDim2.new(0, 0, 0, 36 + (i-1)*40)
+    tabBtn.Size = UDim2.new(0, 120, 0, 54) -- Increased width and height
+    tabBtn.Position = UDim2.new(0, 0, 0, 44 + (i-1)*54)
     tabBtn.BackgroundColor3 = i == 1 and Color3.fromRGB(220, 160, 80) or Color3.fromRGB(80, 90, 110)
     tabBtn.Text = name
     tabBtn.Font = Enum.Font.SourceSansBold
-    tabBtn.TextSize = 20
+    tabBtn.TextSize = 24
     tabBtn.TextColor3 = Color3.fromRGB(40, 40, 40)
     tabBtn.BorderSizePixel = 0
     tabBtn.Parent = sidebar
@@ -92,8 +92,8 @@ end
 
 -- Vertical Black Line
 local navLine = Instance.new("Frame")
-navLine.Size = UDim2.new(0, 4, 1, -36)
-navLine.Position = UDim2.new(0, 100, 0, 36)
+navLine.Size = UDim2.new(0, 4, 1, -44)
+navLine.Position = UDim2.new(0, 120, 0, 44)
 navLine.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 navLine.BorderSizePixel = 0
 navLine.Parent = sidebar
@@ -101,8 +101,8 @@ navLine.Parent = sidebar
 -- Main Content Frame
 local contentFrame = Instance.new("Frame")
 contentFrame.Name = "ContentFrame"
-contentFrame.Size = UDim2.new(1, -104, 1, -36)
-contentFrame.Position = UDim2.new(0, 104, 0, 36)
+contentFrame.Size = UDim2.new(1, -124, 1, -44)
+contentFrame.Position = UDim2.new(0, 124, 0, 44)
 contentFrame.BackgroundColor3 = Color3.fromRGB(120, 130, 150)
 contentFrame.BorderSizePixel = 0
 contentFrame.Parent = sidebar
@@ -243,12 +243,12 @@ end)
 -- Egg Dropdown Button
 local eggDropdownBtn = Instance.new("TextButton")
 eggDropdownBtn.Name = "EggDropdownBtn"
-eggDropdownBtn.Size = UDim2.new(1, -32, 0, 36)
-eggDropdownBtn.Position = UDim2.new(0, 16, 0, 16)
+eggDropdownBtn.Size = UDim2.new(1, -40, 0, 44) -- Larger
+eggDropdownBtn.Position = UDim2.new(0, 20, 0, 20)
 eggDropdownBtn.BackgroundColor3 = Color3.fromRGB(40, 90, 180)
 eggDropdownBtn.Text = "BUY EGG:"
 eggDropdownBtn.Font = Enum.Font.SourceSansBold
-eggDropdownBtn.TextSize = 20
+eggDropdownBtn.TextSize = 22
 eggDropdownBtn.TextColor3 = Color3.fromRGB(255,255,255)
 eggDropdownBtn.BorderSizePixel = 0
 eggDropdownBtn.TextXAlignment = Enum.TextXAlignment.Center
@@ -258,8 +258,8 @@ eggDropdownBtn.ZIndex = 2
 -- Egg Dropdown ScrollingFrame
 local eggDropdownList = Instance.new("ScrollingFrame")
 eggDropdownList.Name = "EggDropdownList"
-eggDropdownList.Size = UDim2.new(1, -32, 0, 0)
-eggDropdownList.Position = UDim2.new(0, 16, 0, 52)
+eggDropdownList.Size = UDim2.new(1, -40, 0, 0)
+eggDropdownList.Position = UDim2.new(0, 20, 0, 64)
 eggDropdownList.BackgroundColor3 = Color3.fromRGB(60, 120, 180)
 eggDropdownList.BorderSizePixel = 0
 eggDropdownList.Visible = false
@@ -267,9 +267,9 @@ eggDropdownList.Parent = shopFrame
 eggDropdownList.ZIndex = 3
 eggDropdownList.ClipsDescendants = true
 eggDropdownList.CanvasSize = UDim2.new(0, 0, 0, 0)
-eggDropdownList.ScrollBarThickness = 6
+eggDropdownList.ScrollBarThickness = 10 -- Thicker scrollbar
 
-local eggOptions = {"Egg A", "Egg B", "Egg C"}
+local eggOptions = {"Egg A", "Egg B", "Egg C", "Egg D", "Egg E", "Egg F", "Egg G", "Egg H", "Egg I", "Egg J"} -- Example: more eggs
 local selectedEggs = {}
 local function updateEggDropdownText()
     if #selectedEggs == 0 then
@@ -280,12 +280,12 @@ local function updateEggDropdownText()
 end
 for i, name in ipairs(eggOptions) do
     local opt = Instance.new("TextButton")
-    opt.Size = UDim2.new(1, 0, 0, 32)
-    opt.Position = UDim2.new(0, 0, 0, (i-1)*32)
+    opt.Size = UDim2.new(1, 0, 0, 38) -- Larger
+    opt.Position = UDim2.new(0, 0, 0, (i-1)*38)
     opt.BackgroundColor3 = Color3.fromRGB(100, 170, 220)
     opt.Text = name
     opt.Font = Enum.Font.SourceSans
-    opt.TextSize = 18
+    opt.TextSize = 20
     opt.TextColor3 = Color3.fromRGB(255,255,255)
     opt.BorderSizePixel = 0
     opt.Parent = eggDropdownList
@@ -301,17 +301,17 @@ for i, name in ipairs(eggOptions) do
     end)
 end
 updateEggDropdownText()
-eggDropdownList.CanvasSize = UDim2.new(0, 0, 0, #eggOptions * 32)
+eggDropdownList.CanvasSize = UDim2.new(0, 0, 0, #eggOptions * 38)
 
 -- Seed Dropdown Button
 local seedDropdownBtn = Instance.new("TextButton")
 seedDropdownBtn.Name = "SeedDropdownBtn"
-seedDropdownBtn.Size = UDim2.new(1, -32, 0, 36)
-seedDropdownBtn.Position = UDim2.new(0, 16, 0, 60)
+seedDropdownBtn.Size = UDim2.new(1, -40, 0, 44)
+seedDropdownBtn.Position = UDim2.new(0, 20, 0, 74 + (#eggOptions > 0 and (#eggOptions * 38) or 0))
 seedDropdownBtn.BackgroundColor3 = Color3.fromRGB(40, 90, 180)
 seedDropdownBtn.Text = "BUY SEEDS:"
 seedDropdownBtn.Font = Enum.Font.SourceSansBold
-seedDropdownBtn.TextSize = 20
+seedDropdownBtn.TextSize = 22
 seedDropdownBtn.TextColor3 = Color3.fromRGB(255,255,255)
 seedDropdownBtn.BorderSizePixel = 0
 seedDropdownBtn.TextXAlignment = Enum.TextXAlignment.Center
@@ -321,8 +321,8 @@ seedDropdownBtn.ZIndex = 2
 -- Seed Dropdown ScrollingFrame
 local seedDropdownList = Instance.new("ScrollingFrame")
 seedDropdownList.Name = "SeedDropdownList"
-seedDropdownList.Size = UDim2.new(1, -32, 0, 0)
-seedDropdownList.Position = UDim2.new(0, 16, 0, 96)
+seedDropdownList.Size = UDim2.new(1, -40, 0, 0)
+seedDropdownList.Position = UDim2.new(0, 20, 0, 118 + (#eggOptions > 0 and (#eggOptions * 38) or 0))
 seedDropdownList.BackgroundColor3 = Color3.fromRGB(60, 120, 180)
 seedDropdownList.BorderSizePixel = 0
 seedDropdownList.Visible = false
@@ -330,9 +330,9 @@ seedDropdownList.Parent = shopFrame
 seedDropdownList.ZIndex = 3
 seedDropdownList.ClipsDescendants = true
 seedDropdownList.CanvasSize = UDim2.new(0, 0, 0, 0)
-seedDropdownList.ScrollBarThickness = 6
+seedDropdownList.ScrollBarThickness = 10
 
-local seedOptions = {"Seed X", "Seed Y", "Seed Z"}
+local seedOptions = {"Seed X", "Seed Y", "Seed Z", "Seed AA", "Seed BB", "Seed CC", "Seed DD", "Seed EE", "Seed FF", "Seed GG"} -- Example: more seeds
 local selectedSeeds = {}
 local function updateSeedDropdownText()
     if #selectedSeeds == 0 then
@@ -343,12 +343,12 @@ local function updateSeedDropdownText()
 end
 for i, name in ipairs(seedOptions) do
     local opt = Instance.new("TextButton")
-    opt.Size = UDim2.new(1, 0, 0, 32)
-    opt.Position = UDim2.new(0, 0, 0, (i-1)*32)
+    opt.Size = UDim2.new(1, 0, 0, 38)
+    opt.Position = UDim2.new(0, 0, 0, (i-1)*38)
     opt.BackgroundColor3 = Color3.fromRGB(100, 170, 220)
     opt.Text = name
     opt.Font = Enum.Font.SourceSans
-    opt.TextSize = 18
+    opt.TextSize = 20
     opt.TextColor3 = Color3.fromRGB(255,255,255)
     opt.BorderSizePixel = 0
     opt.Parent = seedDropdownList
@@ -364,49 +364,49 @@ for i, name in ipairs(seedOptions) do
     end)
 end
 updateSeedDropdownText()
-seedDropdownList.CanvasSize = UDim2.new(0, 0, 0, #seedOptions * 32)
+seedDropdownList.CanvasSize = UDim2.new(0, 0, 0, #seedOptions * 38)
 
 -- Helper to update toggle positions based on dropdowns
 function updateShopTogglePositions()
-    local y = 16
+    local y = 20
     local contentBottom = shopFrame.AbsolutePosition.Y + shopFrame.AbsoluteSize.Y
     -- Egg Dropdown Button
-    eggDropdownBtn.Position = UDim2.new(0, 16, 0, y)
-    y = y + 36
+    eggDropdownBtn.Position = UDim2.new(0, 20, 0, y)
+    y = y + 44
     -- Egg Dropdown List
     if eggDropdownList.Visible then
         local dropdownTop = shopFrame.AbsolutePosition.Y + y
-        local maxHeight = contentBottom - dropdownTop - 16 -- 16px padding from bottom
-        local needed = #eggOptions * 32
+        local maxHeight = contentBottom - dropdownTop - 20
+        local needed = #eggOptions * 38
         local showHeight = math.max(0, math.min(needed, maxHeight))
-        eggDropdownList.Position = UDim2.new(0, 16, 0, y)
-        eggDropdownList.Size = UDim2.new(1, -32, 0, showHeight)
+        eggDropdownList.Position = UDim2.new(0, 20, 0, y)
+        eggDropdownList.Size = UDim2.new(1, -40, 0, showHeight)
         eggDropdownList.CanvasSize = UDim2.new(0, 0, 0, needed)
         y = y + showHeight
     else
-        eggDropdownList.Position = UDim2.new(0, 16, 0, y)
-        eggDropdownList.Size = UDim2.new(1, -32, 0, 0)
+        eggDropdownList.Position = UDim2.new(0, 20, 0, y)
+        eggDropdownList.Size = UDim2.new(1, -40, 0, 0)
     end
     -- Seed Dropdown Button
-    seedDropdownBtn.Position = UDim2.new(0, 16, 0, y)
-    y = y + 36
+    seedDropdownBtn.Position = UDim2.new(0, 20, 0, y)
+    y = y + 44
     -- Seed Dropdown List
     if seedDropdownList.Visible then
         local dropdownTop = shopFrame.AbsolutePosition.Y + y
-        local maxHeight = contentBottom - dropdownTop - 16
-        local needed = #seedOptions * 32
+        local maxHeight = contentBottom - dropdownTop - 20
+        local needed = #seedOptions * 38
         local showHeight = math.max(0, math.min(needed, maxHeight))
-        seedDropdownList.Position = UDim2.new(0, 16, 0, y)
-        seedDropdownList.Size = UDim2.new(1, -32, 0, showHeight)
+        seedDropdownList.Position = UDim2.new(0, 20, 0, y)
+        seedDropdownList.Size = UDim2.new(1, -40, 0, showHeight)
         seedDropdownList.CanvasSize = UDim2.new(0, 0, 0, needed)
         y = y + showHeight
     else
-        seedDropdownList.Position = UDim2.new(0, 16, 0, y)
-        seedDropdownList.Size = UDim2.new(1, -32, 0, 0)
+        seedDropdownList.Position = UDim2.new(0, 20, 0, y)
+        seedDropdownList.Size = UDim2.new(1, -40, 0, 0)
     end
     -- Toggles
-    autoBuyEggToggle.Position = UDim2.new(0, 16, 0, y + 12)
-    autoBuySeedToggle.Position = UDim2.new(0, 16, 0, y + 12 + 44)
+    autoBuyEggToggle.Position = UDim2.new(0, 20, 0, y + 18)
+    autoBuySeedToggle.Position = UDim2.new(0, 20, 0, y + 18 + 54)
 end
 
 eggDropdownBtn.MouseButton1Click:Connect(function()
