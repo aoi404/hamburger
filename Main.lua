@@ -1,3 +1,4 @@
+
 --[[
 GAG SCRIPT BY:BREAD
 Modern Sidebar GUI (Restarted)
@@ -724,3 +725,17 @@ end
 
 -- Run this once at script start to help user find the remote
 findRemoteByName(ReplicatedStorage, "BuyPetEgg")
+
+-- Utility: Recursively print all RemoteEvents and RemoteFunctions in ReplicatedStorage
+local function printAllRemotes(parent, path)
+    path = path or parent.Name
+    for _, child in ipairs(parent:GetChildren()) do
+        if child:IsA("RemoteEvent") or child:IsA("RemoteFunction") then
+            print("[GAG REMOTE SCAN]", child.ClassName, ":", path .. "." .. child.Name)
+        end
+        printAllRemotes(child, path .. "." .. child.Name)
+    end
+end
+
+-- Run this once at script start to help user find all remotes
+printAllRemotes(ReplicatedStorage)
