@@ -216,15 +216,22 @@ autoBuyEggToggle.MouseButton1Click:Connect(function()
         autoBuyEggLoopRunning = true
         task.spawn(function()
             while autoBuyEggState do
+                if not buyEggRemote then
+                    warn("[GAG DEBUG] BuyPetEgg remote not found!")
+                    break
+                end
+                if #selectedEggs == 0 then
+                    warn("[GAG DEBUG] No eggs selected for auto-buy!")
+                end
                 for _, egg in ipairs(selectedEggs) do
-                    print("[GAG] Attempting to buy egg:", egg, "type:", typeof(egg))
-                    if isEggInStock(egg) then
-                        if buyEggRemote then
-                            print("[GAG] Firing BuyPetEgg with:", egg)
-                            buyEggRemote:FireServer(egg)
-                        else
-                            warn("[GAG] BuyPetEgg remote not found!")
-                        end
+                    print("[GAG DEBUG] Attempting to buy egg:", egg, "type:", typeof(egg))
+                    local success, err = pcall(function()
+                        buyEggRemote:FireServer(egg)
+                      end)
+                    if not success then
+                      warn("[GAG DEBUG] Error firing BuyPetEgg:", err)
+                    else
+                      print("[GAG DEBUG] Fired BuyPetEgg with:", egg)
                     end
                 end
                 task.wait(0.1)
@@ -278,15 +285,22 @@ autoBuySeedToggle.MouseButton1Click:Connect(function()
         autoBuySeedLoopRunning = true
         task.spawn(function()
             while autoBuySeedState do
+                if not buySeedRemote then
+                    warn("[GAG DEBUG] BuySeedStock remote not found!")
+                    break
+                end
+                if #selectedSeeds == 0 then
+                    warn("[GAG DEBUG] No seeds selected for auto-buy!")
+                end
                 for _, seed in ipairs(selectedSeeds) do
-                    print("[GAG] Attempting to buy seed:", seed, "type:", typeof(seed))
-                    if isSeedInStock(seed) then
-                        if buySeedRemote then
-                            print("[GAG] Firing BuySeedStock with:", seed)
-                            buySeedRemote:FireServer(seed)
-                        else
-                            warn("[GAG] BuySeedStock remote not found!")
-                        end
+                    print("[GAG DEBUG] Attempting to buy seed:", seed, "type:", typeof(seed))
+                    local success, err = pcall(function()
+                        buySeedRemote:FireServer(seed)
+                    end)
+                    if not success then
+                        warn("[GAG DEBUG] Error firing BuySeedStock:", err)
+                    else
+                        print("[GAG DEBUG] Fired BuySeedStock with:", seed)
                     end
                 end
                 task.wait(0.1)
@@ -588,11 +602,8 @@ UserInputService.InputBegan:Connect(function(input, processed)
 end)
 
 -- Automation Remotes
-local buyEggRemote = ReplicatedStorage:FindFirstChild("GameEvents") and ReplicatedStorage.GameEvents:FindFirstChild("BuyPetEgg")
-local buySeedRemote = ReplicatedStorage:FindFirstChild("GameEvents") and ReplicatedStorage.GameEvents:FindFirstChild("BuySeedStock")
-
-print("[GAG] buyEggRemote:", buyEggRemote)
-print("[GAG] buySeedRemote:", buySeedRemote)
+local buyEggRemote = ReplicatedStorage:FindFirstChild("GameEvents"):FindFirstChild("BuyPetEgg")
+local buySeedRemote = ReplicatedStorage:FindFirstChild("GameEvents"):FindFirstChild("BuySeedStock")
 
 -- Helper: Check if an egg/seed is in stock (stub, should be replaced with real stock check if available)
 local function isEggInStock(eggName)
@@ -607,6 +618,44 @@ end
 -- Auto-buy logic
 local autoBuyEggLoopRunning = false
 local autoBuySeedLoopRunning = false
+
+-- Start auto-buy egg loop on script load
+if not autoBuyEggLoopRunning then
+    autoBuyEggLoopRunning = true
+    task.spawn(function()
+        while true do
+            if autoBuyEggState then
+                for _, egg in ipairs(selectedEggs) do
+                    if isEggInStock(egg) then
+                        if buyEggRemote then
+                            buyEggRemote:FireServer(egg)
+                        end
+                    end
+                end
+            end
+            task.wait(0.1)
+        end
+    end)
+end
+
+-- Start auto-buy seed loop on script load
+if not autoBuySeedLoopRunning then
+    autoBuySeedLoopRunning = true
+    task.spawn(function()
+        while true do
+            if autoBuySeedState then
+                for _, seed in ipairs(selectedSeeds) do
+                    if isSeedInStock(seed) then
+                        if buySeedRemote then
+                            buySeedRemote:FireServer(seed)
+                        end
+                    end
+                end
+            end
+            task.wait(0.1)
+        end
+    end)
+end
 
 -- Tab Switching Logic
 local function selectTab(tabName)
@@ -659,3 +708,5 @@ UserInputService.InputBegan:Connect(function(input, processed)
         end
     end
 end)
+-- Initial tab selection
+selectTab("EVENT")
