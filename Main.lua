@@ -597,44 +597,6 @@ end
 local autoBuyEggLoopRunning = false
 local autoBuySeedLoopRunning = false
 
--- Start auto-buy egg loop on script load
-if not autoBuyEggLoopRunning then
-    autoBuyEggLoopRunning = true
-    task.spawn(function()
-        while true do
-            if autoBuyEggState then
-                for _, egg in ipairs(selectedEggs) do
-                    if isEggInStock(egg) then
-                        if buyEggRemote then
-                            buyEggRemote:FireServer(egg)
-                        end
-                    end
-                end
-            end
-            task.wait(0.1)
-        end
-    end)
-end
-
--- Start auto-buy seed loop on script load
-if not autoBuySeedLoopRunning then
-    autoBuySeedLoopRunning = true
-    task.spawn(function()
-        while true do
-            if autoBuySeedState then
-                for _, seed in ipairs(selectedSeeds) do
-                    if isSeedInStock(seed) then
-                        if buySeedRemote then
-                            buySeedRemote:FireServer(seed)
-                        end
-                    end
-                end
-            end
-            task.wait(0.1)
-        end
-    end)
-end
-
 -- Tab Switching Logic
 local function selectTab(tabName)
     for name, btn in pairs(tabButtons) do
