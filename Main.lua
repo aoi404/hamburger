@@ -170,6 +170,75 @@ end)
 -- SHOP TAB CONTENT
 local shopFrame = tabContent["SHOP"]
 
+-- Toggles (create these first so updateShopToggle can reference them)
+local autoBuyEggToggle = Instance.new("TextButton")
+autoBuyEggToggle.Name = "AutoBuyEggToggle"
+autoBuyEggToggle.Size = UDim2.new(1, -32, 0, 36)
+autoBuyEggToggle.BackgroundColor3 = Color3.fromRGB(60, 90, 130)
+autoBuyEggToggle.Text = "AUTO BUY EGG"
+autoBuyEggToggle.Font = Enum.Font.SourceSansBold
+autoBuyEggToggle.TextSize = 20
+autoBuyEggToggle.TextColor3 = Color3.fromRGB(255,255,255)
+autoBuyEggToggle.BorderSizePixel = 0
+autoBuyEggToggle.TextXAlignment = Enum.TextXAlignment.Left
+autoBuyEggToggle.Parent = shopFrame
+
+local eggCheck = Instance.new("TextLabel")
+eggCheck.Name = "Checkmark"
+eggCheck.Size = UDim2.new(0, 32, 1, 0)
+eggCheck.Position = UDim2.new(1, -36, 0, 0)
+eggCheck.BackgroundTransparency = 1
+eggCheck.Font = Enum.Font.SourceSansBold
+eggCheck.TextSize = 24
+eggCheck.TextColor3 = Color3.fromRGB(220, 220, 220)
+eggCheck.Text = ""
+eggCheck.Parent = autoBuyEggToggle
+
+local autoBuyEggState = false
+local function updateAutoBuyEggToggle()
+    autoBuyEggToggle.BackgroundColor3 = autoBuyEggState and Color3.fromRGB(40, 90, 180) or Color3.fromRGB(60, 90, 130)
+    eggCheck.Text = autoBuyEggState and "✔" or ""
+end
+updateAutoBuyEggToggle()
+autoBuyEggToggle.MouseButton1Click:Connect(function()
+    autoBuyEggState = not autoBuyEggState
+    updateAutoBuyEggToggle()
+end)
+
+local autoBuySeedToggle = Instance.new("TextButton")
+autoBuySeedToggle.Name = "AutoBuySeedToggle"
+autoBuySeedToggle.Size = UDim2.new(1, -32, 0, 36)
+autoBuySeedToggle.BackgroundColor3 = Color3.fromRGB(60, 90, 130)
+autoBuySeedToggle.Text = "AUTO BUY SEED"
+autoBuySeedToggle.Font = Enum.Font.SourceSansBold
+autoBuySeedToggle.TextSize = 20
+autoBuySeedToggle.TextColor3 = Color3.fromRGB(255,255,255)
+autoBuySeedToggle.BorderSizePixel = 0
+autoBuySeedToggle.TextXAlignment = Enum.TextXAlignment.Left
+autoBuySeedToggle.Parent = shopFrame
+
+local seedCheck = Instance.new("TextLabel")
+seedCheck.Name = "Checkmark"
+seedCheck.Size = UDim2.new(0, 32, 1, 0)
+seedCheck.Position = UDim2.new(1, -36, 0, 0)
+seedCheck.BackgroundTransparency = 1
+seedCheck.Font = Enum.Font.SourceSansBold
+seedCheck.TextSize = 24
+seedCheck.TextColor3 = Color3.fromRGB(220, 220, 220)
+seedCheck.Text = ""
+seedCheck.Parent = autoBuySeedToggle
+
+local autoBuySeedState = false
+local function updateAutoBuySeedToggle()
+    autoBuySeedToggle.BackgroundColor3 = autoBuySeedState and Color3.fromRGB(40, 90, 180) or Color3.fromRGB(60, 90, 130)
+    seedCheck.Text = autoBuySeedState and "✔" or ""
+end
+updateAutoBuySeedToggle()
+autoBuySeedToggle.MouseButton1Click:Connect(function()
+    autoBuySeedState = not autoBuySeedState
+    updateAutoBuySeedToggle()
+end)
+
 -- Egg Dropdown Button
 local eggDropdownBtn = Instance.new("TextButton")
 eggDropdownBtn.Name = "EggDropdownBtn"
