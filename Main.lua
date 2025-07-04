@@ -224,14 +224,26 @@ autoBuyEggToggle.MouseButton1Click:Connect(function()
                     warn("[GAG DEBUG] No eggs selected for auto-buy!")
                 end
                 for _, egg in ipairs(selectedEggs) do
-                    print("[GAG DEBUG] Attempting to buy egg:", egg, "type:", typeof(egg))
-                    local success, err = pcall(function()
+                    print("[GAG DEBUG] Attempting to buy egg (string):", egg, "type:", typeof(egg))
+                    local successStr, errStr = pcall(function()
                         buyEggRemote:FireServer(egg)
-                      end)
-                    if not success then
-                      warn("[GAG DEBUG] Error firing BuyPetEgg:", err)
+                    end)
+                    if not successStr then
+                        warn("[GAG DEBUG] Error firing BuyPetEgg (string):", errStr)
                     else
-                      print("[GAG DEBUG] Fired BuyPetEgg with:", egg)
+                        print("[GAG DEBUG] Fired BuyPetEgg with (string):", egg)
+                    end
+
+                    -- Try as table argument as well
+                    local tblArg = {EggName = egg}
+                    print("[GAG DEBUG] Attempting to buy egg (table):", tblArg)
+                    local successTbl, errTbl = pcall(function()
+                        buyEggRemote:FireServer(tblArg)
+                    end)
+                    if not successTbl then
+                        warn("[GAG DEBUG] Error firing BuyPetEgg (table):", errTbl)
+                    else
+                        print("[GAG DEBUG] Fired BuyPetEgg with (table):", tblArg)
                     end
                 end
                 task.wait(0.1)
@@ -587,17 +599,14 @@ end)
 
 -- Hide dropdowns if clicking elsewhere
 UserInputService.InputBegan:Connect(function(input, processed)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        local changed = false
-        if eggDropdownList.Visible and not eggDropdownBtn:IsAncestorOf(input.Target) then
+    if input.UserInputType == Enum.UserInputType.MouseButton1 and not processed then
+        if eggDropdownList.Visible then
             eggDropdownList.Visible = false
-            changed = true
         end
-        if seedDropdownList.Visible and not seedDropdownBtn:IsAncestorOf(input.Target) then
+        if seedDropdownList.Visible then
             seedDropdownList.Visible = false
-            changed = true
         end
-        if changed then updateShopTogglePositions() end
+        updateShopTogglePositions()
     end
 end)
 
