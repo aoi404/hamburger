@@ -6,6 +6,7 @@ local Player = Players.LocalPlayer
 local GameEvents = ReplicatedStorage:WaitForChild("GameEvents")
 local Workspace = game:GetService("Workspace")
 
+-- Redesigned UI to match provided screenshot
 -- Remove old UI if exists
 if Player.PlayerGui:FindFirstChild("GrowGardenUI") then
     Player.PlayerGui.GrowGardenUI:Destroy()
@@ -16,66 +17,141 @@ ScreenGui.Name = "GrowGardenUI"
 ScreenGui.Parent = Player:WaitForChild("PlayerGui")
 
 local Frame = Instance.new("Frame")
-Frame.Size = UDim2.new(0, 420, 0, 420)
-Frame.Position = UDim2.new(0.5, -210, 0.5, -210)
-Frame.BackgroundColor3 = Color3.fromRGB(30, 32, 36)
+Frame.Size = UDim2.new(0, 500, 0, 340)
+Frame.Position = UDim2.new(0.5, -250, 0.5, -170)
+Frame.BackgroundColor3 = Color3.fromRGB(120, 135, 150)
 Frame.BorderSizePixel = 0
 Frame.Active = true
 Frame.Draggable = true
 Frame.Parent = ScreenGui
 
 local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(0, 12)
+UICorner.CornerRadius = UDim.new(0, 10)
 UICorner.Parent = Frame
 
+-- Title Bar
+local TitleBar = Instance.new("Frame")
+TitleBar.Size = UDim2.new(1, 0, 0, 38)
+TitleBar.BackgroundColor3 = Color3.fromRGB(40, 50, 60)
+TitleBar.BorderSizePixel = 0
+TitleBar.Parent = Frame
+
 local Title = Instance.new("TextLabel")
-Title.Text = "🌱 Grow a Garden Hub"
-Title.Size = UDim2.new(1, 0, 0, 48)
+Title.Text = "GAG SCRIPT BY:BREAD"
+Title.Size = UDim2.new(1, -80, 1, 0)
+Title.Position = UDim2.new(0, 10, 0, 0)
 Title.BackgroundTransparency = 1
-Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-Title.Font = Enum.Font.GothamBold
-Title.TextSize = 32
-Title.Parent = Frame
+Title.TextColor3 = Color3.fromRGB(0,0,0)
+Title.Font = Enum.Font.GothamBlack
+Title.TextSize = 26
+Title.TextXAlignment = Enum.TextXAlignment.Left
+Title.Parent = TitleBar
 
--- Hide/Show/X Buttons
-local HideBtn = Instance.new("TextButton")
-HideBtn.Size = UDim2.new(0, 60, 0, 32)
-HideBtn.Position = UDim2.new(1, -132, 0, 8)
-HideBtn.Text = "Hide"
-HideBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 60)
-HideBtn.TextColor3 = Color3.fromRGB(220,220,220)
-HideBtn.Font = Enum.Font.Gotham
-HideBtn.TextSize = 18
-HideBtn.Parent = Frame
+-- Minimize Button
+local MinBtn = Instance.new("TextButton")
+MinBtn.Size = UDim2.new(0, 32, 0, 32)
+MinBtn.Position = UDim2.new(1, -72, 0, 3)
+MinBtn.Text = "-"
+MinBtn.BackgroundColor3 = Color3.fromRGB(40, 50, 60)
+MinBtn.TextColor3 = Color3.fromRGB(0,0,0)
+MinBtn.Font = Enum.Font.GothamBold
+MinBtn.TextSize = 24
+MinBtn.Parent = TitleBar
 
-local ShowBtn = Instance.new("TextButton")
-ShowBtn.Size = UDim2.new(0, 120, 0, 36)
-ShowBtn.Position = UDim2.new(0.5, -60, 0, -44)
-ShowBtn.Text = "Show UI"
-ShowBtn.BackgroundColor3 = Color3.fromRGB(50, 50, 60)
-ShowBtn.TextColor3 = Color3.fromRGB(220,220,220)
-ShowBtn.Font = Enum.Font.Gotham
-ShowBtn.TextSize = 20
-ShowBtn.Visible = false
-ShowBtn.Parent = ScreenGui
-
+-- Close Button
 local CloseBtn = Instance.new("TextButton")
-CloseBtn.Size = UDim2.new(0, 48, 0, 32)
-CloseBtn.Position = UDim2.new(1, -68, 0, 8)
+CloseBtn.Size = UDim2.new(0, 32, 0, 32)
+CloseBtn.Position = UDim2.new(1, -36, 0, 3)
 CloseBtn.Text = "✕"
-CloseBtn.BackgroundColor3 = Color3.fromRGB(180, 60, 60)
-CloseBtn.TextColor3 = Color3.fromRGB(255,255,255)
+CloseBtn.BackgroundColor3 = Color3.fromRGB(40, 50, 60)
+CloseBtn.TextColor3 = Color3.fromRGB(0,0,0)
 CloseBtn.Font = Enum.Font.GothamBold
-CloseBtn.TextSize = 20
-CloseBtn.Parent = Frame
+CloseBtn.TextSize = 22
+CloseBtn.Parent = TitleBar
 
-HideBtn.MouseButton1Click:Connect(function()
-    Frame.Visible = false
-    ShowBtn.Visible = true
+-- Sidebar
+local Sidebar = Instance.new("Frame")
+Sidebar.Size = UDim2.new(0, 70, 1, -38)
+Sidebar.Position = UDim2.new(0, 0, 0, 38)
+Sidebar.BackgroundColor3 = Color3.fromRGB(100, 110, 120)
+Sidebar.BorderSizePixel = 0
+Sidebar.Parent = Frame
+
+local SideLine = Instance.new("Frame")
+SideLine.Size = UDim2.new(0, 6, 1, 0)
+SideLine.Position = UDim2.new(0, 64, 0, 0)
+SideLine.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+SideLine.BorderSizePixel = 0
+SideLine.Parent = Sidebar
+
+local EventBtn = Instance.new("TextButton")
+EventBtn.Size = UDim2.new(1, -10, 0, 36)
+EventBtn.Position = UDim2.new(0, 5, 0, 10)
+EventBtn.Text = "EVENT"
+EventBtn.BackgroundColor3 = Color3.fromRGB(120, 135, 150)
+EventBtn.TextColor3 = Color3.fromRGB(0,0,0)
+EventBtn.Font = Enum.Font.GothamBold
+EventBtn.TextSize = 16
+EventBtn.Parent = Sidebar
+
+local ShopBtn = Instance.new("TextButton")
+ShopBtn.Size = UDim2.new(1, -10, 0, 36)
+ShopBtn.Position = UDim2.new(0, 5, 0, 56)
+ShopBtn.Text = "SHOP"
+ShopBtn.BackgroundColor3 = Color3.fromRGB(200, 160, 120)
+ShopBtn.TextColor3 = Color3.fromRGB(0,0,0)
+ShopBtn.Font = Enum.Font.GothamBold
+ShopBtn.TextSize = 16
+ShopBtn.Parent = Sidebar
+
+-- Main Content Area
+local MainPanel = Instance.new("Frame")
+MainPanel.Size = UDim2.new(1, -80, 1, -48)
+MainPanel.Position = UDim2.new(0, 80, 0, 48)
+MainPanel.BackgroundTransparency = 1
+MainPanel.Parent = Frame
+
+local BuyEggHeader = Instance.new("TextLabel")
+BuyEggHeader.Size = UDim2.new(1, 0, 0, 36)
+BuyEggHeader.Position = UDim2.new(0, 0, 0, 0)
+BuyEggHeader.BackgroundColor3 = Color3.fromRGB(30, 60, 110)
+BuyEggHeader.TextColor3 = Color3.fromRGB(255,255,255)
+BuyEggHeader.Font = Enum.Font.GothamBold
+BuyEggHeader.TextSize = 18
+BuyEggHeader.Text = "BUY EGG:"
+BuyEggHeader.Parent = MainPanel
+
+local EggBox = Instance.new("Frame")
+EggBox.Size = UDim2.new(1, 0, 1, -46)
+EggBox.Position = UDim2.new(0, 0, 0, 42)
+EggBox.BackgroundColor3 = Color3.fromRGB(70, 110, 150)
+EggBox.Parent = MainPanel
+
+local EggLabel = Instance.new("TextLabel")
+EggLabel.Size = UDim2.new(1, 0, 1, 0)
+EggLabel.Position = UDim2.new(0, 0, 0, 0)
+EggLabel.BackgroundTransparency = 1
+EggLabel.TextColor3 = Color3.fromRGB(255,255,255)
+EggLabel.Font = Enum.Font.GothamBold
+EggLabel.TextSize = 18
+EggLabel.Text = "EGGS HERE"
+EggLabel.Parent = EggBox
+
+-- Button logic for sidebar
+EventBtn.MouseButton1Click:Connect(function()
+    EventBtn.BackgroundColor3 = Color3.fromRGB(200, 160, 120)
+    ShopBtn.BackgroundColor3 = Color3.fromRGB(120, 135, 150)
+    -- TODO: Show event content
 end)
-ShowBtn.MouseButton1Click:Connect(function()
-    Frame.Visible = true
-    ShowBtn.Visible = false
+ShopBtn.MouseButton1Click:Connect(function()
+    ShopBtn.BackgroundColor3 = Color3.fromRGB(200, 160, 120)
+    EventBtn.BackgroundColor3 = Color3.fromRGB(120, 135, 150)
+    -- TODO: Show shop content
+end)
+
+MinBtn.MouseButton1Click:Connect(function()
+    Frame.Visible = false
+    -- Add a way to restore if needed
 end)
 CloseBtn.MouseButton1Click:Connect(function()
     ScreenGui:Destroy()
