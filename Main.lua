@@ -510,188 +510,11 @@ end
 updateSeedDropdownText()
 seedDropdownList.CanvasSize = UDim2.new(0, 0, 0, #seedOptions * 38)
 
--- Helper to update toggle positions based on dropdowns
-function updateShopTogglePositions()
-    local y = 20
-    local contentBottom = shopFrame.AbsolutePosition.Y + shopFrame.AbsoluteSize.Y
-    -- Egg Dropdown Button
-    eggDropdownBtn.Position = UDim2.new(0, 20, 0, y)
-    y = y + 44
-    -- Egg Dropdown List
-    if eggDropdownList.Visible then
-        local dropdownTop = shopFrame.AbsolutePosition.Y + y
-        local maxHeight = contentBottom - dropdownTop - 20
-        local needed = #eggOptions * 38
-        local showHeight = math.max(0, math.min(needed, maxHeight))
-        eggDropdownList.Position = UDim2.new(0, 20, 0, y)
-        eggDropdownList.Size = UDim2.new(1, -40, 0, showHeight)
-        eggDropdownList.CanvasSize = UDim2.new(0, 0, 0, needed)
-        y = y + showHeight
-    else
-        eggDropdownList.Position = UDim2.new(0, 20, 0, y)
-        eggDropdownList.Size = UDim2.new(1, -40, 0, 0)
-    end
-    -- Seed Dropdown Button
-    seedDropdownBtn.Position = UDim2.new(0, 20, 0, y)
-    y = y + 44
-    -- Seed Dropdown List
-    if seedDropdownList.Visible then
-        local dropdownTop = shopFrame.AbsolutePosition.Y + y
-        local maxHeight = contentBottom - dropdownTop - 20
-        local needed = #seedOptions * 38
-        local showHeight = math.max(0, math.min(needed, maxHeight))
-        seedDropdownList.Position = UDim2.new(0, 20, 0, y)
-        seedDropdownList.Size = UDim2.new(1, -40, 0, showHeight)
-        seedDropdownList.CanvasSize = UDim2.new(0, 0, 0, needed)
-        y = y + showHeight
-    else
-        seedDropdownList.Position = UDim2.new(0, 20, 0, y)
-        seedDropdownList.Size = UDim2.new(1, -40, 0, 0)
-    end
-    -- Toggles
-    autoBuyEggToggle.Position = UDim2.new(0, 20, 0, y + 18)
-    autoBuySeedToggle.Position = UDim2.new(0, 20, 0, y + 18 + 54)
-end
-
-eggDropdownBtn.MouseButton1Click:Connect(function()
-    eggDropdownList.Visible = not eggDropdownList.Visible
-    updateShopTogglePositions()
-end)
-
-seedDropdownBtn.MouseButton1Click:Connect(function()
-    seedDropdownList.Visible = not seedDropdownList.Visible
-    updateShopTogglePositions()
-end)
-
--- Hide dropdowns if clicking elsewhere
-UserInputService.InputBegan:Connect(function(input, processed)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        local changed = false
-        if eggDropdownList.Visible and not eggDropdownBtn:IsAncestorOf(input.Target) then
-            eggDropdownList.Visible = false
-            changed = true
-        end
-        if seedDropdownList.Visible and not seedDropdownBtn:IsAncestorOf(input.Target) then
-            seedDropdownList.Visible = false
-            changed = true
-        end
-        if changed then updateShopTogglePositions() end
-    end
-end)
-
--- Automation Remotes
-local buyEggRemote = ReplicatedStorage:FindFirstChild("GameEvents"):FindFirstChild("BuyPetEgg")
-local buySeedRemote = ReplicatedStorage:FindFirstChild("GameEvents"):FindFirstChild("BuySeedStock")
-
--- Helper: Check if an egg/seed is in stock (stub, should be replaced with real stock check if available)
-local function isEggInStock(eggName)
-    -- TODO: Replace with real stock check if possible
-    return true -- Assume always in stock for now
-end
-local function isSeedInStock(seedName)
-    -- TODO: Replace with real stock check if possible
-    return true -- Assume always in stock for now
-end
-
--- Auto-buy logic
-local autoBuyEggLoopRunning = false
-local autoBuySeedLoopRunning = false
-
--- Start auto-buy egg loop on script load
-if not autoBuyEggLoopRunning then
-    autoBuyEggLoopRunning = true
-    task.spawn(function()
-        while true do
-            if autoBuyEggState then
-                for _, egg in ipairs(selectedEggs) do
-                    if isEggInStock(egg) then
-                        if buyEggRemote then
-                            buyEggRemote:FireServer(egg)
-                        end
-                    end
-                end
-            end
-            task.wait(0.1)
-        end
-    end)
-end
-
--- Start auto-buy seed loop on script load
-if not autoBuySeedLoopRunning then
-    autoBuySeedLoopRunning = true
-    task.spawn(function()
-        while true do
-            if autoBuySeedState then
-                for _, seed in ipairs(selectedSeeds) do
-                    if isSeedInStock(seed) then
-                        if buySeedRemote then
-                            buySeedRemote:FireServer(seed)
-                        end
-                    end
-                end
-            end
-            task.wait(0.1)
-        end
-    end)
-end
-
--- Tab Switching Logic
-local function selectTab(tabName)
-    for name, btn in pairs(tabButtons) do
-        btn.BackgroundColor3 = name == tabName and Color3.fromRGB(220, 160, 80) or Color3.fromRGB(80, 90, 110)
-    end
-    for name, frame in pairs(tabContent) do
-        frame.Visible = (name == tabName)
-    end
-end
-for name, btn in pairs(tabButtons) do
-    btn.MouseButton1Click:Connect(function()
-        selectTab(name)
-    end)
-end
-
--- Hide/Show Logic
-local showUIButton = Instance.new("TextButton")
-showUIButton.Name = "ShowUIButton"
-showUIButton.Size = UDim2.new(0, 140, 0, 36)
-showUIButton.Position = UDim2.new(0, 20, 0, 20)
-showUIButton.BackgroundColor3 = Color3.fromRGB(80, 90, 110)
-showUIButton.Text = "Show GAG UI"
-showUIButton.Font = Enum.Font.SourceSansBold
-showUIButton.TextSize = 20
-showUIButton.TextColor3 = Color3.fromRGB(255,255,255)
-showUIButton.Visible = false
-showUIButton.Parent = screenGui
-
-local function hideUI()
-    sidebar.Visible = false
-    showUIButton.Visible = true
-end
-local function showUI()
-    sidebar.Visible = true
-    showUIButton.Visible = false
-end
-closeBtn.MouseButton1Click:Connect(hideUI)
-showUIButton.MouseButton1Click:Connect(showUI)
-minimizeBtn.MouseButton1Click:Connect(function()
-    sidebar.Visible = not sidebar.Visible
-    showUIButton.Visible = not sidebar.Visible
-end)
-UserInputService.InputBegan:Connect(function(input, processed)
-    if not processed and input.KeyCode == Enum.KeyCode.RightShift then
-        if sidebar.Visible then
-            hideUI()
-        else
-            showUI()
-        end
-    end
-end)
-
 -- Gear Dropdown Button
 local gearDropdownBtn = Instance.new("TextButton")
 gearDropdownBtn.Name = "GearDropdownBtn"
 gearDropdownBtn.Size = UDim2.new(1, -40, 0, 44)
-gearDropdownBtn.Position = UDim2.new(0, 20, 0, 0) -- Update position as needed
+gearDropdownBtn.Position = UDim2.new(0, 20, 0, 0) -- Will be positioned dynamically
 gearDropdownBtn.BackgroundColor3 = Color3.fromRGB(40, 90, 180)
 gearDropdownBtn.Text = "BUY GEAR:"
 gearDropdownBtn.Font = Enum.Font.SourceSansBold
@@ -769,7 +592,7 @@ for i, name in ipairs(gearOptions) do
     opt.ZIndex = 4
     -- Tooltip for details
     opt.MouseEnter:Connect(function()
-        opt.Text = name .. "\\n" .. (gearDetails[name] or "")
+        opt.Text = name .. "\n" .. (gearDetails[name] or "")
         opt.TextWrapped = true
     end)
     opt.MouseLeave:Connect(function()
@@ -863,3 +686,40 @@ local buyGearRemote = ReplicatedStorage:FindFirstChild("GameEvents"):FindFirstCh
 
 -- Initial tab selection
 selectTab("EVENT")
+
+-- Hide/Show Logic
+local showUIButton = Instance.new("TextButton")
+showUIButton.Name = "ShowUIButton"
+showUIButton.Size = UDim2.new(0, 140, 0, 36)
+showUIButton.Position = UDim2.new(0, 20, 0, 20)
+showUIButton.BackgroundColor3 = Color3.fromRGB(80, 90, 110)
+showUIButton.Text = "Show GAG UI"
+showUIButton.Font = Enum.Font.SourceSansBold
+showUIButton.TextSize = 20
+showUIButton.TextColor3 = Color3.fromRGB(255,255,255)
+showUIButton.Visible = false
+showUIButton.Parent = screenGui
+
+local function hideUI()
+    sidebar.Visible = false
+    showUIButton.Visible = true
+end
+local function showUI()
+    sidebar.Visible = true
+    showUIButton.Visible = false
+end
+closeBtn.MouseButton1Click:Connect(hideUI)
+showUIButton.MouseButton1Click:Connect(showUI)
+minimizeBtn.MouseButton1Click:Connect(function()
+    sidebar.Visible = not sidebar.Visible
+    showUIButton.Visible = not sidebar.Visible
+end)
+UserInputService.InputBegan:Connect(function(input, processed)
+    if not processed and input.KeyCode == Enum.KeyCode.RightShift then
+        if sidebar.Visible then
+            hideUI()
+        else
+            showUI()
+        end
+    end
+end)
