@@ -73,10 +73,16 @@ minimizeBtn.TextSize = 22
 minimizeBtn.TextColor3 = Color3.fromRGB(255,255,255)
 minimizeBtn.Parent = titleBar
 
--- Sidebar Navigation (vertical, left)
+-- Remove old contentFrame if exists
+for _, child in ipairs(sidebar:GetChildren()) do
+    if child.Name == "ContentFrame" then child:Destroy() end
+    if child.Name == "NavBar" then child:Destroy() end
+end
+
+-- Sidebar Navigation (vertical, left, fixed width)
 local navBar = Instance.new("Frame")
 navBar.Name = "NavBar"
-navBar.Size = UDim2.new(0, 100, 1, 0)
+navBar.Size = UDim2.new(0, 120, 1, -36)
 navBar.Position = UDim2.new(0, 0, 0, 36)
 navBar.BackgroundColor3 = Color3.fromRGB(80, 90, 110)
 navBar.BorderSizePixel = 0
@@ -89,37 +95,32 @@ navLine.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 navLine.BorderSizePixel = 0
 navLine.Parent = navBar
 
--- Tab Buttons (vertical)
+-- Tab Buttons (vertical, full width of navBar)
 local tabNames = {"EVENT", "SHOP", "FARM"}
 local tabButtons = {}
 for i, name in ipairs(tabNames) do
     local tabBtn = Instance.new("TextButton")
     tabBtn.Name = name .. "TabBtn"
-    tabBtn.Size = UDim2.new(1, 0, 0, 36)
-    tabBtn.Position = UDim2.new(0, 0, 0, (i-1)*36)
+    tabBtn.Size = UDim2.new(1, 0, 0, 48)
+    tabBtn.Position = UDim2.new(0, 0, 0, (i-1)*48)
     tabBtn.BackgroundColor3 = i == 1 and Color3.fromRGB(220, 160, 80) or Color3.fromRGB(80, 90, 110)
     tabBtn.Text = name
     tabBtn.Font = Enum.Font.SourceSansBold
-    tabBtn.TextSize = 18
+    tabBtn.TextSize = 22
     tabBtn.TextColor3 = Color3.fromRGB(20, 20, 20)
     tabBtn.BorderSizePixel = 0
     tabBtn.Parent = navBar
     tabButtons[name] = tabBtn
 end
 
--- Main Content Frame (right of sidebar)
+-- Main Content Frame (right of sidebar, fill remaining space)
 local contentFrame = Instance.new("Frame")
 contentFrame.Name = "ContentFrame"
-contentFrame.Size = UDim2.new(1, -100, 1, -36)
-contentFrame.Position = UDim2.new(0, 100, 0, 36)
+contentFrame.Size = UDim2.new(1, -120, 1, -36)
+contentFrame.Position = UDim2.new(0, 120, 0, 36)
 contentFrame.BackgroundColor3 = Color3.fromRGB(120, 130, 150)
 contentFrame.BorderSizePixel = 0
 contentFrame.Parent = sidebar
-
--- Remove old contentFrame if exists
-for _, child in ipairs(sidebar:GetChildren()) do
-    if child.Name == "ContentFrame" then child:Destroy() end
-end
 
 -- Tab Content Creation (clear and rebuild for new layout)
 for _, frame in pairs(contentFrame:GetChildren()) do frame:Destroy() end
@@ -135,49 +136,38 @@ eventFrame.Parent = contentFrame
 tabContent["EVENT"] = eventFrame
 
 local eventHeader = Instance.new("TextLabel")
-eventHeader.Size = UDim2.new(1, -24, 0, 36)
-eventHeader.Position = UDim2.new(0, 12, 0, 16)
-eventHeader.BackgroundColor3 = Color3.fromRGB(30, 60, 120)
+eventHeader.Size = UDim2.new(1, -64, 0, 56)
+eventHeader.Position = UDim2.new(0, 32, 0, 32)
+eventHeader.BackgroundColor3 = Color3.fromRGB(20, 60, 120)
 eventHeader.Text = "SUMMER HARVEST"
 eventHeader.Font = Enum.Font.SourceSansBold
-eventHeader.TextSize = 20
+eventHeader.TextSize = 32
 eventHeader.TextColor3 = Color3.fromRGB(255,255,255)
 eventHeader.BorderSizePixel = 0
 eventHeader.Parent = eventFrame
-
 eventHeader.TextXAlignment = Enum.TextXAlignment.Center
+eventHeader.TextYAlignment = Enum.TextYAlignment.Center
 
 game:GetService("StarterGui").SetCore("ResetButtonCallback", false)
 
 local autoSubmitToggle = Instance.new("TextButton")
 autoSubmitToggle.Name = "AutoSubmitToggle"
-autoSubmitToggle.Size = UDim2.new(1, -24, 0, 36)
-autoSubmitToggle.Position = UDim2.new(0, 12, 0, 64)
-autoSubmitToggle.BackgroundColor3 = Color3.fromRGB(60, 120, 180)
-autoSubmitToggle.Text = "AUTO SUBMIT:"
+autoSubmitToggle.Size = UDim2.new(1, -64, 0, 48)
+autoSubmitToggle.Position = UDim2.new(0, 32, 0, 104)
+autoSubmitToggle.BackgroundColor3 = Color3.fromRGB(40, 110, 180)
+autoSubmitToggle.Text = "AUTO SUBMIT:  [OFF]"
 autoSubmitToggle.Font = Enum.Font.SourceSansBold
-autoSubmitToggle.TextSize = 18
+autoSubmitToggle.TextSize = 26
 autoSubmitToggle.TextColor3 = Color3.fromRGB(255,255,255)
 autoSubmitToggle.BorderSizePixel = 0
-autoSubmitToggle.TextXAlignment = Enum.TextXAlignment.Left
+autoSubmitToggle.TextXAlignment = Enum.TextXAlignment.Center
 autoSubmitToggle.Parent = eventFrame
-
--- Checkmark toggle (right side)
-local checkmark = Instance.new("ImageLabel")
-checkmark.Name = "Checkmark"
-checkmark.Size = UDim2.new(0, 28, 0, 28)
-checkmark.Position = UDim2.new(1, -40, 0.5, -14)
-checkmark.BackgroundTransparency = 1
-checkmark.Image = "rbxassetid://6031094678" -- checkmark icon
-checkmark.ImageColor3 = Color3.fromRGB(180, 220, 255)
-checkmark.Visible = false
-checkmark.Parent = autoSubmitToggle
 
 local autoSubmitState = false
 autoSubmitToggle.MouseButton1Click:Connect(function()
     autoSubmitState = not autoSubmitState
-    checkmark.Visible = autoSubmitState
-    autoSubmitToggle.BackgroundColor3 = autoSubmitState and Color3.fromRGB(60, 200, 120) or Color3.fromRGB(60, 120, 180)
+    autoSubmitToggle.Text = autoSubmitState and "AUTO SUBMIT:  [ON]" or "AUTO SUBMIT:  [OFF]"
+    autoSubmitToggle.BackgroundColor3 = autoSubmitState and Color3.fromRGB(60, 200, 120) or Color3.fromRGB(40, 110, 180)
 end)
 
 -- Tab Switching Logic (update to show/hide content)
