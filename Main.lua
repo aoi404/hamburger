@@ -1,21 +1,22 @@
--- Grow a Garden GUI Automation Script
+-- Grow a Garden GUI Automation Script with Hide/Show/X UI
 
--- Services
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local Player = Players.LocalPlayer
-
--- Remotes
 local GameEvents = ReplicatedStorage:WaitForChild("GameEvents")
 
--- UI Creation
+-- Remove old UI if exists
+if Player.PlayerGui:FindFirstChild("GrowGardenUI") then
+    Player.PlayerGui.GrowGardenUI:Destroy()
+end
+
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "GrowGardenUI"
 ScreenGui.Parent = Player:WaitForChild("PlayerGui")
 
 local Frame = Instance.new("Frame")
-Frame.Size = UDim2.new(0, 250, 0, 200)
-Frame.Position = UDim2.new(0.5, -125, 0.5, -100)
+Frame.Size = UDim2.new(0, 250, 0, 220)
+Frame.Position = UDim2.new(0.5, -125, 0.5, -110)
 Frame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 Frame.Active = true
 Frame.Draggable = true
@@ -29,6 +30,44 @@ Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.Font = Enum.Font.SourceSansBold
 Title.TextSize = 20
 Title.Parent = Frame
+
+-- Hide/Show/X Buttons
+local HideBtn = Instance.new("TextButton")
+HideBtn.Size = UDim2.new(0, 40, 0, 25)
+HideBtn.Position = UDim2.new(1, -90, 0, 2)
+HideBtn.Text = "Hide"
+HideBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+HideBtn.TextColor3 = Color3.fromRGB(255,255,255)
+HideBtn.Parent = Frame
+
+local ShowBtn = Instance.new("TextButton")
+ShowBtn.Size = UDim2.new(0, 60, 0, 25)
+ShowBtn.Position = UDim2.new(0.5, -30, 0, -35)
+ShowBtn.Text = "Show UI"
+ShowBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+ShowBtn.TextColor3 = Color3.fromRGB(255,255,255)
+ShowBtn.Visible = false
+ShowBtn.Parent = ScreenGui
+
+local CloseBtn = Instance.new("TextButton")
+CloseBtn.Size = UDim2.new(0, 40, 0, 25)
+CloseBtn.Position = UDim2.new(1, -45, 0, 2)
+CloseBtn.Text = "X"
+CloseBtn.BackgroundColor3 = Color3.fromRGB(120, 40, 40)
+CloseBtn.TextColor3 = Color3.fromRGB(255,255,255)
+CloseBtn.Parent = Frame
+
+HideBtn.MouseButton1Click:Connect(function()
+    Frame.Visible = false
+    ShowBtn.Visible = true
+end)
+ShowBtn.MouseButton1Click:Connect(function()
+    Frame.Visible = true
+    ShowBtn.Visible = false
+end)
+CloseBtn.MouseButton1Click:Connect(function()
+    ScreenGui:Destroy()
+end)
 
 local function makeToggle(name, y)
     local Toggle = Instance.new("TextButton")
@@ -67,7 +106,7 @@ end)
 -- Crop selection
 local cropBox = Instance.new("TextBox")
 cropBox.Size = UDim2.new(0, 200, 0, 30)
-cropBox.Position = UDim2.new(0, 25, 0, 160)
+cropBox.Position = UDim2.new(0, 25, 0, 170)
 cropBox.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
 cropBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 cropBox.Font = Enum.Font.SourceSans
@@ -104,4 +143,4 @@ spawn(function()
     end
 end)
 
-print("Grow a Garden GUI automation loaded! Toggle features in the UI.")
+print("Grow a Garden GUI automation loaded! Use Hide/Show/X to control the UI.")
