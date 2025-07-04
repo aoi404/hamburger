@@ -6,12 +6,26 @@ local Player = Players.LocalPlayer
 local GameEvents = ReplicatedStorage:WaitForChild("GameEvents")
 local Workspace = game:GetService("Workspace")
 
--- Redesigned UI to match provided screenshot
 -- Remove old UI if exists
 if Player.PlayerGui:FindFirstChild("GrowGardenUI") then
     Player.PlayerGui.GrowGardenUI:Destroy()
 end
 
+-- Variables for automation toggles
+local autoFarm, autoHarvest, autoSell = false, false, false
+local autoBuyEgg, autoBuySeed = false, false
+local autoSubmit = false
+local selectedEggs, selectedSeeds = {}, {}
+
+-- Egg and Seed lists
+local eggList = {
+    "Common Egg", "Uncommon Egg", "Rare Egg", "Legendary Egg", "Mythical Egg", "Bug Egg", "Exotic Bug Egg", "Night Egg", "Premium Night Egg", "Bee Egg", "Anti Bee Egg", "Premium Anti Bee Egg", "Common Summer Egg", "Rare Summer Egg", "Paradise Egg", "Oasis Egg", "Premium Oasis Egg", "Raphael Egg 1", "Raphael Egg 2", "Raphael Egg 3"
+}
+local seedList = {
+    "Carrot", "Strawberry", "Blueberry", "Tomato", "Cauliflower", "Watermelon", "Rafflesia", "Green Apple", "Avocado", "Banana", "Pineapple", "Kiwi", "Bell Pepper", "Prickly Pear", "Loquat", "Feijoa", "Pitcher Plant", "Sugar Apple"
+}
+
+-- Create main UI
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "GrowGardenUI"
 ScreenGui.Parent = Player:WaitForChild("PlayerGui")
@@ -185,6 +199,22 @@ BuyEggHeader.Font = Enum.Font.GothamBold
 BuyEggHeader.TextSize = 18
 BuyEggHeader.Text = "BUY EGG:"
 BuyEggHeader.Parent = ShopPanel
+BuyEggHeader.TextXAlignment = Enum.TextXAlignment.Left
+BuyEggHeader.TextYAlignment = Enum.TextYAlignment.Center
+BuyEggHeader.ClipsDescendants = true
+
+local function updateEggHeader()
+    local sel = {}
+    for k in pairs(selectedEggs) do table.insert(sel, k) end
+    if #sel == 0 then
+        BuyEggHeader.Text = "BUY EGG:"
+    elseif #sel == 1 then
+        BuyEggHeader.Text = "BUY EGG: "..sel[1]
+    else
+        BuyEggHeader.Text = "BUY EGG: "..#sel.." selected"
+    end
+end
+updateEggHeader()
 
 local EggListFrame = Instance.new("Frame")
 EggListFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 90)
@@ -257,6 +287,22 @@ BuySeedHeader.Font = Enum.Font.GothamBold
 BuySeedHeader.TextSize = 18
 BuySeedHeader.Text = "BUY SEEDS:"
 BuySeedHeader.Parent = ShopPanel
+BuySeedHeader.TextXAlignment = Enum.TextXAlignment.Left
+BuySeedHeader.TextYAlignment = Enum.TextYAlignment.Center
+BuySeedHeader.ClipsDescendants = true
+
+local function updateSeedHeader()
+    local sel = {}
+    for k in pairs(selectedSeeds) do table.insert(sel, k) end
+    if #sel == 0 then
+        BuySeedHeader.Text = "BUY SEEDS:"
+    elseif #sel == 1 then
+        BuySeedHeader.Text = "BUY SEEDS: "..sel[1]
+    else
+        BuySeedHeader.Text = "BUY SEEDS: "..#sel.." selected"
+    end
+end
+updateSeedHeader()
 
 local SeedListFrame = Instance.new("Frame")
 SeedListFrame.BackgroundColor3 = Color3.fromRGB(60, 90, 60)
@@ -320,29 +366,6 @@ AutoBuySeedToggle.MouseButton1Click:Connect(function()
     SeedCheck.Visible = autoBuySeed
 end)
 
--- Update auto-buy logic to use toggles and all selected values
-local function autoBuyEggFunc()
-    if autoBuyEgg then
-        for egg,_ in pairs(selectedEggs) do
-            local remote = GameEvents:FindFirstChild("BuyPetEgg")
-            if remote then
-                pcall(function() remote:FireServer(egg) end)
-            end
-        end
-    end
-end
-
-local function autoBuySeedFunc()
-    if autoBuySeed then
-        for seed,_ in pairs(selectedSeeds) do
-            local remote = GameEvents:FindFirstChild("BuySeedStock")
-            if remote then
-                pcall(function() remote:FireServer(seed) end)
-            end
-        end
-    end
-end
-
 -- FARM TAB
 local FarmPanel = Instance.new("Frame")
 FarmPanel.Size = UDim2.new(1, 0, 1, 0)
@@ -371,7 +394,6 @@ local function makeFarmToggle(name, y)
     return Toggle, Check
 end
 
-local autoFarm, autoHarvest, autoSell = false, false, false
 local farmToggles = {}
 farmToggles[1], farmToggles["farmCheck"] = makeFarmToggle("AUTO FARM", 20)
 farmToggles[2], farmToggles["harvestCheck"] = makeFarmToggle("AUTO HARVEST", 66)
@@ -402,29 +424,22 @@ end
 EventBtn.MouseButton1Click:Connect(function() showTab("event") end)
 ShopBtn.MouseButton1Click:Connect(function() showTab("shop") end)
 FarmBtn.MouseButton1Click:Connect(function() showTab("farm") end)
-
--- Default to event tab
 showTab("event")
 
 -- Hide/Show UI logic
 local isHidden = false
 local ShowUIButton = nil
-
 local function setUIVisible(visible)
     ScreenGui.Enabled = visible
     isHidden = not visible
     if ShowUIButton then ShowUIButton.Visible = not visible end
 end
-
--- Hide UI when close or minimize is clicked
 CloseBtn.MouseButton1Click:Connect(function()
     setUIVisible(false)
 end)
 MinBtn.MouseButton1Click:Connect(function()
     setUIVisible(false)
 end)
-
--- Show UI button (appears when UI is hidden)
 ShowUIButton = Instance.new("TextButton")
 ShowUIButton.Size = UDim2.new(0, 120, 0, 36)
 ShowUIButton.Position = UDim2.new(0, 20, 0, 80)
@@ -447,199 +462,7 @@ UIS.InputBegan:Connect(function(input, processed)
     end
 end)
 
--- SHOP TAB: Multi-select dropdowns and toggles for egg/seed buying
-local eggList = {
-    "Common Egg", "Uncommon Egg", "Rare Egg", "Legendary Egg", "Mythical Egg", "Bug Egg", "Exotic Bug Egg", "Night Egg", "Premium Night Egg", "Bee Egg", "Anti Bee Egg", "Premium Anti Bee Egg", "Common Summer Egg", "Rare Summer Egg", "Paradise Egg", "Oasis Egg", "Premium Oasis Egg", "Raphael Egg 1", "Raphael Egg 2", "Raphael Egg 3"
-}
-local selectedEggs = {}
-local autoBuyEgg = false
-
-local function updateEggHeader()
-    local sel = {}
-    for k in pairs(selectedEggs) do table.insert(sel, k) end
-    if #sel == 0 then
-        BuyEggHeader.Text = "BUY EGG:"
-    elseif #sel == 1 then
-        BuyEggHeader.Text = "BUY EGG: "..sel[1]
-    else
-        BuyEggHeader.Text = "BUY EGG: "..#sel.." selected"
-    end
-end
-updateEggHeader()
-BuyEggHeader.TextXAlignment = Enum.TextXAlignment.Left
-BuyEggHeader.TextYAlignment = Enum.TextYAlignment.Center
-BuyEggHeader.ClipsDescendants = true
-
-local EggListFrame = Instance.new("Frame")
-EggListFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 90)
-EggListFrame.Visible = false
-EggListFrame.Parent = ShopPanel
-EggListFrame.ClipsDescendants = true
-EggListFrame.Position = UDim2.new(0.05, 0, 0, 56)
-EggListFrame.Size = UDim2.new(0, 220, 0, #eggList*28)
-
-for i,egg in ipairs(eggList) do
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, 0, 0, 28)
-    btn.Position = UDim2.new(0, 0, 0, (i-1)*28)
-    btn.BackgroundColor3 = Color3.fromRGB(100, 100, 140)
-    btn.TextColor3 = Color3.fromRGB(255,255,255)
-    btn.Font = Enum.Font.Gotham
-    btn.TextSize = 16
-    btn.Text = egg
-    btn.Parent = EggListFrame
-    local check = Instance.new("ImageLabel")
-    check.Size = UDim2.new(0, 24, 0, 24)
-    check.Position = UDim2.new(1, -28, 0, 2)
-    check.BackgroundTransparency = 1
-    check.Image = "rbxassetid://6031094678"
-    check.Visible = false
-    check.Parent = btn
-    btn.MouseButton1Click:Connect(function()
-        if selectedEggs[egg] then
-            selectedEggs[egg] = nil
-            check.Visible = false
-        else
-            selectedEggs[egg] = true
-            check.Visible = true
-        end
-        updateEggHeader()
-    end)
-end
-BuyEggHeader.MouseButton1Click:Connect(function()
-    EggListFrame.Visible = not EggListFrame.Visible
-end)
-
-local AutoBuyEggToggle = Instance.new("TextButton")
-AutoBuyEggToggle.Size = UDim2.new(0, 180, 0, 32)
-AutoBuyEggToggle.Position = UDim2.new(0.05, 0, 0, 56 + #eggList*28 + 10)
-AutoBuyEggToggle.BackgroundColor3 = Color3.fromRGB(30, 60, 110)
-AutoBuyEggToggle.TextColor3 = Color3.fromRGB(255,255,255)
-AutoBuyEggToggle.Font = Enum.Font.GothamBold
-AutoBuyEggToggle.TextSize = 16
-AutoBuyEggToggle.Text = "Auto Buy Egg: OFF"
-AutoBuyEggToggle.Parent = ShopPanel
-local EggCheck = Instance.new("ImageLabel")
-EggCheck.Size = UDim2.new(0, 24, 0, 24)
-EggCheck.Position = UDim2.new(1, -28, 0, 4)
-EggCheck.BackgroundTransparency = 1
-EggCheck.Image = "rbxassetid://6031094678"
-EggCheck.Visible = false
-EggCheck.Parent = AutoBuyEggToggle
-AutoBuyEggToggle.MouseButton1Click:Connect(function()
-    autoBuyEgg = not autoBuyEgg
-    AutoBuyEggToggle.Text = autoBuyEgg and "Auto Buy Egg: ON" or "Auto Buy Egg: OFF"
-    EggCheck.Visible = autoBuyEgg
-end)
-
-local seedList = {
-    "Carrot", "Strawberry", "Blueberry", "Tomato", "Cauliflower", "Watermelon", "Rafflesia", "Green Apple", "Avocado", "Banana", "Pineapple", "Kiwi", "Bell Pepper", "Prickly Pear", "Loquat", "Feijoa", "Pitcher Plant", "Sugar Apple"
-}
-local selectedSeeds = {}
-local autoBuySeed = false
-
-local function updateSeedHeader()
-    local sel = {}
-    for k in pairs(selectedSeeds) do table.insert(sel, k) end
-    if #sel == 0 then
-        BuySeedHeader.Text = "BUY SEEDS:"
-    elseif #sel == 1 then
-        BuySeedHeader.Text = "BUY SEEDS: "..sel[1]
-    else
-        BuySeedHeader.Text = "BUY SEEDS: "..#sel.." selected"
-    end
-end
-updateSeedHeader()
-BuySeedHeader.TextXAlignment = Enum.TextXAlignment.Left
-BuySeedHeader.TextYAlignment = Enum.TextYAlignment.Center
-BuySeedHeader.ClipsDescendants = true
-
-local SeedListFrame = Instance.new("Frame")
-SeedListFrame.BackgroundColor3 = Color3.fromRGB(60, 90, 60)
-SeedListFrame.Visible = false
-SeedListFrame.Parent = ShopPanel
-SeedListFrame.ClipsDescendants = true
-SeedListFrame.Position = UDim2.new(0.05, 0, 0, 130+36)
-SeedListFrame.Size = UDim2.new(0, 220, 0, #seedList*28)
-
-for i,seed in ipairs(seedList) do
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, 0, 0, 28)
-    btn.Position = UDim2.new(0, 0, 0, (i-1)*28)
-    btn.BackgroundColor3 = Color3.fromRGB(100, 140, 100)
-    btn.TextColor3 = Color3.fromRGB(255,255,255)
-    btn.Font = Enum.Font.Gotham
-    btn.TextSize = 16
-    btn.Text = seed
-    btn.Parent = SeedListFrame
-    local check = Instance.new("ImageLabel")
-    check.Size = UDim2.new(0, 24, 0, 24)
-    check.Position = UDim2.new(1, -28, 0, 2)
-    check.BackgroundTransparency = 1
-    check.Image = "rbxassetid://6031094678"
-    check.Visible = false
-    check.Parent = btn
-    btn.MouseButton1Click:Connect(function()
-        if selectedSeeds[seed] then
-            selectedSeeds[seed] = nil
-            check.Visible = false
-        else
-            selectedSeeds[seed] = true
-            check.Visible = true
-        end
-        updateSeedHeader()
-    end)
-end
-BuySeedHeader.MouseButton1Click:Connect(function()
-    SeedListFrame.Visible = not SeedListFrame.Visible
-end)
-
-local AutoBuySeedToggle = Instance.new("TextButton")
-AutoBuySeedToggle.Size = UDim2.new(0, 180, 0, 32)
-AutoBuySeedToggle.Position = UDim2.new(0.05, 0, 0, 130+36+#seedList*28+10)
-AutoBuySeedToggle.BackgroundColor3 = Color3.fromRGB(30, 60, 110)
-AutoBuySeedToggle.TextColor3 = Color3.fromRGB(255,255,255)
-AutoBuySeedToggle.Font = Enum.Font.GothamBold
-AutoBuySeedToggle.TextSize = 16
-AutoBuySeedToggle.Text = "Auto Buy Seed: OFF"
-AutoBuySeedToggle.Parent = ShopPanel
-local SeedCheck = Instance.new("ImageLabel")
-SeedCheck.Size = UDim2.new(0, 24, 0, 24)
-SeedCheck.Position = UDim2.new(1, -28, 0, 4)
-SeedCheck.BackgroundTransparency = 1
-SeedCheck.Image = "rbxassetid://6031094678"
-SeedCheck.Visible = false
-SeedCheck.Parent = AutoBuySeedToggle
-AutoBuySeedToggle.MouseButton1Click:Connect(function()
-    autoBuySeed = not autoBuySeed
-    AutoBuySeedToggle.Text = autoBuySeed and "Auto Buy Seed: ON" or "Auto Buy Seed: OFF"
-    SeedCheck.Visible = autoBuySeed
-end)
-
--- Update auto-buy logic to use toggles and all selected values
-local function autoBuyEggFunc()
-    if autoBuyEgg then
-        for egg,_ in pairs(selectedEggs) do
-            local remote = GameEvents:FindFirstChild("BuyPetEgg")
-            if remote then
-                pcall(function() remote:FireServer(egg) end)
-            end
-        end
-    end
-end
-
-local function autoBuySeedFunc()
-    if autoBuySeed then
-        for seed,_ in pairs(selectedSeeds) do
-            local remote = GameEvents:FindFirstChild("BuySeedStock")
-            if remote then
-                pcall(function() remote:FireServer(seed) end)
-            end
-        end
-    end
-end
-
--- Automation Loop
+-- Automation Loop (dummy, add your logic here)
 spawn(function()
     while true do
         if autoPlant then
