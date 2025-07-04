@@ -1,513 +1,329 @@
--- Modernized Grow a Garden GUI Automation Script with improved UI, correct egg/seed lists, and robust auto-harvest
+--[[
+GAG SCRIPT BY:BREAD
+Modern Sidebar GUI Foundation (Step 1)
+--]]
 
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
+-- Services
 local Players = game:GetService("Players")
-local Player = Players.LocalPlayer
-local GameEvents = ReplicatedStorage:WaitForChild("GameEvents")
-local Workspace = game:GetService("Workspace")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local UserInputService = game:GetService("UserInputService")
 
--- Remove old UI if exists
-if Player.PlayerGui:FindFirstChild("GrowGardenUI") then
-    Player.PlayerGui.GrowGardenUI:Destroy()
-end
+-- Main GUI
+local player = Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
 
--- Variables for automation toggles
-local autoFarm, autoHarvest, autoSell = false, false, false
-local autoBuyEgg, autoBuySeed = false, false
-local autoSubmit = false
-local selectedEggs, selectedSeeds = {}, {}
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "GAG_SidebarGUI"
+screenGui.ResetOnSpawn = false
+screenGui.IgnoreGuiInset = true
+screenGui.Parent = playerGui
 
--- Egg and Seed lists
-local eggList = {
-    "Common Egg", "Uncommon Egg", "Rare Egg", "Legendary Egg", "Mythical Egg", "Bug Egg", "Exotic Bug Egg", "Night Egg", "Premium Night Egg", "Bee Egg", "Anti Bee Egg", "Premium Anti Bee Egg", "Common Summer Egg", "Rare Summer Egg", "Paradise Egg", "Oasis Egg", "Premium Oasis Egg", "Raphael Egg 1", "Raphael Egg 2", "Raphael Egg 3"
-}
-local seedList = {
-    "Carrot", "Strawberry", "Blueberry", "Tomato", "Cauliflower", "Watermelon", "Rafflesia", "Green Apple", "Avocado", "Banana", "Pineapple", "Kiwi", "Bell Pepper", "Prickly Pear", "Loquat", "Feijoa", "Pitcher Plant", "Sugar Apple"
-}
-
--- Create main UI
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "GrowGardenUI"
-ScreenGui.Parent = Player:WaitForChild("PlayerGui")
-
-local Frame = Instance.new("Frame")
-Frame.Size = UDim2.new(0, 500, 0, 340)
-Frame.Position = UDim2.new(0.5, -250, 0.5, -170)
-Frame.BackgroundColor3 = Color3.fromRGB(120, 135, 150)
-Frame.BorderSizePixel = 0
-Frame.Active = true
-Frame.Draggable = true
-Frame.Parent = ScreenGui
-
-local UICorner = Instance.new("UICorner")
-UICorner.CornerRadius = UDim.new(0, 10)
-UICorner.Parent = Frame
+-- Sidebar Frame
+local sidebar = Instance.new("Frame")
+sidebar.Name = "Sidebar"
+sidebar.Size = UDim2.new(0, 180, 0, 350)
+sidebar.Position = UDim2.new(0, 100, 0, 100)
+sidebar.BackgroundColor3 = Color3.fromRGB(80, 90, 110)
+sidebar.BorderSizePixel = 0
+sidebar.Parent = screenGui
+sidebar.Visible = true
 
 -- Title Bar
-local TitleBar = Instance.new("Frame")
-TitleBar.Size = UDim2.new(1, 0, 0, 38)
-TitleBar.BackgroundColor3 = Color3.fromRGB(40, 50, 60)
-TitleBar.BorderSizePixel = 0
-TitleBar.Parent = Frame
+local titleBar = Instance.new("Frame")
+titleBar.Name = "TitleBar"
+titleBar.Size = UDim2.new(1, 0, 0, 36)
+titleBar.BackgroundColor3 = Color3.fromRGB(60, 70, 90)
+titleBar.BorderSizePixel = 0
+titleBar.Parent = sidebar
 
-local Title = Instance.new("TextLabel")
-Title.Text = "GAG SCRIPT BY:BREAD"
-Title.Size = UDim2.new(1, -80, 1, 0)
-Title.Position = UDim2.new(0, 10, 0, 0)
-Title.BackgroundTransparency = 1
-Title.TextColor3 = Color3.fromRGB(0,0,0)
-Title.Font = Enum.Font.GothamBlack
-Title.TextSize = 26
-Title.TextXAlignment = Enum.TextXAlignment.Left
-Title.Parent = TitleBar
-
--- Minimize Button
-local MinBtn = Instance.new("TextButton")
-MinBtn.Size = UDim2.new(0, 32, 0, 32)
-MinBtn.Position = UDim2.new(1, -72, 0, 3)
-MinBtn.Text = "-"
-MinBtn.BackgroundColor3 = Color3.fromRGB(40, 50, 60)
-MinBtn.TextColor3 = Color3.fromRGB(0,0,0)
-MinBtn.Font = Enum.Font.GothamBold
-MinBtn.TextSize = 24
-MinBtn.Parent = TitleBar
+local titleLabel = Instance.new("TextLabel")
+titleLabel.Name = "TitleLabel"
+titleLabel.Size = UDim2.new(1, -60, 1, 0)
+titleLabel.Position = UDim2.new(0, 10, 0, 0)
+titleLabel.BackgroundTransparency = 1
+titleLabel.Text = "GAG SCRIPT BY:BREAD"
+titleLabel.Font = Enum.Font.SourceSansBold
+titleLabel.TextSize = 22
+titleLabel.TextColor3 = Color3.fromRGB(20, 20, 20)
+titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+titleLabel.Parent = titleBar
 
 -- Close Button
-local CloseBtn = Instance.new("TextButton")
-CloseBtn.Size = UDim2.new(0, 32, 0, 32)
-CloseBtn.Position = UDim2.new(1, -36, 0, 3)
-CloseBtn.Text = "✕"
-CloseBtn.BackgroundColor3 = Color3.fromRGB(40, 50, 60)
-CloseBtn.TextColor3 = Color3.fromRGB(0,0,0)
-CloseBtn.Font = Enum.Font.GothamBold
-CloseBtn.TextSize = 22
-CloseBtn.Parent = TitleBar
+local closeBtn = Instance.new("TextButton")
+closeBtn.Name = "CloseBtn"
+closeBtn.Size = UDim2.new(0, 32, 1, 0)
+closeBtn.Position = UDim2.new(1, -32, 0, 0)
+closeBtn.BackgroundColor3 = Color3.fromRGB(120, 40, 40)
+closeBtn.Text = "✕"
+closeBtn.Font = Enum.Font.SourceSansBold
+closeBtn.TextSize = 22
+closeBtn.TextColor3 = Color3.fromRGB(255,255,255)
+closeBtn.Parent = titleBar
 
--- Sidebar
-local Sidebar = Instance.new("Frame")
-Sidebar.Size = UDim2.new(0, 70, 1, -38)
-Sidebar.Position = UDim2.new(0, 0, 0, 38)
-Sidebar.BackgroundColor3 = Color3.fromRGB(100, 110, 120)
-Sidebar.BorderSizePixel = 0
-Sidebar.Parent = Frame
+-- Minimize Button
+local minimizeBtn = Instance.new("TextButton")
+minimizeBtn.Name = "MinimizeBtn"
+minimizeBtn.Size = UDim2.new(0, 32, 1, 0)
+minimizeBtn.Position = UDim2.new(1, -64, 0, 0)
+minimizeBtn.BackgroundColor3 = Color3.fromRGB(60, 70, 90)
+minimizeBtn.Text = "_"
+minimizeBtn.Font = Enum.Font.SourceSansBold
+minimizeBtn.TextSize = 22
+minimizeBtn.TextColor3 = Color3.fromRGB(255,255,255)
+minimizeBtn.Parent = titleBar
 
-local SideLine = Instance.new("Frame")
-SideLine.Size = UDim2.new(0, 6, 1, 0)
-SideLine.Position = UDim2.new(0, 64, 0, 0)
-SideLine.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-SideLine.BorderSizePixel = 0
-SideLine.Parent = Sidebar
-
-local EventBtn = Instance.new("TextButton")
-EventBtn.Size = UDim2.new(1, -10, 0, 36)
-EventBtn.Position = UDim2.new(0, 5, 0, 10)
-EventBtn.Text = "EVENT"
-EventBtn.BackgroundColor3 = Color3.fromRGB(200, 160, 120)
-EventBtn.TextColor3 = Color3.fromRGB(0,0,0)
-EventBtn.Font = Enum.Font.GothamBold
-EventBtn.TextSize = 16
-EventBtn.Parent = Sidebar
-
-local ShopBtn = Instance.new("TextButton")
-ShopBtn.Size = UDim2.new(1, -10, 0, 36)
-ShopBtn.Position = UDim2.new(0, 5, 0, 56)
-ShopBtn.Text = "SHOP"
-ShopBtn.BackgroundColor3 = Color3.fromRGB(120, 135, 150)
-ShopBtn.TextColor3 = Color3.fromRGB(0,0,0)
-ShopBtn.Font = Enum.Font.GothamBold
-ShopBtn.TextSize = 16
-ShopBtn.Parent = Sidebar
-
-local FarmBtn = Instance.new("TextButton")
-FarmBtn.Size = UDim2.new(1, -10, 0, 36)
-FarmBtn.Position = UDim2.new(0, 5, 0, 102)
-FarmBtn.Text = "FARM"
-FarmBtn.BackgroundColor3 = Color3.fromRGB(120, 135, 150)
-FarmBtn.TextColor3 = Color3.fromRGB(0,0,0)
-FarmBtn.Font = Enum.Font.GothamBold
-FarmBtn.TextSize = 16
-FarmBtn.Parent = Sidebar
-
--- Main Content Area
-local MainPanel = Instance.new("Frame")
-MainPanel.Size = UDim2.new(1, -80, 1, -48)
-MainPanel.Position = UDim2.new(0, 80, 0, 48)
-MainPanel.BackgroundTransparency = 1
-MainPanel.Parent = Frame
-
--- EVENT TAB
-local EventPanel = Instance.new("Frame")
-EventPanel.Size = UDim2.new(1, 0, 1, 0)
-EventPanel.BackgroundTransparency = 1
-EventPanel.Visible = true
-EventPanel.Parent = MainPanel
-
-local SummerHeader = Instance.new("TextLabel")
-SummerHeader.Size = UDim2.new(0.9, 0, 0, 36)
-SummerHeader.Position = UDim2.new(0.05, 0, 0, 20)
-SummerHeader.BackgroundColor3 = Color3.fromRGB(30, 60, 110)
-SummerHeader.TextColor3 = Color3.fromRGB(255,255,255)
-SummerHeader.Font = Enum.Font.GothamBold
-SummerHeader.TextSize = 18
-SummerHeader.Text = "SUMMER HARVEST"
-SummerHeader.Parent = EventPanel
-
-local AutoSubmitLabel = Instance.new("TextLabel")
-AutoSubmitLabel.Size = UDim2.new(0.5, 0, 0, 32)
-AutoSubmitLabel.Position = UDim2.new(0.05, 0, 0, 70)
-AutoSubmitLabel.BackgroundTransparency = 1
-AutoSubmitLabel.TextColor3 = Color3.fromRGB(0,0,0)
-AutoSubmitLabel.Font = Enum.Font.GothamBold
-AutoSubmitLabel.TextSize = 16
-AutoSubmitLabel.Text = "AUTO SUBMIT:"
-AutoSubmitLabel.TextXAlignment = Enum.TextXAlignment.Left
-AutoSubmitLabel.Parent = EventPanel
-
-local AutoSubmitToggle = Instance.new("TextButton")
-AutoSubmitToggle.Size = UDim2.new(0, 32, 0, 32)
-AutoSubmitToggle.Position = UDim2.new(0.55, 0, 0, 70)
-AutoSubmitToggle.BackgroundColor3 = Color3.fromRGB(30, 60, 110)
-AutoSubmitToggle.Text = ""
-AutoSubmitToggle.Parent = EventPanel
-local AutoSubmitCheck = Instance.new("ImageLabel")
-AutoSubmitCheck.Size = UDim2.new(1, -6, 1, -6)
-AutoSubmitCheck.Position = UDim2.new(0, 3, 0, 3)
-AutoSubmitCheck.BackgroundTransparency = 1
-AutoSubmitCheck.Image = "rbxassetid://6031094678" -- checkmark
-AutoSubmitCheck.Visible = false
-AutoSubmitCheck.Parent = AutoSubmitToggle
-
-local autoSubmit = false
-AutoSubmitToggle.MouseButton1Click:Connect(function()
-    autoSubmit = not autoSubmit
-    AutoSubmitCheck.Visible = autoSubmit
-end)
-
--- SHOP TAB
-local ShopPanel = Instance.new("Frame")
-ShopPanel.Size = UDim2.new(1, 0, 1, 0)
-ShopPanel.BackgroundTransparency = 1
-ShopPanel.Visible = false
-ShopPanel.Parent = MainPanel
-
-local BuyEggHeader = Instance.new("TextLabel")
-BuyEggHeader.Size = UDim2.new(0.9, 0, 0, 36)
-BuyEggHeader.Position = UDim2.new(0.05, 0, 0, 20)
-BuyEggHeader.BackgroundColor3 = Color3.fromRGB(30, 60, 110)
-BuyEggHeader.TextColor3 = Color3.fromRGB(255,255,255)
-BuyEggHeader.Font = Enum.Font.GothamBold
-BuyEggHeader.TextSize = 18
-BuyEggHeader.Text = "BUY EGG:"
-BuyEggHeader.Parent = ShopPanel
-BuyEggHeader.TextXAlignment = Enum.TextXAlignment.Left
-BuyEggHeader.TextYAlignment = Enum.TextYAlignment.Center
-BuyEggHeader.ClipsDescendants = true
-
-local function updateEggHeader()
-    local sel = {}
-    for k in pairs(selectedEggs) do table.insert(sel, k) end
-    if #sel == 0 then
-        BuyEggHeader.Text = "BUY EGG:"
-    elseif #sel == 1 then
-        BuyEggHeader.Text = "BUY EGG: "..sel[1]
-    else
-        BuyEggHeader.Text = "BUY EGG: "..#sel.." selected"
-    end
-end
-updateEggHeader()
-
-local EggListFrame = Instance.new("Frame")
-EggListFrame.BackgroundColor3 = Color3.fromRGB(60, 60, 90)
-EggListFrame.Visible = false
-EggListFrame.Parent = ShopPanel
-EggListFrame.ClipsDescendants = true
-EggListFrame.Position = UDim2.new(0.05, 0, 0, 56)
-EggListFrame.Size = UDim2.new(0, 220, 0, #eggList*28)
-
-for i,egg in ipairs(eggList) do
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, 0, 0, 28)
-    btn.Position = UDim2.new(0, 0, 0, (i-1)*28)
-    btn.BackgroundColor3 = Color3.fromRGB(100, 100, 140)
-    btn.TextColor3 = Color3.fromRGB(255,255,255)
-    btn.Font = Enum.Font.Gotham
-    btn.TextSize = 16
-    btn.Text = egg
-    btn.Parent = EggListFrame
-    local check = Instance.new("ImageLabel")
-    check.Size = UDim2.new(0, 24, 0, 24)
-    check.Position = UDim2.new(1, -28, 0, 2)
-    check.BackgroundTransparency = 1
-    check.Image = "rbxassetid://6031094678"
-    check.Visible = false
-    check.Parent = btn
-    btn.MouseButton1Click:Connect(function()
-        if selectedEggs[egg] then
-            selectedEggs[egg] = nil
-            check.Visible = false
-        else
-            selectedEggs[egg] = true
-            check.Visible = true
-        end
-        updateEggHeader()
-    end)
-end
-BuyEggHeader.MouseButton1Click:Connect(function()
-    EggListFrame.Visible = not EggListFrame.Visible
-end)
-
-local AutoBuyEggToggle = Instance.new("TextButton")
-AutoBuyEggToggle.Size = UDim2.new(0, 180, 0, 32)
-AutoBuyEggToggle.Position = UDim2.new(0.05, 0, 0, 56 + #eggList*28 + 10)
-AutoBuyEggToggle.BackgroundColor3 = Color3.fromRGB(30, 60, 110)
-AutoBuyEggToggle.TextColor3 = Color3.fromRGB(255,255,255)
-AutoBuyEggToggle.Font = Enum.Font.GothamBold
-AutoBuyEggToggle.TextSize = 16
-AutoBuyEggToggle.Text = "Auto Buy Egg: OFF"
-AutoBuyEggToggle.Parent = ShopPanel
-local EggCheck = Instance.new("ImageLabel")
-EggCheck.Size = UDim2.new(0, 24, 0, 24)
-EggCheck.Position = UDim2.new(1, -28, 0, 4)
-EggCheck.BackgroundTransparency = 1
-EggCheck.Image = "rbxassetid://6031094678"
-EggCheck.Visible = false
-EggCheck.Parent = AutoBuyEggToggle
-AutoBuyEggToggle.MouseButton1Click:Connect(function()
-    autoBuyEgg = not autoBuyEgg
-    AutoBuyEggToggle.Text = autoBuyEgg and "Auto Buy Egg: ON" or "Auto Buy Egg: OFF"
-    EggCheck.Visible = autoBuyEgg
-end)
-
-local BuySeedHeader = Instance.new("TextLabel")
-BuySeedHeader.Size = UDim2.new(0.9, 0, 0, 36)
-BuySeedHeader.Position = UDim2.new(0.05, 0, 0, 130)
-BuySeedHeader.BackgroundColor3 = Color3.fromRGB(30, 60, 110)
-BuySeedHeader.TextColor3 = Color3.fromRGB(255,255,255)
-BuySeedHeader.Font = Enum.Font.GothamBold
-BuySeedHeader.TextSize = 18
-BuySeedHeader.Text = "BUY SEEDS:"
-BuySeedHeader.Parent = ShopPanel
-BuySeedHeader.TextXAlignment = Enum.TextXAlignment.Left
-BuySeedHeader.TextYAlignment = Enum.TextYAlignment.Center
-BuySeedHeader.ClipsDescendants = true
-
-local function updateSeedHeader()
-    local sel = {}
-    for k in pairs(selectedSeeds) do table.insert(sel, k) end
-    if #sel == 0 then
-        BuySeedHeader.Text = "BUY SEEDS:"
-    elseif #sel == 1 then
-        BuySeedHeader.Text = "BUY SEEDS: "..sel[1]
-    else
-        BuySeedHeader.Text = "BUY SEEDS: "..#sel.." selected"
-    end
-end
-updateSeedHeader()
-
-local SeedListFrame = Instance.new("Frame")
-SeedListFrame.BackgroundColor3 = Color3.fromRGB(60, 90, 60)
-SeedListFrame.Visible = false
-SeedListFrame.Parent = ShopPanel
-SeedListFrame.ClipsDescendants = true
-SeedListFrame.Position = UDim2.new(0.05, 0, 0, 130+36)
-SeedListFrame.Size = UDim2.new(0, 220, 0, #seedList*28)
-
-for i,seed in ipairs(seedList) do
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, 0, 0, 28)
-    btn.Position = UDim2.new(0, 0, 0, (i-1)*28)
-    btn.BackgroundColor3 = Color3.fromRGB(100, 140, 100)
-    btn.TextColor3 = Color3.fromRGB(255,255,255)
-    btn.Font = Enum.Font.Gotham
-    btn.TextSize = 16
-    btn.Text = seed
-    btn.Parent = SeedListFrame
-    local check = Instance.new("ImageLabel")
-    check.Size = UDim2.new(0, 24, 0, 24)
-    check.Position = UDim2.new(1, -28, 0, 2)
-    check.BackgroundTransparency = 1
-    check.Image = "rbxassetid://6031094678"
-    check.Visible = false
-    check.Parent = btn
-    btn.MouseButton1Click:Connect(function()
-        if selectedSeeds[seed] then
-            selectedSeeds[seed] = nil
-            check.Visible = false
-        else
-            selectedSeeds[seed] = true
-            check.Visible = true
-        end
-        updateSeedHeader()
-    end)
-end
-BuySeedHeader.MouseButton1Click:Connect(function()
-    SeedListFrame.Visible = not SeedListFrame.Visible
-end)
-
-local AutoBuySeedToggle = Instance.new("TextButton")
-AutoBuySeedToggle.Size = UDim2.new(0, 180, 0, 32)
-AutoBuySeedToggle.Position = UDim2.new(0.05, 0, 0, 130+36+#seedList*28+10)
-AutoBuySeedToggle.BackgroundColor3 = Color3.fromRGB(30, 60, 110)
-AutoBuySeedToggle.TextColor3 = Color3.fromRGB(255,255,255)
-AutoBuySeedToggle.Font = Enum.Font.GothamBold
-AutoBuySeedToggle.TextSize = 16
-AutoBuySeedToggle.Text = "Auto Buy Seed: OFF"
-AutoBuySeedToggle.Parent = ShopPanel
-local SeedCheck = Instance.new("ImageLabel")
-SeedCheck.Size = UDim2.new(0, 24, 0, 24)
-SeedCheck.Position = UDim2.new(1, -28, 0, 4)
-SeedCheck.BackgroundTransparency = 1
-SeedCheck.Image = "rbxassetid://6031094678"
-SeedCheck.Visible = false
-SeedCheck.Parent = AutoBuySeedToggle
-AutoBuySeedToggle.MouseButton1Click:Connect(function()
-    autoBuySeed = not autoBuySeed
-    AutoBuySeedToggle.Text = autoBuySeed and "Auto Buy Seed: ON" or "Auto Buy Seed: OFF"
-    SeedCheck.Visible = autoBuySeed
-end)
-
--- FARM TAB
-local FarmPanel = Instance.new("Frame")
-FarmPanel.Size = UDim2.new(1, 0, 1, 0)
-FarmPanel.BackgroundTransparency = 1
-FarmPanel.Visible = false
-FarmPanel.Parent = MainPanel
-
-local function makeFarmToggle(name, y)
-    local Toggle = Instance.new("TextButton")
-    Toggle.Size = UDim2.new(0.9, 0, 0, 36)
-    Toggle.Position = UDim2.new(0.05, 0, 0, y)
-    Toggle.BackgroundColor3 = Color3.fromRGB(30, 60, 110)
-    Toggle.TextColor3 = Color3.fromRGB(255,255,255)
-    Toggle.Font = Enum.Font.GothamBold
-    Toggle.TextSize = 16
-    Toggle.Text = name
-    Toggle.TextXAlignment = Enum.TextXAlignment.Left
-    Toggle.Parent = FarmPanel
-    local Check = Instance.new("ImageLabel")
-    Check.Size = UDim2.new(0, 28, 0, 28)
-    Check.Position = UDim2.new(1, -36, 0, 4)
-    Check.BackgroundTransparency = 1
-    Check.Image = "rbxassetid://6031094678"
-    Check.Visible = false
-    Check.Parent = Toggle
-    return Toggle, Check
+-- Sidebar Tabs
+local tabNames = {"EVENT", "SHOP", "FARM"}
+local tabButtons = {}
+for i, name in ipairs(tabNames) do
+    local tabBtn = Instance.new("TextButton")
+    tabBtn.Name = name .. "TabBtn"
+    tabBtn.Size = UDim2.new(1, 0, 0, 36)
+    tabBtn.Position = UDim2.new(0, 0, 0, 36 + (i-1)*36)
+    tabBtn.BackgroundColor3 = i == 1 and Color3.fromRGB(220, 160, 80) or Color3.fromRGB(60, 70, 90)
+    tabBtn.Text = name
+    tabBtn.Font = Enum.Font.SourceSansBold
+    tabBtn.TextSize = 18
+    tabBtn.TextColor3 = Color3.fromRGB(20, 20, 20)
+    tabBtn.Parent = sidebar
+    tabButtons[name] = tabBtn
 end
 
-local farmToggles = {}
-farmToggles[1], farmToggles["farmCheck"] = makeFarmToggle("AUTO FARM", 20)
-farmToggles[2], farmToggles["harvestCheck"] = makeFarmToggle("AUTO HARVEST", 66)
-farmToggles[3], farmToggles["sellCheck"] = makeFarmToggle("AUTO SELL", 112)
+-- Main Content Frame
+local contentFrame = Instance.new("Frame")
+contentFrame.Name = "ContentFrame"
+contentFrame.Size = UDim2.new(1, -10, 1, -120)
+contentFrame.Position = UDim2.new(0, 5, 0, 120)
+contentFrame.BackgroundColor3 = Color3.fromRGB(120, 130, 150)
+contentFrame.BorderSizePixel = 0
+contentFrame.Parent = sidebar
 
-farmToggles[1].MouseButton1Click:Connect(function()
-    autoFarm = not autoFarm
-    farmToggles["farmCheck"].Visible = autoFarm
-end)
-farmToggles[2].MouseButton1Click:Connect(function()
-    autoHarvest = not autoHarvest
-    farmToggles["harvestCheck"].Visible = autoHarvest
-end)
-farmToggles[3].MouseButton1Click:Connect(function()
-    autoSell = not autoSell
-    farmToggles["sellCheck"].Visible = autoSell
-end)
+-- Show UI Button (when hidden)
+local showUIButton = Instance.new("TextButton")
+showUIButton.Name = "ShowUIButton"
+showUIButton.Size = UDim2.new(0, 140, 0, 36)
+showUIButton.Position = UDim2.new(0, 20, 0, 20)
+showUIButton.BackgroundColor3 = Color3.fromRGB(80, 90, 110)
+showUIButton.Text = "Show GAG UI"
+showUIButton.Font = Enum.Font.SourceSansBold
+showUIButton.TextSize = 20
+showUIButton.TextColor3 = Color3.fromRGB(255,255,255)
+showUIButton.Visible = false
+showUIButton.Parent = screenGui
 
--- Tab switching logic (ensure this is after all UI elements are created)
-local function showTab(tab)
-    EventPanel.Visible = (tab == "event")
-    ShopPanel.Visible = (tab == "shop")
-    FarmPanel.Visible = (tab == "farm")
-    EventBtn.BackgroundColor3 = (tab == "event") and Color3.fromRGB(200, 160, 120) or Color3.fromRGB(120, 135, 150)
-    ShopBtn.BackgroundColor3 = (tab == "shop") and Color3.fromRGB(200, 160, 120) or Color3.fromRGB(120, 135, 150)
-    FarmBtn.BackgroundColor3 = (tab == "farm") and Color3.fromRGB(200, 160, 120) or Color3.fromRGB(120, 135, 150)
+-- Hide/Show Logic
+local function hideUI()
+    sidebar.Visible = false
+    showUIButton.Visible = true
 end
-
--- Remove any previous connections by disconnecting and reconnecting
-if EventBtn._tabConn then EventBtn._tabConn:Disconnect() end
-if ShopBtn._tabConn then ShopBtn._tabConn:Disconnect() end
-if FarmBtn._tabConn then FarmBtn._tabConn:Disconnect() end
-EventBtn._tabConn = EventBtn.MouseButton1Click:Connect(function() showTab("event") end)
-ShopBtn._tabConn = ShopBtn.MouseButton1Click:Connect(function() showTab("shop") end)
-FarmBtn._tabConn = FarmBtn.MouseButton1Click:Connect(function() showTab("farm") end)
-showTab("event")
-
--- Hide/Show UI logic (robust, no duplicate ShowUIButton, always parented to ScreenGui)
-local isHidden = false
-local ShowUIButton = Instance.new("TextButton")
-ShowUIButton.Size = UDim2.new(0, 120, 0, 36)
-ShowUIButton.Position = UDim2.new(0, 20, 0, 80)
-ShowUIButton.Text = "Show GAG UI"
-ShowUIButton.BackgroundColor3 = Color3.fromRGB(30, 60, 110)
-ShowUIButton.TextColor3 = Color3.fromRGB(255,255,255)
-ShowUIButton.Font = Enum.Font.GothamBold
-ShowUIButton.TextSize = 18
-ShowUIButton.Visible = false
-ShowUIButton.Parent = ScreenGui
-local function setUIVisible(visible)
-    Frame.Visible = visible
-    isHidden = not visible
-    ShowUIButton.Visible = not visible
+local function showUI()
+    sidebar.Visible = true
+    showUIButton.Visible = false
 end
-CloseBtn.MouseButton1Click:Connect(function()
-    setUIVisible(false)
+closeBtn.MouseButton1Click:Connect(hideUI)
+showUIButton.MouseButton1Click:Connect(showUI)
+minimizeBtn.MouseButton1Click:Connect(function()
+    sidebar.Visible = not sidebar.Visible
+    showUIButton.Visible = not sidebar.Visible
 end)
-MinBtn.MouseButton1Click:Connect(function()
-    setUIVisible(false)
-end)
-ShowUIButton.MouseButton1Click:Connect(function()
-    setUIVisible(true)
-end)
-
--- Keyboard shortcut (RightShift) to toggle UI
-local UIS = game:GetService("UserInputService")
-UIS.InputBegan:Connect(function(input, processed)
+UserInputService.InputBegan:Connect(function(input, processed)
     if not processed and input.KeyCode == Enum.KeyCode.RightShift then
-        setUIVisible(isHidden)
+        if sidebar.Visible then
+            hideUI()
+        else
+            showUI()
+        end
     end
 end)
 
--- Dummy variables and functions to prevent runtime errors and allow UI to work
-local autoPlant, autoWater = false, false
-local cropBox = {Text = ""}
-function harvestAllFruits() end
-function sellAllInventory() end
-function autoBuyEggFunc() end
-function autoBuySeedFunc() end
-
--- Automation Loop (dummy, add your logic here)
-spawn(function()
-    while true do
-        local ok, err = pcall(function()
-            if autoPlant then
-                local crop = cropBox.Text
-                if crop and #crop > 0 then
-                    local remote = GameEvents:FindFirstChild("Plant_RE")
-                    if remote then
-                        pcall(function()
-                            remote:FireServer(crop)
-                        end)
-                    end
-                end
-            end
-            if autoWater then
-                local remote = GameEvents:FindFirstChild("Water_RE")
-                if remote then
-                    pcall(function()
-                        remote:FireServer()
-                    end)
-                end
-            end
-            if autoHarvest then
-                harvestAllFruits()
-            end
-            if autoSell then
-                sellAllInventory()
-            end
-            autoBuyEggFunc()
-            autoBuySeedFunc()
-        end)
-        wait(1)
+-- Tab Switching Logic (UI only for now)
+local function selectTab(tabName)
+    for name, btn in pairs(tabButtons) do
+        btn.BackgroundColor3 = name == tabName and Color3.fromRGB(220, 160, 80) or Color3.fromRGB(60, 70, 90)
     end
-end)
+    -- Tab content will be handled in next steps
+end
+for name, btn in pairs(tabButtons) do
+    btn.MouseButton1Click:Connect(function()
+        selectTab(name)
+    end)
+end
 
-print("Grow a Garden GUI automation loaded! Use Hide/Show/X to control the UI.")
+-- Tab Content Creation
+local tabContent = {}
+
+-- EVENT TAB CONTENT
+local eventFrame = Instance.new("Frame")
+eventFrame.Name = "EventTabContent"
+eventFrame.Size = UDim2.new(1, 0, 1, 0)
+eventFrame.BackgroundTransparency = 1
+eventFrame.Visible = true
+eventFrame.Parent = contentFrame
+
+tabContent["EVENT"] = eventFrame
+
+local eventHeader = Instance.new("TextLabel")
+eventHeader.Size = UDim2.new(1, -20, 0, 36)
+eventHeader.Position = UDim2.new(0, 10, 0, 10)
+eventHeader.BackgroundColor3 = Color3.fromRGB(30, 60, 120)
+eventHeader.Text = "SUMMER HARVEST"
+eventHeader.Font = Enum.Font.SourceSansBold
+eventHeader.TextSize = 20
+eventHeader.TextColor3 = Color3.fromRGB(255,255,255)
+eventHeader.BorderSizePixel = 0
+eventHeader.Parent = eventFrame
+
+local autoSubmitToggle = Instance.new("TextButton")
+autoSubmitToggle.Name = "AutoSubmitToggle"
+autoSubmitToggle.Size = UDim2.new(1, -20, 0, 36)
+autoSubmitToggle.Position = UDim2.new(0, 10, 0, 56)
+autoSubmitToggle.BackgroundColor3 = Color3.fromRGB(60, 120, 180)
+autoSubmitToggle.Text = "AUTO SUBMIT:  [OFF]"
+autoSubmitToggle.Font = Enum.Font.SourceSansBold
+autoSubmitToggle.TextSize = 18
+autoSubmitToggle.TextColor3 = Color3.fromRGB(255,255,255)
+autoSubmitToggle.BorderSizePixel = 0
+autoSubmitToggle.Parent = eventFrame
+
+-- SHOP TAB CONTENT
+local shopFrame = Instance.new("Frame")
+shopFrame.Name = "ShopTabContent"
+shopFrame.Size = UDim2.new(1, 0, 1, 0)
+shopFrame.BackgroundTransparency = 1
+shopFrame.Visible = false
+shopFrame.Parent = contentFrame
+
+tabContent["SHOP"] = shopFrame
+
+local buyEggHeader = Instance.new("TextLabel")
+buyEggHeader.Size = UDim2.new(1, -20, 0, 28)
+buyEggHeader.Position = UDim2.new(0, 10, 0, 10)
+buyEggHeader.BackgroundColor3 = Color3.fromRGB(30, 60, 120)
+buyEggHeader.Text = "BUY EGG:"
+buyEggHeader.Font = Enum.Font.SourceSansBold
+buyEggHeader.TextSize = 18
+buyEggHeader.TextColor3 = Color3.fromRGB(255,255,255)
+buyEggHeader.BorderSizePixel = 0
+buyEggHeader.Parent = shopFrame
+
+local buySeedsHeader = Instance.new("TextLabel")
+buySeedsHeader.Size = UDim2.new(1, -20, 0, 28)
+buySeedsHeader.Position = UDim2.new(0, 10, 0, 48)
+buySeedsHeader.BackgroundColor3 = Color3.fromRGB(30, 60, 120)
+buySeedsHeader.Text = "BUY SEEDS:"
+buySeedsHeader.Font = Enum.Font.SourceSansBold
+buySeedsHeader.TextSize = 18
+buySeedsHeader.TextColor3 = Color3.fromRGB(255,255,255)
+buySeedsHeader.BorderSizePixel = 0
+buySeedsHeader.Parent = shopFrame
+
+-- Placeholder for multi-select dropdowns (to be implemented)
+local eggDropdown = Instance.new("TextLabel")
+eggDropdown.Size = UDim2.new(1, -20, 0, 28)
+eggDropdown.Position = UDim2.new(0, 10, 0, 86)
+eggDropdown.BackgroundColor3 = Color3.fromRGB(60, 120, 180)
+eggDropdown.Text = "[Egg Multi-Select Dropdown]"
+eggDropdown.Font = Enum.Font.SourceSans
+eggDropdown.TextSize = 16
+eggDropdown.TextColor3 = Color3.fromRGB(255,255,255)
+eggDropdown.BorderSizePixel = 0
+eggDropdown.Parent = shopFrame
+
+local seedDropdown = Instance.new("TextLabel")
+seedDropdown.Size = UDim2.new(1, -20, 0, 28)
+seedDropdown.Position = UDim2.new(0, 10, 0, 124)
+seedDropdown.BackgroundColor3 = Color3.fromRGB(60, 120, 180)
+seedDropdown.Text = "[Seed Multi-Select Dropdown]"
+seedDropdown.Font = Enum.Font.SourceSans
+seedDropdown.TextSize = 16
+seedDropdown.TextColor3 = Color3.fromRGB(255,255,255)
+seedDropdown.BorderSizePixel = 0
+seedDropdown.Parent = shopFrame
+
+local autoBuyEggToggle = Instance.new("TextButton")
+autoBuyEggToggle.Name = "AutoBuyEggToggle"
+autoBuyEggToggle.Size = UDim2.new(1, -20, 0, 36)
+autoBuyEggToggle.Position = UDim2.new(0, 10, 0, 170)
+autoBuyEggToggle.BackgroundColor3 = Color3.fromRGB(60, 120, 240)
+autoBuyEggToggle.Text = "AUTO BUY EGG:  [OFF]"
+autoBuyEggToggle.Font = Enum.Font.SourceSansBold
+autoBuyEggToggle.TextSize = 18
+autoBuyEggToggle.TextColor3 = Color3.fromRGB(255,255,255)
+autoBuyEggToggle.BorderSizePixel = 0
+autoBuyEggToggle.Parent = shopFrame
+
+local autoBuySeedToggle = Instance.new("TextButton")
+autoBuySeedToggle.Name = "AutoBuySeedToggle"
+autoBuySeedToggle.Size = UDim2.new(1, -20, 0, 36)
+autoBuySeedToggle.Position = UDim2.new(0, 10, 0, 210)
+autoBuySeedToggle.BackgroundColor3 = Color3.fromRGB(60, 120, 240)
+autoBuySeedToggle.Text = "AUTO BUY SEED:  [OFF]"
+autoBuySeedToggle.Font = Enum.Font.SourceSansBold
+autoBuySeedToggle.TextSize = 18
+autoBuySeedToggle.TextColor3 = Color3.fromRGB(255,255,255)
+autoBuySeedToggle.BorderSizePixel = 0
+autoBuySeedToggle.Parent = shopFrame
+
+-- FARM TAB CONTENT
+local farmFrame = Instance.new("Frame")
+farmFrame.Name = "FarmTabContent"
+farmFrame.Size = UDim2.new(1, 0, 1, 0)
+farmFrame.BackgroundTransparency = 1
+farmFrame.Visible = false
+farmFrame.Parent = contentFrame
+
+tabContent["FARM"] = farmFrame
+
+local autoFarmToggle = Instance.new("TextButton")
+autoFarmToggle.Name = "AutoFarmToggle"
+autoFarmToggle.Size = UDim2.new(1, -20, 0, 36)
+autoFarmToggle.Position = UDim2.new(0, 10, 0, 10)
+autoFarmToggle.BackgroundColor3 = Color3.fromRGB(30, 60, 120)
+autoFarmToggle.Text = "AUTO FARM:  [OFF]"
+autoFarmToggle.Font = Enum.Font.SourceSansBold
+autoFarmToggle.TextSize = 18
+autoFarmToggle.TextColor3 = Color3.fromRGB(255,255,255)
+autoFarmToggle.BorderSizePixel = 0
+autoFarmToggle.Parent = farmFrame
+
+local autoHarvestToggle = Instance.new("TextButton")
+autoHarvestToggle.Name = "AutoHarvestToggle"
+autoHarvestToggle.Size = UDim2.new(1, -20, 0, 36)
+autoHarvestToggle.Position = UDim2.new(0, 10, 0, 56)
+autoHarvestToggle.BackgroundColor3 = Color3.fromRGB(30, 60, 120)
+autoHarvestToggle.Text = "AUTO HARVEST:  [OFF]"
+autoHarvestToggle.Font = Enum.Font.SourceSansBold
+autoHarvestToggle.TextSize = 18
+autoHarvestToggle.TextColor3 = Color3.fromRGB(255,255,255)
+autoHarvestToggle.BorderSizePixel = 0
+autoHarvestToggle.Parent = farmFrame
+
+local autoSellToggle = Instance.new("TextButton")
+autoSellToggle.Name = "AutoSellToggle"
+autoSellToggle.Size = UDim2.new(1, -20, 0, 36)
+autoSellToggle.Position = UDim2.new(0, 10, 0, 102)
+autoSellToggle.BackgroundColor3 = Color3.fromRGB(30, 60, 120)
+autoSellToggle.Text = "AUTO SELL:  [OFF]"
+autoSellToggle.Font = Enum.Font.SourceSansBold
+autoSellToggle.TextSize = 18
+autoSellToggle.TextColor3 = Color3.fromRGB(255,255,255)
+autoSellToggle.BorderSizePixel = 0
+autoSellToggle.Parent = farmFrame
+
+-- Tab Switching Logic (update to show/hide content)
+local function selectTab(tabName)
+    for name, btn in pairs(tabButtons) do
+        btn.BackgroundColor3 = name == tabName and Color3.fromRGB(220, 160, 80) or Color3.fromRGB(60, 70, 90)
+    end
+    for name, frame in pairs(tabContent) do
+        frame.Visible = (name == tabName)
+    end
+end
+for name, btn in pairs(tabButtons) do
+    btn.MouseButton1Click:Connect(function()
+        selectTab(name)
+    end)
+end
+
+-- Ready for next steps: toggles, dropdowns, automation logic, etc.
+
