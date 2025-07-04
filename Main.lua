@@ -253,10 +253,10 @@ eggDropdownBtn.TextColor3 = Color3.fromRGB(255,255,255)
 eggDropdownBtn.BorderSizePixel = 0
 eggDropdownBtn.TextXAlignment = Enum.TextXAlignment.Center
 eggDropdownBtn.Parent = shopFrame
-
 eggDropdownBtn.ZIndex = 2
 
-local eggDropdownList = Instance.new("Frame")
+-- Egg Dropdown ScrollingFrame
+local eggDropdownList = Instance.new("ScrollingFrame")
 eggDropdownList.Name = "EggDropdownList"
 eggDropdownList.Size = UDim2.new(1, -32, 0, 0)
 eggDropdownList.Position = UDim2.new(0, 16, 0, 52)
@@ -264,10 +264,10 @@ eggDropdownList.BackgroundColor3 = Color3.fromRGB(60, 120, 180)
 eggDropdownList.BorderSizePixel = 0
 eggDropdownList.Visible = false
 eggDropdownList.Parent = shopFrame
-
 eggDropdownList.ZIndex = 3
-
-eggDropdownList.ClipsDescendants = false
+eggDropdownList.ClipsDescendants = true
+eggDropdownList.CanvasSize = UDim2.new(0, 0, 0, 0)
+eggDropdownList.ScrollBarThickness = 6
 
 local eggOptions = {"Egg A", "Egg B", "Egg C"}
 local selectedEggs = {}
@@ -301,6 +301,7 @@ for i, name in ipairs(eggOptions) do
     end)
 end
 updateEggDropdownText()
+eggDropdownList.CanvasSize = UDim2.new(0, 0, 0, #eggOptions * 32)
 
 -- Seed Dropdown Button
 local seedDropdownBtn = Instance.new("TextButton")
@@ -315,10 +316,10 @@ seedDropdownBtn.TextColor3 = Color3.fromRGB(255,255,255)
 seedDropdownBtn.BorderSizePixel = 0
 seedDropdownBtn.TextXAlignment = Enum.TextXAlignment.Center
 seedDropdownBtn.Parent = shopFrame
-
 seedDropdownBtn.ZIndex = 2
 
-local seedDropdownList = Instance.new("Frame")
+-- Seed Dropdown ScrollingFrame
+local seedDropdownList = Instance.new("ScrollingFrame")
 seedDropdownList.Name = "SeedDropdownList"
 seedDropdownList.Size = UDim2.new(1, -32, 0, 0)
 seedDropdownList.Position = UDim2.new(0, 16, 0, 96)
@@ -326,13 +327,10 @@ seedDropdownList.BackgroundColor3 = Color3.fromRGB(60, 120, 180)
 seedDropdownList.BorderSizePixel = 0
 seedDropdownList.Visible = false
 seedDropdownList.Parent = shopFrame
-
 seedDropdownList.ZIndex = 3
-
-seedDropdownList.ClipsDescendants = false
-for _, child in ipairs(seedDropdownList:GetChildren()) do
-    if child:IsA("TextButton") then child.ZIndex = 4 end
-end
+seedDropdownList.ClipsDescendants = true
+seedDropdownList.CanvasSize = UDim2.new(0, 0, 0, 0)
+seedDropdownList.ScrollBarThickness = 6
 
 local seedOptions = {"Seed X", "Seed Y", "Seed Z"}
 local selectedSeeds = {}
@@ -354,6 +352,7 @@ for i, name in ipairs(seedOptions) do
     opt.TextColor3 = Color3.fromRGB(255,255,255)
     opt.BorderSizePixel = 0
     opt.Parent = seedDropdownList
+    opt.ZIndex = 4
     opt.MouseButton1Click:Connect(function()
         local found = false
         for j, v in ipairs(selectedSeeds) do
@@ -365,10 +364,7 @@ for i, name in ipairs(seedOptions) do
     end)
 end
 updateSeedDropdownText()
-seedDropdownBtn.MouseButton1Click:Connect(function()
-    seedDropdownList.Visible = not seedDropdownList.Visible
-    updateShopTogglePositions()
-end)
+seedDropdownList.CanvasSize = UDim2.new(0, 0, 0, #seedOptions * 32)
 
 -- Helper to update toggle positions based on dropdowns
 function updateShopTogglePositions()
@@ -378,9 +374,13 @@ function updateShopTogglePositions()
     y = y + 36
     -- Egg Dropdown List
     if eggDropdownList.Visible then
+        local maxHeight = 128 -- max height for dropdown before scrolling
+        local needed = #eggOptions * 32
+        local showHeight = math.min(needed, maxHeight)
         eggDropdownList.Position = UDim2.new(0, 16, 0, y)
-        eggDropdownList.Size = UDim2.new(1, -32, 0, #eggOptions * 32)
-        y = y + #eggOptions * 32
+        eggDropdownList.Size = UDim2.new(1, -32, 0, showHeight)
+        eggDropdownList.CanvasSize = UDim2.new(0, 0, 0, needed)
+        y = y + showHeight
     else
         eggDropdownList.Position = UDim2.new(0, 16, 0, y)
         eggDropdownList.Size = UDim2.new(1, -32, 0, 0)
@@ -390,9 +390,13 @@ function updateShopTogglePositions()
     y = y + 36
     -- Seed Dropdown List
     if seedDropdownList.Visible then
+        local maxHeight = 128
+        local needed = #seedOptions * 32
+        local showHeight = math.min(needed, maxHeight)
         seedDropdownList.Position = UDim2.new(0, 16, 0, y)
-        seedDropdownList.Size = UDim2.new(1, -32, 0, #seedOptions * 32)
-        y = y + #seedOptions * 32
+        seedDropdownList.Size = UDim2.new(1, -32, 0, showHeight)
+        seedDropdownList.CanvasSize = UDim2.new(0, 0, 0, needed)
+        y = y + showHeight
     else
         seedDropdownList.Position = UDim2.new(0, 16, 0, y)
         seedDropdownList.Size = UDim2.new(1, -32, 0, 0)
