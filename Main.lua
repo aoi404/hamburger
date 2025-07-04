@@ -605,58 +605,6 @@ end)
 local buyEggRemote = ReplicatedStorage:FindFirstChild("GameEvents"):FindFirstChild("BuyPetEgg")
 local buySeedRemote = ReplicatedStorage:FindFirstChild("GameEvents"):FindFirstChild("BuySeedStock")
 
--- Helper: Check if an egg/seed is in stock (stub, should be replaced with real stock check if available)
-local function isEggInStock(eggName)
-    -- TODO: Replace with real stock check if possible
-    return true -- Assume always in stock for now
-end
-local function isSeedInStock(seedName)
-    -- TODO: Replace with real stock check if possible
-    return true -- Assume always in stock for now
-end
-
--- Auto-buy logic
-local autoBuyEggLoopRunning = false
-local autoBuySeedLoopRunning = false
-
--- Start auto-buy egg loop on script load
-if not autoBuyEggLoopRunning then
-    autoBuyEggLoopRunning = true
-    task.spawn(function()
-        while true do
-            if autoBuyEggState then
-                for _, egg in ipairs(selectedEggs) do
-                    if isEggInStock(egg) then
-                        if buyEggRemote then
-                            buyEggRemote:FireServer(egg)
-                        end
-                    end
-                end
-            end
-            task.wait(0.1)
-        end
-    end)
-end
-
--- Start auto-buy seed loop on script load
-if not autoBuySeedLoopRunning then
-    autoBuySeedLoopRunning = true
-    task.spawn(function()
-        while true do
-            if autoBuySeedState then
-                for _, seed in ipairs(selectedSeeds) do
-                    if isSeedInStock(seed) then
-                        if buySeedRemote then
-                            buySeedRemote:FireServer(seed)
-                        end
-                    end
-                end
-            end
-            task.wait(0.1)
-        end
-    end)
-end
-
 -- Tab Switching Logic
 local function selectTab(tabName)
     for name, btn in pairs(tabButtons) do
@@ -712,6 +660,7 @@ end)
 selectTab("EVENT")
 
 -- Utility: Recursively search for a remote by name and print its path
+--[ [
 local function findRemoteByName(parent, remoteName, path)
     path = path or parent.Name
     for _, child in ipairs(parent:GetChildren()) do
@@ -725,8 +674,10 @@ end
 
 -- Run this once at script start to help user find the remote
 findRemoteByName(ReplicatedStorage, "BuyPetEgg")
+-- ]]
 
 -- Utility: Recursively print all RemoteEvents and RemoteFunctions in ReplicatedStorage
+--[ [
 local function printAllRemotes(parent, path)
     path = path or parent.Name
     for _, child in ipairs(parent:GetChildren()) do
@@ -739,3 +690,4 @@ end
 
 -- Run this once at script start to help user find all remotes
 printAllRemotes(ReplicatedStorage)
+-- ]]
