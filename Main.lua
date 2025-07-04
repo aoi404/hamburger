@@ -1,4 +1,3 @@
-
 -- Improved Grow a Garden GUI Automation Script with working auto-harvest (harvests all fruits in your garden)
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
