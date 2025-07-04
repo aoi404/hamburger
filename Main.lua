@@ -12,7 +12,7 @@ local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
 
 local player = Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
+local playerGui = player:FindFirstChild("PlayerGui") or player:WaitForChild("PlayerGui")
 
 --// RemoteEvent Preload List (add more as needed)
 local remoteNames = {
@@ -88,8 +88,11 @@ local function antiAfk(flagValue)
     if flagValue.Value then
         antiAfkConn = RunService.Heartbeat:Connect(function(dt)
             if tick() % 60 < dt then
-                VirtualInputManager:SendMouseButtonEvent(0,0,2,true,game,0)
-                VirtualInputManager:SendMouseButtonEvent(0,0,2,false,game,0)
+                pcall(function()
+                    local vim = game:GetService("VirtualInputManager")
+                    vim:SendMouseButtonEvent(0,0,2,true,game,0)
+                    vim:SendMouseButtonEvent(0,0,2,false,game,0)
+                end)
             end
         end)
     end
@@ -99,6 +102,8 @@ end
 local gui = Instance.new("ScreenGui")
 gui.Name = "AutoScriptUI"
 gui.Parent = playerGui
+
+gui.ResetOnSpawn = false
 
 local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
