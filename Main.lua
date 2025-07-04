@@ -462,36 +462,46 @@ UIS.InputBegan:Connect(function(input, processed)
     end
 end)
 
+-- Dummy variables and functions to prevent runtime errors and allow UI to work
+local autoPlant, autoWater = false, false
+local cropBox = {Text = ""}
+function harvestAllFruits() end
+function sellAllInventory() end
+function autoBuyEggFunc() end
+function autoBuySeedFunc() end
+
 -- Automation Loop (dummy, add your logic here)
 spawn(function()
     while true do
-        if autoPlant then
-            local crop = cropBox.Text
-            if crop and #crop > 0 then
-                local remote = GameEvents:FindFirstChild("Plant_RE")
+        local ok, err = pcall(function()
+            if autoPlant then
+                local crop = cropBox.Text
+                if crop and #crop > 0 then
+                    local remote = GameEvents:FindFirstChild("Plant_RE")
+                    if remote then
+                        pcall(function()
+                            remote:FireServer(crop)
+                        end)
+                    end
+                end
+            end
+            if autoWater then
+                local remote = GameEvents:FindFirstChild("Water_RE")
                 if remote then
                     pcall(function()
-                        remote:FireServer(crop)
+                        remote:FireServer()
                     end)
                 end
             end
-        end
-        if autoWater then
-            local remote = GameEvents:FindFirstChild("Water_RE")
-            if remote then
-                pcall(function()
-                    remote:FireServer()
-                end)
+            if autoHarvest then
+                harvestAllFruits()
             end
-        end
-        if autoHarvest then
-            harvestAllFruits()
-        end
-        if autoSell then
-            sellAllInventory()
-        end
-        autoBuyEggFunc()
-        autoBuySeedFunc()
+            if autoSell then
+                sellAllInventory()
+            end
+            autoBuyEggFunc()
+            autoBuySeedFunc()
+        end)
         wait(1)
     end
 end)
